@@ -1,22 +1,22 @@
-Name: 		ocaml
-Version: 	3.08.2
+Name:		ocaml
+Version:	3.08.2
 Release:	2
-Epoch:		0
-Summary: 	The Objective Caml compiler and programming environment
+Summary:	Objective Caml compiler and programming environment
 
-Group: 		Development/Languages
-License: 	QPL/LGPL
+Group:		Development/Languages
+License:	QPL/LGPL
 URL:		http://www.ocaml.org
-Source0: 	http://caml.inria.fr/distrib/ocaml-3.08/ocaml-3.08.2.tar.bz2
-Source1: 	http://caml.inria.fr/distrib/ocaml-3.08/ocaml-3.08-refman.html.tar.gz
-Source2: 	http://caml.inria.fr/distrib/ocaml-3.08/ocaml-3.08-refman.ps.gz
-Source3: 	http://caml.inria.fr/distrib/ocaml-3.08/ocaml-3.08-refman.info.tar.gz
-Patch:	 	ocaml-rpath.patch
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+Source0:	http://caml.inria.fr/distrib/ocaml-3.08/ocaml-3.08.2.tar.bz2
+Source1:	http://caml.inria.fr/distrib/ocaml-3.08/ocaml-3.08-refman.html.tar.gz
+Source2:	http://caml.inria.fr/distrib/ocaml-3.08/ocaml-3.08-refman.ps.gz
+Source3:	http://caml.inria.fr/distrib/ocaml-3.08/ocaml-3.08-refman.info.tar.gz
+Patch:		ocaml-rpath.patch
+BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:	ncurses-devel, gdbm-devel, xorg-x11-devel
 BuildRequires:	tcl-devel, tk-devel
 BuildRequires:	emacs, perl
-Requires(post,preun): /sbin/install-info
+Requires(post):	/sbin/install-info
+Requires(preun):	/sbin/install-info
 
 %description
 Objective Caml is a high-level, strongly-typed, functional and
@@ -30,7 +30,7 @@ and a comprehensive library.
 %package -n labltk
 Group:		Development/Languages
 Summary:	Tk bindings for Objective Caml
-Requires:	ocaml = %{epoch}:%{version}-%{release}
+Requires:	ocaml = %{version}-%{release}
 
 %description -n labltk
 A library for interfacing Objective Caml with the scripting language
@@ -38,8 +38,8 @@ Tcl/Tk. It include the OCamlBrowser code editor / library browser.
 
 %package -n camlp4
 Group:		Development/Languages
-Summary:	A Pre-Processor-Pretty-Printer for OCaml
-Requires:	ocaml = %{epoch}:%{version}-%{release}
+Summary:	Pre-Processor-Pretty-Printer for OCaml
+Requires:	ocaml = %{version}-%{release}
 
 %description -n camlp4
 Camlp4 is a Pre-Processor-Pretty-Printer for OCaml, parsing a source
@@ -48,7 +48,7 @@ file and printing some result on standard output.
 %package ocamldoc
 Group:		Development/Languages
 Summary:	Documentation generator for OCaml
-Requires:	ocaml = %{epoch}:%{version}-%{release}
+Requires:	ocaml = %{version}-%{release}
 
 %description ocamldoc
 Documentation generator for Objective Caml.
@@ -56,7 +56,7 @@ Documentation generator for Objective Caml.
 %package emacs
 Group:		Development/Languages
 Summary:	Emacs mode for Objective Caml
-Requires:	ocaml = %{epoch}:%{version}-%{release}
+Requires:	ocaml = %{version}-%{release}
 Requires:	emacs
 
 %description emacs
@@ -65,7 +65,7 @@ Emacs mode for Objective Caml.
 %package docs
 Group:		Development/Languages
 Summary:	Documentation for OCaml
-Requires:	ocaml = %{epoch}:%{version}-%{release}
+Requires:	ocaml = %{version}-%{release}
 
 %description docs
 Documentation for Objective Caml.
@@ -113,7 +113,7 @@ rm -rf $RPM_BUILD_ROOT
     %{_infodir}/dir 2>/dev/null || :
 
 %preun
-if [ $1 = 0 ]; then
+if [ $1 -eq 0 ]; then
   /sbin/install-info --delete %{_infodir}/%{name}.info %{_infodir}/dir 2>/dev/null || :
 fi
 
@@ -183,7 +183,7 @@ fi
 - New Version 3.08.2
 
 * Thu Dec 30 2004 Thorsten Leemhuis <fedora[AT]leemhuis[DOT]info> - 0:3.07-6
-- add -x11lib %%{_prefix}/X11R6/%%{_lib} to configure; fixes labltk build 
+- add -x11lib %%{_prefix}/X11R6/%%{_lib} to configure; fixes labltk build
   on x86_64
 
 * Tue Dec  2 2003 Gerard Milmeister <gemi@bluewin.ch> - 0:3.07-0.fdr.5
