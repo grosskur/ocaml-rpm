@@ -183,7 +183,7 @@ fi
 - New Version 3.08.2
 
 * Thu Dec 30 2004 Thorsten Leemhuis <fedora[AT]leemhuis[DOT]info> - 0:3.07-6
-- add -x11lib {_prefix}/X11R6/{libdir} to configure; fixes labltk build 
+- add -x11lib %%{_prefix}/X11R6/%%{_lib} to configure; fixes labltk build 
   on x86_64
 
 * Tue Dec  2 2003 Gerard Milmeister <gemi@bluewin.ch> - 0:3.07-0.fdr.5
