@@ -1,6 +1,6 @@
 Name: 		ocaml
 Version: 	3.08.2
-Release:	1
+Release:	2
 Epoch:		0
 Summary: 	The Objective Caml compiler and programming environment
 
@@ -11,9 +11,10 @@ Source0: 	http://caml.inria.fr/distrib/ocaml-3.08/ocaml-3.08.2.tar.bz2
 Source1: 	http://caml.inria.fr/distrib/ocaml-3.08/ocaml-3.08-refman.html.tar.gz
 Source2: 	http://caml.inria.fr/distrib/ocaml-3.08/ocaml-3.08-refman.ps.gz
 Source3: 	http://caml.inria.fr/distrib/ocaml-3.08/ocaml-3.08-refman.info.tar.gz
+Patch:	 	ocaml-rpath.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires:	ncurses-devel, gdbm-devel, XFree86-devel
-BuildRequires:	/usr/include/tcl.h, /usr/include/tk.h
+BuildRequires:	ncurses-devel, gdbm-devel, xorg-x11-devel
+BuildRequires:	tcl-devel, tk-devel
 BuildRequires:	emacs, perl
 Requires(post,preun): /sbin/install-info
 
@@ -73,6 +74,7 @@ Documentation for Objective Caml.
 %setup -q -T -b 0
 %setup -q -T -D -a 1
 %setup -q -T -D -a 3
+%patch -p1
 cp %{SOURCE2} refman.ps.gz
 
 %build
@@ -174,11 +176,14 @@ fi
 %doc emacs/README
 
 %changelog
+* Sat Feb 12 2005 Gerard Milmeister <gemi@bluewin.ch> - 0:3.08.2-2
+- Added patch for removing rpath from shared libs
+
 * Sat Feb 12 2005 Gerard Milmeister <gemi@bluewin.ch> - 0:3.08.2-1
 - New Version 3.08.2
 
 * Thu Dec 30 2004 Thorsten Leemhuis <fedora[AT]leemhuis[DOT]info> - 0:3.07-6
-- add -x11lib %%_prefix/X11R6/%%_lib to configure; fixes labltk build 
+- add -x11lib {_prefix}/X11R6/{libdir} to configure; fixes labltk build 
   on x86_64
 
 * Tue Dec  2 2003 Gerard Milmeister <gemi@bluewin.ch> - 0:3.07-0.fdr.5

@@ -1,0 +1,27 @@
+--- ocaml-3.08.2/tools/Makefile.rpath	2005-02-12 11:38:17.000000000 +0100
++++ ocaml-3.08.2/tools/Makefile	2005-02-12 11:38:41.000000000 +0100
+@@ -101,9 +101,6 @@
+ 	sed -e "s|%%BINDIR%%|$(BINDIR)|" \
+             -e "s|%%SUPPORTS_SHARED_LIBRARIES%%|$(SUPPORTS_SHARED_LIBRARIES)|" \
+             -e "s|%%MKSHAREDLIB%%|$(MKSHAREDLIB)|" \
+-            -e "s|%%BYTECCRPATH%%|$(BYTECCRPATH)|" \
+-            -e "s|%%NATIVECCRPATH%%|$(NATIVECCRPATH)|" \
+-            -e "s|%%MKSHAREDLIBRPATH%%|$(MKSHAREDLIBRPATH)|" \
+             -e "s|%%RANLIB%%|$(RANLIB)|" \
+           ocamlmklib.mlp >> ocamlmklib.ml
+ 
+--- ocaml-3.08.2/tools/ocamlmklib.mlp.rpath	2005-02-12 11:46:55.646162346 +0100
++++ ocaml-3.08.2/tools/ocamlmklib.mlp	2005-02-12 11:49:11.411467461 +0100
+@@ -17,9 +17,9 @@
+ let bindir = "%%BINDIR%%"
+ and supports_shared_libraries = %%SUPPORTS_SHARED_LIBRARIES%%
+ and mksharedlib = "%%MKSHAREDLIB%%"
+-and bytecc_rpath = "%%BYTECCRPATH%%"
+-and nativecc_rpath = "%%NATIVECCRPATH%%"
+-and mksharedlib_rpath = "%%MKSHAREDLIBRPATH%%"
++and bytecc_rpath = ""
++and nativecc_rpath = ""
++and mksharedlib_rpath = ""
+ and ranlib = "%%RANLIB%%"
+ 
+ let bytecode_objs = ref []  (* .cmo,.cma,.ml,.mli files to pass to ocamlc *)
