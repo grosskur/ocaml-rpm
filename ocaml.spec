@@ -1,6 +1,6 @@
 Name: 		ocaml
 Version: 	3.07
-Release:	5
+Release:	6
 Epoch:		0
 Summary: 	The Objective Caml compiler and programming environment
 
@@ -82,6 +82,7 @@ cp %{SOURCE2} refman.ps.gz
     -ccoption "gcc $RPM_OPT_FLAGS" \
     -bindir %{_bindir} \
     -libdir %{_libdir}/ocaml \
+    -x11lib %{_prefix}/X11R6/%{_lib} \
     -mandir %{_mandir}/man1
 make world opt opt.opt
 # %{?_smp_mflags} breaks the build
@@ -175,6 +176,10 @@ fi
 %doc emacs/README
 
 %changelog
+* Thu Dec 30 2004 Thorsten Leemhuis <fedora[AT]leemhuis[DOT]info> - 0:3.07-6
+- add -x11lib {_prefix}/X11R6/{libdir} to configure; fixes labltk build 
+  on x86_64
+
 * Tue Dec  2 2003 Gerard Milmeister <gemi@bluewin.ch> - 0:3.07-0.fdr.5
 - ocamldoc -> ocaml-ocamldoc
 - ocaml-doc -> ocaml-docs
