@@ -1,12 +1,12 @@
 Name:		ocaml
-Version:	3.08.2
-Release:	2
+Version:	3.08.3
+Release:	1
 Summary:	Objective Caml compiler and programming environment
 
 Group:		Development/Languages
 License:	QPL/LGPL
 URL:		http://www.ocaml.org
-Source0:	http://caml.inria.fr/distrib/ocaml-3.08/ocaml-3.08.2.tar.bz2
+Source0:	http://caml.inria.fr/distrib/ocaml-3.08/ocaml-3.08.3.tar.bz2
 Source1:	http://caml.inria.fr/distrib/ocaml-3.08/ocaml-3.08-refman.html.tar.gz
 Source2:	http://caml.inria.fr/distrib/ocaml-3.08/ocaml-3.08-refman.ps.gz
 Source3:	http://caml.inria.fr/distrib/ocaml-3.08/ocaml-3.08-refman.info.tar.gz
@@ -16,7 +16,7 @@ BuildRequires:	ncurses-devel, gdbm-devel, xorg-x11-devel
 BuildRequires:	tcl-devel, tk-devel
 BuildRequires:	emacs, perl
 Requires(post):	/sbin/install-info
-Requires(preun):	/sbin/install-info
+Requires(preun): /sbin/install-info
 
 %description
 Objective Caml is a high-level, strongly-typed, functional and
@@ -176,6 +176,9 @@ fi
 %doc emacs/README
 
 %changelog
+* Sat Mar 26 2005 Gerard Milmeister <gemi@bluewin.ch> - 3.08.3-1
+- New Version 3.08.3
+
 * Sat Feb 12 2005 Gerard Milmeister <gemi@bluewin.ch> - 0:3.08.2-2
 - Added patch for removing rpath from shared libs
 
