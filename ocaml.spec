@@ -1,6 +1,6 @@
 Name: 		ocaml
 Version: 	3.07
-Release:	0.fdr.5.1
+Release:	0.fdr.5.2
 Epoch:		0
 Summary: 	The Objective Caml compiler and programming environment
 
