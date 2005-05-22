@@ -1,6 +1,6 @@
 Name:		ocaml
 Version:	3.08.3
-Release:	2
+Release: 3
 
 Summary:	Objective Caml compiler and programming environment
 
@@ -177,6 +177,9 @@ fi
 %doc emacs/README
 
 %changelog
+* Sun May 22 2005 Jeremy Katz <katzj@redhat.com> - 3.08.3-3
+- rebuild on all arches
+
 * Fri Apr  7 2005 Michael Schwendt <mschwendt[AT]users.sf.net>
 - rebuilt
 
