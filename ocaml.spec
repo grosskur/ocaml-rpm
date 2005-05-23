@@ -1,6 +1,6 @@
 Name:		ocaml
 Version:	3.08.3
-Release: 3
+Release: 4
 
 Summary:	Objective Caml compiler and programming environment
 
@@ -11,7 +11,9 @@ Source0:	http://caml.inria.fr/distrib/ocaml-3.08/ocaml-3.08.3.tar.bz2
 Source1:	http://caml.inria.fr/distrib/ocaml-3.08/ocaml-3.08-refman.html.tar.gz
 Source2:	http://caml.inria.fr/distrib/ocaml-3.08/ocaml-3.08-refman.ps.gz
 Source3:	http://caml.inria.fr/distrib/ocaml-3.08/ocaml-3.08-refman.info.tar.gz
-Patch:		ocaml-rpath.patch
+Patch0:		ocaml-rpath.patch
+Patch1:		ocaml-user-cflags.patch
+Patch2:		ocaml-num-gcc4.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:	ncurses-devel, gdbm-devel, xorg-x11-devel
 BuildRequires:	tcl-devel, tk-devel
@@ -75,12 +77,14 @@ Documentation for Objective Caml.
 %setup -q -T -b 0
 %setup -q -T -D -a 1
 %setup -q -T -D -a 3
-%patch -p1
+%patch0 -p1
+%patch1 -p1 -b .cflags
+%patch2 -p1 -b .x86_32
+
 cp %{SOURCE2} refman.ps.gz
 
 %build
-./configure \
-    -ccoption "gcc $RPM_OPT_FLAGS" \
+CFLAGS="$RPM_OPT_FLAGS" ./configure \
     -bindir %{_bindir} \
     -libdir %{_libdir}/ocaml \
     -x11lib %{_prefix}/X11R6/%{_lib} \
@@ -177,6 +181,10 @@ fi
 %doc emacs/README
 
 %changelog
+* Mon May 9 2005 Toshio Kuratomi <toshio-tiki-lounge.com> - 3.08.3-4
+- Fix for gcc4 and the 32 bit assembly in otherlibs/num.
+- Fix to allow compilation with RPM_OPT_FLAG defined -O level.
+
 * Sun May 22 2005 Jeremy Katz <katzj@redhat.com> - 3.08.3-3
 - rebuild on all arches
 

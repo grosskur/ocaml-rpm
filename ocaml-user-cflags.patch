@@ -1,0 +1,13 @@
+--- ocaml-3.08.3/configure.opt	2005-05-08 19:00:34.000000000 -0400
++++ ocaml-3.08.3/configure	2005-05-08 19:54:50.000000000 -0400
+@@ -1455,6 +1455,10 @@
+     nativecccompopts="$nativecccompopts -fomit-frame-pointer";;
+ esac
+ 
++# Allow user defined C Compiler flags
++bytecccompopts="$bytecccompopts $CFLAGS"
++nativecccompopts="$nativecccompopts $CFLAGS"
++
+ # Finish generated files
+ 
+ cclibs="$cclibs $mathlib"
