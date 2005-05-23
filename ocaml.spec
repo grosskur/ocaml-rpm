@@ -181,7 +181,7 @@ fi
 %doc emacs/README
 
 %changelog
-* Mon May 9 2005 Toshio Kuratomi <toshio-tiki-lounge.com> - 3.08.3-4
+* Sun May 22 2005 Toshio Kuratomi <toshio-tiki-lounge.com> - 3.08.3-4
 - Fix for gcc4 and the 32 bit assembly in otherlibs/num.
 - Fix to allow compilation with RPM_OPT_FLAG defined -O level.
 
