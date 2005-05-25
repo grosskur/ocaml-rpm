@@ -1,6 +1,6 @@
 Name:		ocaml
 Version:	3.08.3
-Release: 4
+Release: 5
 
 Summary:	Objective Caml compiler and programming environment
 
@@ -181,6 +181,9 @@ fi
 %doc emacs/README
 
 %changelog
+* Wed May 25 2005 Toshio Kuratomi <toshio-tiki-lounge.com> - 3.08.3-5
+- Bump and re-release as last build failed due to rawhide syncing.
+
 * Sun May 22 2005 Toshio Kuratomi <toshio-tiki-lounge.com> - 3.08.3-4
 - Fix for gcc4 and the 32 bit assembly in otherlibs/num.
 - Fix to allow compilation with RPM_OPT_FLAG defined -O level.
