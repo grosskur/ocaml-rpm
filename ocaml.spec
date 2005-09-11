@@ -1,19 +1,18 @@
 Name:		ocaml
-Version:	3.08.3
-Release: 5
+Version:	3.08.4
+Release: 	1%{?dist}
 
 Summary:	Objective Caml compiler and programming environment
 
 Group:		Development/Languages
 License:	QPL/LGPL
 URL:		http://www.ocaml.org
-Source0:	http://caml.inria.fr/distrib/ocaml-3.08/ocaml-3.08.3.tar.bz2
+Source0:	http://caml.inria.fr/distrib/ocaml-3.08/ocaml-3.08.4.tar.bz2
 Source1:	http://caml.inria.fr/distrib/ocaml-3.08/ocaml-3.08-refman.html.tar.gz
 Source2:	http://caml.inria.fr/distrib/ocaml-3.08/ocaml-3.08-refman.ps.gz
 Source3:	http://caml.inria.fr/distrib/ocaml-3.08/ocaml-3.08-refman.info.tar.gz
 Patch0:		ocaml-rpath.patch
 Patch1:		ocaml-user-cflags.patch
-Patch2:		ocaml-num-gcc4.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:	ncurses-devel, gdbm-devel, xorg-x11-devel
 BuildRequires:	tcl-devel, tk-devel
@@ -79,7 +78,6 @@ Documentation for Objective Caml.
 %setup -q -T -D -a 3
 %patch0 -p1
 %patch1 -p1 -b .cflags
-%patch2 -p1 -b .x86_32
 
 cp %{SOURCE2} refman.ps.gz
 
@@ -181,6 +179,9 @@ fi
 %doc emacs/README
 
 %changelog
+* Sun Sep 11 2005 Gerard Milmeister <gemi@bluewin.ch> - 3.08.4-1
+- New Version 3.08.4
+
 * Wed May 25 2005 Toshio Kuratomi <toshio-tiki-lounge.com> - 3.08.3-5
 - Bump and re-release as last build failed due to rawhide syncing.
 
