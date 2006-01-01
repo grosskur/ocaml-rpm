@@ -1,6 +1,6 @@
 Name:		ocaml
 Version:	3.09.0
-Release: 	1%{?dist}
+Release: 	2%{?dist}
 
 Summary:	Objective Caml compiler and programming environment
 
@@ -18,7 +18,17 @@ BuildRequires:	ncurses-devel
 BuildRequires:  gdbm-devel
 BuildRequires:	tcl-devel, tk-devel
 BuildRequires:	emacs, perl
+BuildRequires:  libICE-devel
+BuildRequires:  libSM-devel
 BuildRequires:  libX11-devel
+BuildRequires:  libXaw-devel
+BuildRequires:  libXext-devel
+BuildRequires:  libXft-devel
+BuildRequires:  libXmu-devel
+BuildRequires:  libXrender-devel
+BuildRequires:  libXt-devel
+BuildRequires:  mesa-libGL-devel
+BuildRequires:  mesa-libGLU-devel
 Requires(post):	/sbin/install-info
 Requires(preun): /sbin/install-info
 
@@ -31,6 +41,7 @@ and an optimizing native-code compiler), an interactive toplevel system,
 parsing tools (Lex,Yacc,Camlp4), a replay debugger, a documentation generator,
 and a comprehensive library.
 
+
 %package -n labltk
 Group:		Development/Languages
 Summary:	Tk bindings for Objective Caml
@@ -39,6 +50,7 @@ Requires:	ocaml = %{version}-%{release}
 %description -n labltk
 A library for interfacing Objective Caml with the scripting language
 Tcl/Tk. It include the OCamlBrowser code editor / library browser.
+
 
 %package -n camlp4
 Group:		Development/Languages
@@ -49,6 +61,7 @@ Requires:	ocaml = %{version}-%{release}
 Camlp4 is a Pre-Processor-Pretty-Printer for OCaml, parsing a source
 file and printing some result on standard output.
 
+
 %package ocamldoc
 Group:		Development/Languages
 Summary:	Documentation generator for OCaml
@@ -56,6 +69,7 @@ Requires:	ocaml = %{version}-%{release}
 
 %description ocamldoc
 Documentation generator for Objective Caml.
+
 
 %package emacs
 Group:		Development/Languages
@@ -66,6 +80,7 @@ Requires:	emacs
 %description emacs
 Emacs mode for Objective Caml.
 
+
 %package docs
 Group:		Development/Languages
 Summary:	Documentation for OCaml
@@ -73,6 +88,7 @@ Requires:	ocaml = %{version}-%{release}
 
 %description docs
 Documentation for Objective Caml.
+
 
 %prep
 %setup -q -T -b 0
@@ -83,6 +99,7 @@ Documentation for Objective Caml.
 
 cp %{SOURCE2} refman.ps.gz
 
+
 %build
 CFLAGS="$RPM_OPT_FLAGS" ./configure \
     -bindir %{_bindir} \
@@ -92,6 +109,7 @@ CFLAGS="$RPM_OPT_FLAGS" ./configure \
 make world opt opt.opt
 # %{?_smp_mflags} breaks the build
 (cd emacs; make ocamltags)
+
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -107,8 +125,10 @@ perl -pi -e "s|^$RPM_BUILD_ROOT||" $RPM_BUILD_ROOT%{_libdir}/ocaml/ld.conf
     cd infoman; cp ocaml*.gz $RPM_BUILD_ROOT%{_infodir}
 )
 
+
 %clean
 rm -rf $RPM_BUILD_ROOT
+
 
 %post
 /sbin/install-info \
@@ -117,10 +137,12 @@ rm -rf $RPM_BUILD_ROOT
     %{_infodir}/%{name}.info \
     %{_infodir}/dir 2>/dev/null || :
 
+
 %preun
 if [ $1 -eq 0 ]; then
   /sbin/install-info --delete %{_infodir}/%{name}.info %{_infodir}/dir 2>/dev/null || :
 fi
+
 
 %files
 %defattr(-,root,root,-)
@@ -145,6 +167,7 @@ fi
 %exclude %{_libdir}/ocaml/stublibs/dlltkanim.so
 %doc README LICENSE Changes
 
+
 %files -n labltk
 %defattr(-,root,root,-)
 %{_bindir}/labltk
@@ -155,6 +178,7 @@ fi
 %doc otherlibs/labltk/examples_labltk
 %doc otherlibs/labltk/examples_camltk
 
+
 %files -n camlp4
 %defattr(-,root,root,-)
 %{_bindir}/camlp4*
@@ -164,21 +188,25 @@ fi
 %{_mandir}/man1/camlp4*
 %{_mandir}/man1/mkcamlp4*
 
+
 %files ocamldoc
 %defattr(-,root,root,-)
 %{_bindir}/ocamldoc*
 %{_libdir}/ocaml/ocamldoc
 %doc ocamldoc/Changes.txt
 
+
 %files docs
 %defattr(-,root,root,-)
 %doc refman.ps.gz htmlman
+
 
 %files emacs
 %defattr(-,root,root,-)
 %{_datadir}/emacs/site-lisp/*
 %{_bindir}/ocamltags
 %doc emacs/README
+
 
 %changelog
 * Sun Jan  1 2006 Gerard Milmeister <gemi@bluewin.ch> - 3.09.0-1
