@@ -1,5 +1,5 @@
 Name:		ocaml
-Version:	3.08.4
+Version:	3.09.0
 Release: 	1%{?dist}
 
 Summary:	Objective Caml compiler and programming environment
@@ -7,16 +7,18 @@ Summary:	Objective Caml compiler and programming environment
 Group:		Development/Languages
 License:	QPL/LGPL
 URL:		http://www.ocaml.org
-Source0:	http://caml.inria.fr/distrib/ocaml-3.08/ocaml-3.08.4.tar.bz2
-Source1:	http://caml.inria.fr/distrib/ocaml-3.08/ocaml-3.08-refman.html.tar.gz
-Source2:	http://caml.inria.fr/distrib/ocaml-3.08/ocaml-3.08-refman.ps.gz
-Source3:	http://caml.inria.fr/distrib/ocaml-3.08/ocaml-3.08-refman.info.tar.gz
+Source0:	http://caml.inria.fr/distrib/ocaml-3.09/ocaml-3.09.0.tar.bz2
+Source1:	http://caml.inria.fr/distrib/ocaml-3.09/ocaml-3.09-refman.html.tar.gz
+Source2:	http://caml.inria.fr/distrib/ocaml-3.09/ocaml-3.09-refman.ps.gz
+Source3:	http://caml.inria.fr/distrib/ocaml-3.09/ocaml-3.09-refman.info.tar.gz
 Patch0:		ocaml-rpath.patch
 Patch1:		ocaml-user-cflags.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires:	ncurses-devel, gdbm-devel, xorg-x11-devel
+BuildRequires:	ncurses-devel
+BuildRequires:  gdbm-devel
 BuildRequires:	tcl-devel, tk-devel
 BuildRequires:	emacs, perl
+BuildRequires:  libX11-devel
 Requires(post):	/sbin/install-info
 Requires(preun): /sbin/install-info
 
@@ -179,6 +181,9 @@ fi
 %doc emacs/README
 
 %changelog
+* Sun Jan  1 2006 Gerard Milmeister <gemi@bluewin.ch> - 3.09.0-1
+- new version 3.09.0
+
 * Sun Sep 11 2005 Gerard Milmeister <gemi@bluewin.ch> - 3.08.4-1
 - New Version 3.08.4
 
