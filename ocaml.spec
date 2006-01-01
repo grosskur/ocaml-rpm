@@ -1,6 +1,6 @@
 Name:		ocaml
 Version:	3.09.0
-Release: 	2%{?dist}
+Release: 	3%{?dist}
 
 Summary:	Objective Caml compiler and programming environment
 
