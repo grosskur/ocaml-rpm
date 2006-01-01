@@ -104,7 +104,8 @@ cp %{SOURCE2} refman.ps.gz
 CFLAGS="$RPM_OPT_FLAGS" ./configure \
     -bindir %{_bindir} \
     -libdir %{_libdir}/ocaml \
-    -x11lib %{_prefix}/X11R6/%{_lib} \
+    -x11lib %{_libdir} \
+    -x11include %{_includedir} \
     -mandir %{_mandir}/man1
 make world opt opt.opt
 # %{?_smp_mflags} breaks the build
