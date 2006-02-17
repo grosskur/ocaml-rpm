@@ -1,6 +1,6 @@
 Name:		ocaml
 Version:	3.09.1
-Release: 	1%{?dist}
+Release: 	2%{?dist}
 
 Summary:	Objective Caml compiler and programming environment
 
@@ -210,6 +210,9 @@ fi
 
 
 %changelog
+* Fri Feb 17 2006 Gerard Milmeister <gemi@bluewin.ch> - 3.09.1-2
+- Rebuild for Fedora Extras 5
+
 * Thu Jan  5 2006 Gerard Milmeister <gemi@bluewin.ch> - 3.09.1-1
 - new version 3.09.1
 
