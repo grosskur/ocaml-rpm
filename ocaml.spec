@@ -1,15 +1,15 @@
 Name:		ocaml
-Version:	3.09.1
-Release: 	2%{?dist}
+Version:	3.09.2
+Release: 	1%{?dist}
 
 Summary:	Objective Caml compiler and programming environment
 
 Group:		Development/Languages
 License:	QPL/LGPL
 URL:		http://www.ocaml.org
-Source0:	http://caml.inria.fr/distrib/ocaml-3.09/ocaml-3.09.1.tar.bz2
+Source0:	http://caml.inria.fr/distrib/ocaml-3.09/ocaml-3.09.2.tar.bz2
 Source1:	http://caml.inria.fr/distrib/ocaml-3.09/ocaml-3.09-refman.html.tar.gz
-Source2:	http://caml.inria.fr/distrib/ocaml-3.09/ocaml-3.09-refman.ps.gz
+Source2:	http://caml.inria.fr/distrib/ocaml-3.09/ocaml-3.09-refman.pdf
 Source3:	http://caml.inria.fr/distrib/ocaml-3.09/ocaml-3.09-refman.info.tar.gz
 Patch0:		ocaml-rpath.patch
 Patch1:		ocaml-user-cflags.patch
@@ -97,7 +97,7 @@ Documentation for Objective Caml.
 %patch0 -p1
 %patch1 -p1 -b .cflags
 
-cp %{SOURCE2} refman.ps.gz
+cp %{SOURCE2} refman.pdf
 
 
 %build
@@ -199,7 +199,7 @@ fi
 
 %files docs
 %defattr(-,root,root,-)
-%doc refman.ps.gz htmlman
+%doc refman.pdf htmlman
 
 
 %files emacs
@@ -210,6 +210,9 @@ fi
 
 
 %changelog
+* Sun Apr 30 2006 Gerard Milmeister <gemi@bluewin.ch> - 3.09.2-1
+- new version 3.09.2
+
 * Fri Feb 17 2006 Gerard Milmeister <gemi@bluewin.ch> - 3.09.1-2
 - Rebuild for Fedora Extras 5
 
