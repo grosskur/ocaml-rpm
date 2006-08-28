@@ -1,6 +1,6 @@
 Name:		ocaml
 Version:	3.09.2
-Release: 	1%{?dist}
+Release: 	2%{?dist}
 
 Summary:	Objective Caml compiler and programming environment
 
@@ -210,6 +210,9 @@ fi
 
 
 %changelog
+* Mon Aug 28 2006 Gerard Milmeister <gemi@bluewin.ch> - 3.09.2-2
+- Rebuild for FE6
+
 * Sun Apr 30 2006 Gerard Milmeister <gemi@bluewin.ch> - 3.09.2-1
 - new version 3.09.2
 
