@@ -1,13 +1,13 @@
 Name:		ocaml
-Version:	3.09.2
-Release: 	2%{?dist}
+Version:	3.09.3
+Release: 	1%{?dist}
 
 Summary:	Objective Caml compiler and programming environment
 
 Group:		Development/Languages
 License:	QPL/LGPL
 URL:		http://www.ocaml.org
-Source0:	http://caml.inria.fr/distrib/ocaml-3.09/ocaml-3.09.2.tar.bz2
+Source0:	http://caml.inria.fr/distrib/ocaml-3.09/ocaml-3.09.3.tar.bz2
 Source1:	http://caml.inria.fr/distrib/ocaml-3.09/ocaml-3.09-refman.html.tar.gz
 Source2:	http://caml.inria.fr/distrib/ocaml-3.09/ocaml-3.09-refman.pdf
 Source3:	http://caml.inria.fr/distrib/ocaml-3.09/ocaml-3.09-refman.info.tar.gz
@@ -210,6 +210,9 @@ fi
 
 
 %changelog
+* Sat Dec  2 2006 Gerard Milmeister <gemi@bluewin.ch> - 3.09.3-1
+- new version 3.09.3
+
 * Mon Aug 28 2006 Gerard Milmeister <gemi@bluewin.ch> - 3.09.2-2
 - Rebuild for FE6
 
