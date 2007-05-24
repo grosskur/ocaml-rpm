@@ -1,6 +1,6 @@
 Name:		ocaml
 Version:	3.09.3
-Release: 	1%{?dist}
+Release: 	2%{?dist}
 
 Summary:	Objective Caml compiler and programming environment
 
@@ -31,6 +31,8 @@ BuildRequires:  mesa-libGL-devel
 BuildRequires:  mesa-libGLU-devel
 Requires(post):	/sbin/install-info
 Requires(preun): /sbin/install-info
+ExcludeArch:    ppc64
+
 
 %description
 Objective Caml is a high-level, strongly-typed, functional and
@@ -109,8 +111,8 @@ CFLAGS="$RPM_OPT_FLAGS" ./configure \
     -mandir %{_mandir}/man1
 make world opt opt.opt
 # %{?_smp_mflags} breaks the build
-(cd emacs; make ocamltags)
-
+make -C emacs ocamltags
+make -C tools objinfo
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -125,7 +127,7 @@ perl -pi -e "s|^$RPM_BUILD_ROOT||" $RPM_BUILD_ROOT%{_libdir}/ocaml/ld.conf
     mkdir -p $RPM_BUILD_ROOT%{_infodir};
     cd infoman; cp ocaml*.gz $RPM_BUILD_ROOT%{_infodir}
 )
-
+cp tools/objinfo $RPM_BUILD_ROOT%{_bindir}/ocamlobjinfo
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -210,6 +212,9 @@ fi
 
 
 %changelog
+* Thu May 24 2007 Gerard Milmeister <gemi@bluewin.ch> - 3.09.3-2
+- added ocamlobjinfo
+
 * Sat Dec  2 2006 Gerard Milmeister <gemi@bluewin.ch> - 3.09.3-1
 - new version 3.09.3
 
