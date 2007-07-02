@@ -1,23 +1,27 @@
 Name:		ocaml
-Version:	3.09.3
-Release: 	2%{?dist}
+Version:	3.10.0
+Release: 	1%{?dist}
 
 Summary:	Objective Caml compiler and programming environment
 
 Group:		Development/Languages
 License:	QPL/LGPL
 URL:		http://www.ocaml.org
-Source0:	http://caml.inria.fr/distrib/ocaml-3.09/ocaml-3.09.3.tar.bz2
-Source1:	http://caml.inria.fr/distrib/ocaml-3.09/ocaml-3.09-refman.html.tar.gz
-Source2:	http://caml.inria.fr/distrib/ocaml-3.09/ocaml-3.09-refman.pdf
-Source3:	http://caml.inria.fr/distrib/ocaml-3.09/ocaml-3.09-refman.info.tar.gz
+Source0:	http://caml.inria.fr/distrib/ocaml-3.10/ocaml-3.10.0.tar.bz2
+Source1:	http://caml.inria.fr/distrib/ocaml-3.10/ocaml-3.10-refman.html.tar.gz
+Source2:	http://caml.inria.fr/distrib/ocaml-3.10/ocaml-3.10-refman.pdf
+Source3:	http://caml.inria.fr/distrib/ocaml-3.10/ocaml-3.10-refman.info.tar.gz
+Source4:	ocaml-find-requires.sh
+Source5:	ocaml-find-provides.sh
 Patch0:		ocaml-rpath.patch
 Patch1:		ocaml-user-cflags.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:	ncurses-devel
 BuildRequires:  gdbm-devel
-BuildRequires:	tcl-devel, tk-devel
-BuildRequires:	emacs, perl
+BuildRequires:	tcl-devel
+BuildRequires:  tk-devel
+BuildRequires:	emacs
+BuildRequires:  perl
 BuildRequires:  libICE-devel
 BuildRequires:  libSM-devel
 BuildRequires:  libX11-devel
@@ -29,10 +33,10 @@ BuildRequires:  libXrender-devel
 BuildRequires:  libXt-devel
 BuildRequires:  mesa-libGL-devel
 BuildRequires:  mesa-libGLU-devel
-Requires(post):	/sbin/install-info
-Requires(preun): /sbin/install-info
+Requires:       gcc
+Requires:       ncurses-devel
+Requires:       gdbm-devel
 ExcludeArch:    ppc64
-
 
 %description
 Objective Caml is a high-level, strongly-typed, functional and
@@ -44,29 +48,100 @@ parsing tools (Lex,Yacc,Camlp4), a replay debugger, a documentation generator,
 and a comprehensive library.
 
 
-%package -n labltk
-Group:		Development/Languages
+%package runtime
+Group:          System Environment/Libraries
+Summary:        Objective Caml runtime environment
+
+%description runtime
+Objective Caml is a high-level, strongly-typed, functional and
+object-oriented programming language from the ML family of languages.
+
+This package contains the runtime environment needed to run Objective
+Caml bytecode.
+
+
+%package source
+Group:          Development/Languages
+Summary:        Source code for Objective Caml libraries
+Requires:       ocaml = %{version}-%{release}
+
+%description source
+Source code for Objective Caml libraries.
+
+
+%package x11
+Group:          System Environment/Libraries
+Summary:        X11 support for Objective Caml
+Requires:       ocaml-runtime = %{version}-%{release}
+Requires:       libX11-devel
+
+%description x11
+X11 support for Objective Caml.
+
+
+%package labltk
+Group:		System Environment/Libraries
 Summary:	Tk bindings for Objective Caml
+Requires:	ocaml-runtime = %{version}-%{release}
+Provides:       labltk = %{version}-%{release}
+Obsoletes:      labltk < %{version}-%{release}
+
+%description labltk
+Labltk is a library for interfacing Objective Caml with the scripting
+language Tcl/Tk.
+
+This package contains the runtime files.
+
+
+%package labltk-devel
+Group:		Development/Libraries
+Summary:	Development files for labltk
 Requires:	ocaml = %{version}-%{release}
+Requires:       %{name}-labltk = %{version}-%{release}
+Requires:       libX11-devel
+Provides:       labltk = %{version}-%{release}
+Obsoletes:      labltk < %{version}-%{release}
 
-%description -n labltk
-A library for interfacing Objective Caml with the scripting language
-Tcl/Tk. It include the OCamlBrowser code editor / library browser.
+%description labltk-devel
+Labltk is a library for interfacing Objective Caml with the scripting
+language Tcl/Tk.
+
+This package contains the development files.  It includes the ocaml
+browser for code editing and library browsing.
 
 
-%package -n camlp4
+%package camlp4
 Group:		Development/Languages
-Summary:	Pre-Processor-Pretty-Printer for OCaml
-Requires:	ocaml = %{version}-%{release}
+Summary:	Pre-Processor-Pretty-Printer for Objective Caml
+Requires:	ocaml-runtime = %{version}-%{release}
+Provides:       camlp4 = %{version}-%{release}
+Obsoletes:      camlp4 < %{version}-%{release}
 
-%description -n camlp4
-Camlp4 is a Pre-Processor-Pretty-Printer for OCaml, parsing a source
-file and printing some result on standard output.
+%description camlp4
+Camlp4 is a Pre-Processor-Pretty-Printer for Objective Caml, parsing a
+source file and printing some result on standard output.
+
+This package contains the runtime files.
+
+
+%package camlp4-devel
+Group:		Development/Languages
+Summary:	Pre-Processor-Pretty-Printer for Objective Caml
+Requires:	ocaml = %{version}-%{release}
+Requires:       %{name}-camlp4 = %{version}-%{release}
+Provides:       camlp4 = %{version}-%{release}
+Obsoletes:      camlp4 < %{version}-%{release}
+
+%description camlp4-devel
+Camlp4 is a Pre-Processor-Pretty-Printer for Objective Caml, parsing a
+source file and printing some result on standard output.
+
+This package contains the development files.
 
 
 %package ocamldoc
 Group:		Development/Languages
-Summary:	Documentation generator for OCaml
+Summary:	Documentation generator for Objective Caml.
 Requires:	ocaml = %{version}-%{release}
 
 %description ocamldoc
@@ -85,11 +160,18 @@ Emacs mode for Objective Caml.
 
 %package docs
 Group:		Development/Languages
-Summary:	Documentation for OCaml
+Summary:	Documentation for Objective Caml
 Requires:	ocaml = %{version}-%{release}
+Requires(post):	/sbin/install-info
+Requires(preun): /sbin/install-info
+
 
 %description docs
-Documentation for Objective Caml.
+Objective Caml is a high-level, strongly-typed, functional and
+object-oriented programming language from the ML family of languages.
+
+This package contains documentation in PDF and HTML format as well as
+man pages and info files.
 
 
 %prep
@@ -101,6 +183,9 @@ Documentation for Objective Caml.
 
 cp %{SOURCE2} refman.pdf
 
+%define _use_internal_dependency_generator 0
+%define __find_requires %{SOURCE4} -i Asttypes -i Outcometree -i Cmo_format -c -f %{buildroot}%{_bindir}/ocamlobjinfo
+%define __find_provides %{SOURCE5} -f %{buildroot}%{_bindir}/ocamlobjinfo
 
 %build
 CFLAGS="$RPM_OPT_FLAGS" ./configure \
@@ -112,28 +197,48 @@ CFLAGS="$RPM_OPT_FLAGS" ./configure \
 make world opt opt.opt
 # %{?_smp_mflags} breaks the build
 make -C emacs ocamltags
-make -C tools objinfo
+# make -C tools objinfo
+(cd tools; ../boot/ocamlrun ../ocamlopt -nostdlib -I ../stdlib -I ../utils -I ../parsing -I ../typing -I ../bytecomp -I ../asmcomp -I ../driver -o objinfo config.cmx objinfo.ml)
+
 
 %install
 rm -rf $RPM_BUILD_ROOT
-%makeinstall BINDIR=$RPM_BUILD_ROOT%{_bindir} LIBDIR=$RPM_BUILD_ROOT%{_libdir}/ocaml MANDIR=$RPM_BUILD_ROOT%{_mandir}
+make install \
+     BINDIR=$RPM_BUILD_ROOT%{_bindir} \
+     LIBDIR=$RPM_BUILD_ROOT%{_libdir}/ocaml \
+     MANDIR=$RPM_BUILD_ROOT%{_mandir}
 perl -pi -e "s|^$RPM_BUILD_ROOT||" $RPM_BUILD_ROOT%{_libdir}/ocaml/ld.conf
+
 (
+    # install emacs files
     cd emacs;
-    make install BINDIR=$RPM_BUILD_ROOT%{_bindir} EMACSDIR=$RPM_BUILD_ROOT%{_datadir}/emacs/site-lisp
+    make install \
+    	 BINDIR=$RPM_BUILD_ROOT%{_bindir} \
+	 EMACSDIR=$RPM_BUILD_ROOT%{_datadir}/emacs/site-lisp
     make install-ocamltags BINDIR=$RPM_BUILD_ROOT%{_bindir}
 )
+
 (
+    # install info files
     mkdir -p $RPM_BUILD_ROOT%{_infodir};
     cd infoman; cp ocaml*.gz $RPM_BUILD_ROOT%{_infodir}
 )
+
 cp tools/objinfo $RPM_BUILD_ROOT%{_bindir}/ocamlobjinfo
+
+# install rpmbuild helper files
+mkdir -p $RPM_BUILD_ROOT/usr/lib/rpm/
+cp %{SOURCE4} $RPM_BUILD_ROOT/usr/lib/rpm/
+cp %{SOURCE5} $RPM_BUILD_ROOT/usr/lib/rpm/
+
+echo %{version}-%{release} > $RPM_BUILD_ROOT%{_libdir}/ocaml/fedora-ocaml-release
+
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
 
-%post
+%post docs
 /sbin/install-info \
     --entry "* ocaml: (ocaml).	 The Objective Caml compiler and programming environment" \
     --section "Programming Languages" \
@@ -141,7 +246,7 @@ rm -rf $RPM_BUILD_ROOT
     %{_infodir}/dir 2>/dev/null || :
 
 
-%preun
+%preun docs
 if [ $1 -eq 0 ]; then
   /sbin/install-info --delete %{_infodir}/%{name}.info %{_infodir}/dir 2>/dev/null || :
 fi
@@ -149,47 +254,146 @@ fi
 
 %files
 %defattr(-,root,root,-)
-%{_bindir}/*
-%{_mandir}/man1/*
-%{_mandir}/man3/*
-%{_libdir}/ocaml
-%{_infodir}/*
-%exclude %{_bindir}/camlp4*
-%exclude %{_bindir}/mkcamlp4
-%exclude %{_bindir}/ocpp
-%exclude %{_bindir}/labltk
-%exclude %{_bindir}/ocamltags
-%exclude %{_bindir}/ocamlbrowser
-%exclude %{_bindir}/ocamldoc*
-%exclude %{_libdir}/ocaml/camlp4
-%exclude %{_libdir}/ocaml/labltk
-%exclude %{_libdir}/ocaml/ocamldoc
-%exclude %{_mandir}/man1/camlp4*
-%exclude %{_mandir}/man1/mkcamlp4*
+%{_bindir}/ocaml
+%{_bindir}/ocamlbuild
+%{_bindir}/ocamlbuild.byte
+%{_bindir}/ocamlbuild.native
+%{_bindir}/ocamlc
+%{_bindir}/ocamlc.opt
+%{_bindir}/ocamlcp
+%{_bindir}/ocamldebug
+%{_bindir}/ocamldep
+%{_bindir}/ocamldep.opt
+%{_bindir}/ocamllex
+%{_bindir}/ocamllex.opt
+%{_bindir}/ocamlmklib
+%{_bindir}/ocamlmktop
+%{_bindir}/ocamlobjinfo
+%{_bindir}/ocamlopt
+%{_bindir}/ocamlopt.opt
+%{_bindir}/ocamlprof
+%{_bindir}/ocamlyacc
+%{_libdir}/ocaml/addlabels
+%{_libdir}/ocaml/scrapelabels
+%{_libdir}/ocaml/camlheader
+%{_libdir}/ocaml/camlheader_ur
+%{_libdir}/ocaml/expunge
+%{_libdir}/ocaml/extract_crc
+%{_libdir}/ocaml/ld.conf
+%{_libdir}/ocaml/Makefile.config
+%{_libdir}/ocaml/*.a
+%{_libdir}/ocaml/*.cmxa
+%{_libdir}/ocaml/*.cmx
+%{_libdir}/ocaml/*.mli
+%{_libdir}/ocaml/*.o
+%{_libdir}/ocaml/vmthreads/*.mli
+%{_libdir}/ocaml/vmthreads/*.a
+%{_libdir}/ocaml/threads/*.a
+%{_libdir}/ocaml/threads/*.cmxa
+%{_libdir}/ocaml/threads/*.cmx
+%{_libdir}/ocaml/caml
+%{_libdir}/ocaml/ocamlbuild
+%exclude %{_libdir}/ocaml/graphicsX11.mli
+
+
+%files runtime
+%defattr(-,root,root,-)
+%{_bindir}/ocamlrun
+%dir %{_libdir}/ocaml
+%{_libdir}/ocaml/*.cmo
+%{_libdir}/ocaml/*.cmi
+%{_libdir}/ocaml/*.cma
+%{_libdir}/ocaml/stublibs
+%dir %{_libdir}/ocaml/vmthreads
+%{_libdir}/ocaml/vmthreads/*.cmi
+%{_libdir}/ocaml/vmthreads/*.cma
+%dir %{_libdir}/ocaml/threads
+%{_libdir}/ocaml/threads/*.cmi
+%{_libdir}/ocaml/threads/*.cma
+%{_libdir}/ocaml/fedora-ocaml-release
+%{_prefix}/lib/rpm/*
+%exclude %{_libdir}/ocaml/graphicsX11.cmi
+%exclude %{_libdir}/ocaml/stublibs/dllgraphics.so
 %exclude %{_libdir}/ocaml/stublibs/dlllabltk.so
 %exclude %{_libdir}/ocaml/stublibs/dlltkanim.so
 %doc README LICENSE Changes
 
 
-%files -n labltk
+%files source
+%defattr(-,root,root,-)
+%{_libdir}/ocaml/*.ml
+
+
+%files x11
+%defattr(-,root,root,-)
+%{_libdir}/ocaml/graphicsX11.cmi
+%{_libdir}/ocaml/graphicsX11.mli
+%{_libdir}/ocaml/stublibs/dllgraphics.so
+
+
+%files labltk
 %defattr(-,root,root,-)
 %{_bindir}/labltk
-%{_bindir}/ocamlbrowser
-%{_libdir}/ocaml/labltk
+%dir %{_libdir}/ocaml/labltk
+%{_libdir}/ocaml/labltk/*.cmi
+%{_libdir}/ocaml/labltk/*.cma
+%{_libdir}/ocaml/labltk/*.cmo
 %{_libdir}/ocaml/stublibs/dlllabltk.so
 %{_libdir}/ocaml/stublibs/dlltkanim.so
+
+
+%files labltk-devel
+%defattr(-,root,root,-)
+%{_bindir}/ocamlbrowser
+%{_libdir}/ocaml/labltk/labltktop
+%{_libdir}/ocaml/labltk/pp
+%{_libdir}/ocaml/labltk/tkcompiler
+%{_libdir}/ocaml/labltk/*.a
+%{_libdir}/ocaml/labltk/*.cmxa
+%{_libdir}/ocaml/labltk/*.cmx
+%{_libdir}/ocaml/labltk/*.mli
+%{_libdir}/ocaml/labltk/*.o
 %doc otherlibs/labltk/examples_labltk
 %doc otherlibs/labltk/examples_camltk
 
 
-%files -n camlp4
+%files camlp4
+%defattr(-,root,root,-)
+%dir %{_libdir}/ocaml/camlp4
+%{_libdir}/ocaml/camlp4/*.cmi
+%{_libdir}/ocaml/camlp4/*.cma
+%{_libdir}/ocaml/camlp4/*.cmo
+%dir %{_libdir}/ocaml/camlp4/Camlp4Filters
+%{_libdir}/ocaml/camlp4/Camlp4Filters/*.cmi
+%{_libdir}/ocaml/camlp4/Camlp4Filters/*.cmo
+%dir %{_libdir}/ocaml/camlp4/Camlp4Parsers
+%{_libdir}/ocaml/camlp4/Camlp4Parsers/*.cmo
+%{_libdir}/ocaml/camlp4/Camlp4Parsers/*.cmi
+%dir %{_libdir}/ocaml/camlp4/Camlp4Printers
+%{_libdir}/ocaml/camlp4/Camlp4Printers/*.cmi
+%{_libdir}/ocaml/camlp4/Camlp4Printers/*.cmo
+%dir %{_libdir}/ocaml/camlp4/Camlp4Top
+%{_libdir}/ocaml/camlp4/Camlp4Top/*.cmi
+%{_libdir}/ocaml/camlp4/Camlp4Top/*.cmo
+
+
+%files camlp4-devel
 %defattr(-,root,root,-)
 %{_bindir}/camlp4*
 %{_bindir}/mkcamlp4
-%{_bindir}/ocpp
-%{_libdir}/ocaml/camlp4
-%{_mandir}/man1/camlp4*
-%{_mandir}/man1/mkcamlp4*
+%{_libdir}/ocaml/camlp4/*.a
+%{_libdir}/ocaml/camlp4/*.cmxa
+%{_libdir}/ocaml/camlp4/*.cmx
+%{_libdir}/ocaml/camlp4/*.o
+%{_libdir}/ocaml/camlp4/Camlp4Filters/*.cmx
+%{_libdir}/ocaml/camlp4/Camlp4Filters/*.o
+%{_libdir}/ocaml/camlp4/Camlp4Parsers/*.cmx
+%{_libdir}/ocaml/camlp4/Camlp4Parsers/*.o
+%{_libdir}/ocaml/camlp4/Camlp4Printers/*.cmx
+%{_libdir}/ocaml/camlp4/Camlp4Printers/*.o
+%{_libdir}/ocaml/camlp4/Camlp4Top/*.cmx
+%{_libdir}/ocaml/camlp4/Camlp4Top/*.o
+%{_mandir}/man1/*
 
 
 %files ocamldoc
@@ -202,6 +406,8 @@ fi
 %files docs
 %defattr(-,root,root,-)
 %doc refman.pdf htmlman
+%{_infodir}/*
+%{_mandir}/man3/*
 
 
 %files emacs
@@ -212,6 +418,11 @@ fi
 
 
 %changelog
+* Sat Jun  2 2007 Gerard Milmeister <gemi@bluewin.ch> - 3.10.0-1
+- new version 3.10.0
+- split off devel packages
+- rename subpackages to use ocaml- prefix
+
 * Thu May 24 2007 Gerard Milmeister <gemi@bluewin.ch> - 3.09.3-2
 - added ocamlobjinfo
 
