@@ -1,6 +1,6 @@
 Name:		ocaml
 Version:	3.10.0
-Release: 	1%{?dist}
+Release: 	2%{?dist}
 
 Summary:	Objective Caml compiler and programming environment
 
@@ -418,6 +418,9 @@ fi
 
 
 %changelog
+* Tue Aug 28 2007 Fedora Release Engineering <rel-eng at fedoraproject dot org> - 3.10.0-2
+- Rebuild for selinux ppc32 issue.
+
 * Sat Jun  2 2007 Gerard Milmeister <gemi@bluewin.ch> - 3.10.0-1
 - new version 3.10.0
 - split off devel packages
