@@ -1,6 +1,6 @@
 Name:		ocaml
 Version:	3.10.0
-Release: 	2%{?dist}
+Release: 	3%{?dist}
 
 Summary:	Objective Caml compiler and programming environment
 
@@ -21,6 +21,7 @@ BuildRequires:  gdbm-devel
 BuildRequires:	tcl-devel
 BuildRequires:  tk-devel
 BuildRequires:	emacs
+BuildRequires:  gawk
 BuildRequires:  perl
 BuildRequires:  libICE-devel
 BuildRequires:  libSM-devel
@@ -418,6 +419,9 @@ fi
 
 
 %changelog
+* Wed Aug 29 2007 Gerard Milmeister <gemi@bluewin.ch> - 3.10.0-3
+- add BR gawk
+
 * Tue Aug 28 2007 Fedora Release Engineering <rel-eng at fedoraproject dot org> - 3.10.0-2
 - Rebuild for selinux ppc32 issue.
 
