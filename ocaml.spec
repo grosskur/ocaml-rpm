@@ -1,6 +1,6 @@
 Name:		ocaml
 Version:	3.10.0
-Release: 	3%{?dist}
+Release: 	4%{?dist}
 
 Summary:	Objective Caml compiler and programming environment
 
@@ -23,6 +23,7 @@ BuildRequires:  tk-devel
 BuildRequires:	emacs
 BuildRequires:  gawk
 BuildRequires:  perl
+BuildRequires:  util-linux-ng
 BuildRequires:  libICE-devel
 BuildRequires:  libSM-devel
 BuildRequires:  libX11-devel
@@ -52,6 +53,7 @@ and a comprehensive library.
 %package runtime
 Group:          System Environment/Libraries
 Summary:        Objective Caml runtime environment
+Requires:       util-linux-ng
 
 %description runtime
 Objective Caml is a high-level, strongly-typed, functional and
@@ -419,8 +421,11 @@ fi
 
 
 %changelog
+* Wed Aug 29 2007 Gerard Milmeister <gemi@bluewin.ch> - 3.10.0-4
+- added BR util-linux-ng
+
 * Wed Aug 29 2007 Gerard Milmeister <gemi@bluewin.ch> - 3.10.0-3
-- add BR gawk
+- added BR gawk
 
 * Tue Aug 28 2007 Fedora Release Engineering <rel-eng at fedoraproject dot org> - 3.10.0-2
 - Rebuild for selinux ppc32 issue.
