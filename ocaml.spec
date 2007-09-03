@@ -1,6 +1,6 @@
 Name:		ocaml
 Version:	3.10.0
-Release: 	4%{?dist}
+Release: 	5%{?dist}
 
 Summary:	Objective Caml compiler and programming environment
 
@@ -234,7 +234,7 @@ mkdir -p $RPM_BUILD_ROOT/usr/lib/rpm/
 cp %{SOURCE4} $RPM_BUILD_ROOT/usr/lib/rpm/
 cp %{SOURCE5} $RPM_BUILD_ROOT/usr/lib/rpm/
 
-echo %{version}-%{release} > $RPM_BUILD_ROOT%{_libdir}/ocaml/fedora-ocaml-release
+echo %{version} > $RPM_BUILD_ROOT%{_libdir}/ocaml/fedora-ocaml-release
 
 
 %clean
@@ -421,6 +421,10 @@ fi
 
 
 %changelog
+* Mon Sep  3 2007 Richard W.M. Jones <rjones@redhat.com> - 3.10.0-5
+- Don't include the release number in fedora-ocaml-release file, so
+  that packages built against this won't depend on the Fedora release.
+
 * Wed Aug 29 2007 Gerard Milmeister <gemi@bluewin.ch> - 3.10.0-4
 - added BR util-linux-ng
 
