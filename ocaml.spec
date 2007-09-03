@@ -1,6 +1,6 @@
 Name:		ocaml
 Version:	3.10.0
-Release: 	5%{?dist}
+Release: 	6%{?dist}
 
 Summary:	Objective Caml compiler and programming environment
 
@@ -38,6 +38,7 @@ BuildRequires:  mesa-libGLU-devel
 Requires:       gcc
 Requires:       ncurses-devel
 Requires:       gdbm-devel
+Provides:	ocaml(compiler) = %{version}
 ExcludeArch:    ppc64
 
 %description
@@ -54,6 +55,7 @@ and a comprehensive library.
 Group:          System Environment/Libraries
 Summary:        Objective Caml runtime environment
 Requires:       util-linux-ng
+Provides:	ocaml(runtime) = %{version}
 
 %description runtime
 Objective Caml is a high-level, strongly-typed, functional and
@@ -421,6 +423,12 @@ fi
 
 
 %changelog
+* Mon Sep  3 2007 Richard W.M. Jones <rjones@redhat.com> - 3.10.0-6
+- ocaml-runtime provides ocaml(runtime) = 3.10.0, and
+  ocaml-find-requires.sh modified so that it adds this requires
+  to other packages.  Now can upgrade base ocaml packages without
+  needing to rebuild everything else.
+
 * Mon Sep  3 2007 Richard W.M. Jones <rjones@redhat.com> - 3.10.0-5
 - Don't include the release number in fedora-ocaml-release file, so
   that packages built against this won't depend on the Fedora release.

@@ -1,7 +1,7 @@
 #!/bin/sh -
 # OCaml-specific "find-requires" for RPM.
 # By Richard W.M. Jones <rjones@redhat.com>
-# $Id: ocaml-find-requires.sh,v 1.7 2007/06/11 15:03:17 rjones Exp $
+# $Id: ocaml-find-requires.sh,v 1.1 2007/07/02 15:13:39 gemi Exp $
 
 #set -x
 
@@ -66,8 +66,7 @@ grep -Ev "$ignore_modules_re" |
 sort -u
 
 if [ -n "$emit_compiler_version" ]; then
-    # Every OCaml program depends on the precise version of the
-    # compiler which was used to compile it.
-    # rpm -q --qf '%{NAME} = %{VERSION}-%{RELEASE}\n' ocaml
-    echo "ocaml = `cat /usr/lib*/ocaml/fedora-ocaml-release`"
+    # Every OCaml program depends on the version of the
+    # runtime which was used to compile it.
+    echo "ocaml(runtime) = `cat /usr/lib*/ocaml/fedora-ocaml-release`"
 fi
