@@ -1,7 +1,7 @@
 #!/bin/sh -
 # OCaml-specific "find-provides" for RPM.
 # By Richard W.M. Jones <rjones@redhat.com>
-# $Id: ocaml-find-provides.sh,v 1.7 2007/06/11 15:03:17 rjones Exp $
+# $Id: ocaml-find-provides.sh,v 1.1 2007/07/02 15:13:39 gemi Exp $
 
 #set -x
 
@@ -56,7 +56,7 @@ ignore_modules_re=`echo $ignore_modules | sed 's/ /|/g'`
 # Get a list of the modules these file(s) provide.
 $OCAMLOBJINFO $files |
 grep -Eo '[0-9a-f]{32}[[:space:]]+[A-Za-z0-9_]+' |
-grep -E "$modules_re" |
+grep -E '[0-9a-f]{32}[[:space:]]+'"($modules_re)\$" |
 while read md5sum module; do
     echo "ocaml($module) = $md5sum"
 done |

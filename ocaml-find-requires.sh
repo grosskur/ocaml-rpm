@@ -1,7 +1,7 @@
 #!/bin/sh -
 # OCaml-specific "find-requires" for RPM.
 # By Richard W.M. Jones <rjones@redhat.com>
-# $Id: ocaml-find-requires.sh,v 1.1 2007/07/02 15:13:39 gemi Exp $
+# $Id: ocaml-find-requires.sh,v 1.2 2007/09/03 14:35:10 rjones Exp $
 
 #set -x
 
@@ -58,7 +58,7 @@ ignore_modules_re=`echo $ignore_modules | sed 's/ /|/g'`
 # Get a list of the modules these file(s) depend on.
 $OCAMLOBJINFO $files |
 grep -Eo '[0-9a-f]{32}[[:space:]]+[A-Za-z0-9_]+' |
-grep -Ev "$modules_re" |
+grep -Ev '[0-9a-f]{32}[[:space:]]+'"($modules_re)\$" |
 while read md5sum module; do
     echo "ocaml($module) = $md5sum"
 done |

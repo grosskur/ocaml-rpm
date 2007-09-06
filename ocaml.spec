@@ -1,6 +1,6 @@
 Name:		ocaml
 Version:	3.10.0
-Release: 	6%{?dist}
+Release: 	7%{?dist}
 
 Summary:	Objective Caml compiler and programming environment
 
@@ -35,6 +35,7 @@ BuildRequires:  libXrender-devel
 BuildRequires:  libXt-devel
 BuildRequires:  mesa-libGL-devel
 BuildRequires:  mesa-libGLU-devel
+BuildRequires:  chrpath
 Requires:       gcc
 Requires:       ncurses-devel
 Requires:       gdbm-devel
@@ -189,7 +190,7 @@ man pages and info files.
 cp %{SOURCE2} refman.pdf
 
 %define _use_internal_dependency_generator 0
-%define __find_requires %{SOURCE4} -i Asttypes -i Outcometree -i Cmo_format -c -f %{buildroot}%{_bindir}/ocamlobjinfo
+%define __find_requires %{SOURCE4} -i Asttypes -i Outcometree -i Cmo_format -i Parsetree -c -f %{buildroot}%{_bindir}/ocamlobjinfo
 %define __find_provides %{SOURCE5} -f %{buildroot}%{_bindir}/ocamlobjinfo
 
 %build
@@ -237,6 +238,9 @@ cp %{SOURCE4} $RPM_BUILD_ROOT/usr/lib/rpm/
 cp %{SOURCE5} $RPM_BUILD_ROOT/usr/lib/rpm/
 
 echo %{version} > $RPM_BUILD_ROOT%{_libdir}/ocaml/fedora-ocaml-release
+
+# Remove rpaths from stublibs .so files.
+chrpath --delete $RPM_BUILD_ROOT%{_libdir}/ocaml/stublibs/*.so
 
 
 %clean
@@ -423,6 +427,12 @@ fi
 
 
 %changelog
+* Thu Sep  6 2007 Richard W.M. Jones <rjones@redhat.com> - 3.10.0-7
+- Run chrpath to delete rpaths used on some of the stublibs.
+- Ignore Parsetree module in dependency calculation.
+- Fixed ocaml-find-{requires,provides}.sh regexp calculation so it doesn't
+  over-match module names.
+
 * Mon Sep  3 2007 Richard W.M. Jones <rjones@redhat.com> - 3.10.0-6
 - ocaml-runtime provides ocaml(runtime) = 3.10.0, and
   ocaml-find-requires.sh modified so that it adds this requires
