@@ -40,7 +40,7 @@ Requires:       gcc
 Requires:       ncurses-devel
 Requires:       gdbm-devel
 Provides:	ocaml(compiler) = %{version}
-ExcludeArch:    ppc64
+ExclusiveArch:  alpha armv4l %{ix86} ia64 x86_64 ppc sparc 
 
 %description
 Objective Caml is a high-level, strongly-typed, functional and
