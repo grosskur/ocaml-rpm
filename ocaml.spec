@@ -1,6 +1,6 @@
 Name:		ocaml
 Version:	3.10.0
-Release: 	7%{?dist}
+Release: 	8%{?dist}
 
 Summary:	Objective Caml compiler and programming environment
 
@@ -15,6 +15,7 @@ Source4:	ocaml-find-requires.sh
 Source5:	ocaml-find-provides.sh
 Patch0:		ocaml-rpath.patch
 Patch1:		ocaml-user-cflags.patch
+Patch2:         ocaml-3.10.0-tclver.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:	ncurses-devel
 BuildRequires:  gdbm-devel
@@ -184,8 +185,9 @@ man pages and info files.
 %setup -q -T -b 0
 %setup -q -T -D -a 1
 %setup -q -T -D -a 3
-%patch0 -p1
+%patch0 -p1 -b .rpath
 %patch1 -p1 -b .cflags
+%patch2 -p1 -b .tclver
 
 cp %{SOURCE2} refman.pdf
 
@@ -427,6 +429,9 @@ fi
 
 
 %changelog
+* Fri Jan  4 2008 Gerard Milmeister <gemi@bluewin.ch> - 3.10.0-8
+- patch for building with tcl/tk 8.5
+
 * Thu Sep  6 2007 Richard W.M. Jones <rjones@redhat.com> - 3.10.0-7
 - Run chrpath to delete rpaths used on some of the stublibs.
 - Ignore Parsetree module in dependency calculation.
