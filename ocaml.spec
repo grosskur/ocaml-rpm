@@ -1,13 +1,13 @@
 Name:		ocaml
-Version:	3.10.0
-Release: 	8%{?dist}
+Version:	3.10.1
+Release: 	1%{?dist}
 
 Summary:	Objective Caml compiler and programming environment
 
 Group:		Development/Languages
 License:	QPL/LGPL
 URL:		http://www.ocaml.org
-Source0:	http://caml.inria.fr/distrib/ocaml-3.10/ocaml-3.10.0.tar.bz2
+Source0:	http://caml.inria.fr/distrib/ocaml-3.10/ocaml-3.10.1.tar.bz2
 Source1:	http://caml.inria.fr/distrib/ocaml-3.10/ocaml-3.10-refman.html.tar.gz
 Source2:	http://caml.inria.fr/distrib/ocaml-3.10/ocaml-3.10-refman.pdf
 Source3:	http://caml.inria.fr/distrib/ocaml-3.10/ocaml-3.10-refman.info.tar.gz
@@ -429,6 +429,9 @@ fi
 
 
 %changelog
+* Tue Feb 12 2008 Richard W.M. Jones <rjones@redhat.com> - 3.10.1-1
+- new upstream version 3.10.1
+
 * Fri Jan  4 2008 Gerard Milmeister <gemi@bluewin.ch> - 3.10.0-8
 - patch for building with tcl/tk 8.5
 
