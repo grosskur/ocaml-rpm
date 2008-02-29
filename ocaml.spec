@@ -1,6 +1,6 @@
 Name:		ocaml
 Version:	3.10.1
-Release: 	1%{?dist}
+Release: 	2%{?dist}
 
 Summary:	Objective Caml compiler and programming environment
 
@@ -16,6 +16,7 @@ Source5:	ocaml-find-provides.sh
 Patch0:		ocaml-rpath.patch
 Patch1:		ocaml-user-cflags.patch
 Patch2:         ocaml-3.10.0-tclver.patch
+Patch3:		ocaml-3.10.1-ppc64.patch
 BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:	ncurses-devel
 BuildRequires:  gdbm-devel
@@ -41,7 +42,7 @@ Requires:       gcc
 Requires:       ncurses-devel
 Requires:       gdbm-devel
 Provides:	ocaml(compiler) = %{version}
-ExclusiveArch:  alpha armv4l %{ix86} ia64 x86_64 ppc sparc 
+ExclusiveArch:  alpha armv4l %{ix86} ia64 x86_64 ppc sparc ppc64
 
 %description
 Objective Caml is a high-level, strongly-typed, functional and
@@ -188,6 +189,7 @@ man pages and info files.
 %patch0 -p1 -b .rpath
 %patch1 -p1 -b .cflags
 %patch2 -p1 -b .tclver
+%patch3 -p1 -b .ppc64
 
 cp %{SOURCE2} refman.pdf
 
@@ -429,6 +431,9 @@ fi
 
 
 %changelog
+* Fri Feb 29 2008 David Woodhouse <dwmw2@infradead.org> - 3.10.1-2
+- ppc64 port
+
 * Tue Feb 12 2008 Richard W.M. Jones <rjones@redhat.com> - 3.10.1-1
 - new upstream version 3.10.1
 
