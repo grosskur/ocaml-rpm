@@ -1,28 +1,28 @@
-Name:		ocaml
-Version:	3.10.1
-Release: 	2%{?dist}
+Name:           ocaml
+Version:        3.10.2
+Release:        1%{?dist}
 
-Summary:	Objective Caml compiler and programming environment
+Summary:        Objective Caml compiler and programming environment
 
-Group:		Development/Languages
-License:	QPL/LGPL
-URL:		http://www.ocaml.org
-Source0:	http://caml.inria.fr/distrib/ocaml-3.10/ocaml-3.10.1.tar.bz2
-Source1:	http://caml.inria.fr/distrib/ocaml-3.10/ocaml-3.10-refman.html.tar.gz
-Source2:	http://caml.inria.fr/distrib/ocaml-3.10/ocaml-3.10-refman.pdf
-Source3:	http://caml.inria.fr/distrib/ocaml-3.10/ocaml-3.10-refman.info.tar.gz
-Source4:	ocaml-find-requires.sh
-Source5:	ocaml-find-provides.sh
-Patch0:		ocaml-rpath.patch
-Patch1:		ocaml-user-cflags.patch
+Group:          Development/Languages
+License:        QPL and (LGPLv2+ with exceptions)
+URL:            http://www.ocaml.org
+Source0:        http://caml.inria.fr/distrib/ocaml-3.10/ocaml-%{version}.tar.bz2
+Source1:        http://caml.inria.fr/distrib/ocaml-3.10/ocaml-3.10-refman.html.tar.gz
+Source2:        http://caml.inria.fr/distrib/ocaml-3.10/ocaml-3.10-refman.pdf
+Source3:        http://caml.inria.fr/distrib/ocaml-3.10/ocaml-3.10-refman.info.tar.gz
+Source4:        ocaml-find-requires.sh
+Source5:        ocaml-find-provides.sh
+Patch0:         ocaml-rpath.patch
+Patch1:         ocaml-user-cflags.patch
 Patch2:         ocaml-3.10.0-tclver.patch
-Patch3:		ocaml-3.10.1-ppc64.patch
-BuildRoot:	%{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
-BuildRequires:	ncurses-devel
+Patch3:         ocaml-3.10.1-ppc64.patch
+BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+BuildRequires:  ncurses-devel
 BuildRequires:  gdbm-devel
-BuildRequires:	tcl-devel
+BuildRequires:  tcl-devel
 BuildRequires:  tk-devel
-BuildRequires:	emacs
+BuildRequires:  emacs
 BuildRequires:  gawk
 BuildRequires:  perl
 BuildRequires:  util-linux-ng
@@ -41,8 +41,12 @@ BuildRequires:  chrpath
 Requires:       gcc
 Requires:       ncurses-devel
 Requires:       gdbm-devel
-Provides:	ocaml(compiler) = %{version}
+Provides:       ocaml(compiler) = %{version}
 ExclusiveArch:  alpha armv4l %{ix86} ia64 x86_64 ppc sparc ppc64
+
+%define _use_internal_dependency_generator 0
+%define __find_requires %{SOURCE4} -i Asttypes -i Outcometree -i Cmo_format -i Parsetree -c -f %{buildroot}%{_bindir}/ocamlobjinfo
+%define __find_provides %{SOURCE5} -f %{buildroot}%{_bindir}/ocamlobjinfo
 
 %description
 Objective Caml is a high-level, strongly-typed, functional and
@@ -58,7 +62,7 @@ and a comprehensive library.
 Group:          System Environment/Libraries
 Summary:        Objective Caml runtime environment
 Requires:       util-linux-ng
-Provides:	ocaml(runtime) = %{version}
+Provides:       ocaml(runtime) = %{version}
 
 %description runtime
 Objective Caml is a high-level, strongly-typed, functional and
@@ -88,9 +92,9 @@ X11 support for Objective Caml.
 
 
 %package labltk
-Group:		System Environment/Libraries
-Summary:	Tk bindings for Objective Caml
-Requires:	ocaml-runtime = %{version}-%{release}
+Group:          System Environment/Libraries
+Summary:        Tk bindings for Objective Caml
+Requires:       ocaml-runtime = %{version}-%{release}
 Provides:       labltk = %{version}-%{release}
 Obsoletes:      labltk < %{version}-%{release}
 
@@ -102,9 +106,9 @@ This package contains the runtime files.
 
 
 %package labltk-devel
-Group:		Development/Libraries
-Summary:	Development files for labltk
-Requires:	ocaml = %{version}-%{release}
+Group:          Development/Libraries
+Summary:        Development files for labltk
+Requires:       ocaml = %{version}-%{release}
 Requires:       %{name}-labltk = %{version}-%{release}
 Requires:       libX11-devel
 Provides:       labltk = %{version}-%{release}
@@ -119,9 +123,9 @@ browser for code editing and library browsing.
 
 
 %package camlp4
-Group:		Development/Languages
-Summary:	Pre-Processor-Pretty-Printer for Objective Caml
-Requires:	ocaml-runtime = %{version}-%{release}
+Group:          Development/Languages
+Summary:        Pre-Processor-Pretty-Printer for Objective Caml
+Requires:       ocaml-runtime = %{version}-%{release}
 Provides:       camlp4 = %{version}-%{release}
 Obsoletes:      camlp4 < %{version}-%{release}
 
@@ -133,9 +137,9 @@ This package contains the runtime files.
 
 
 %package camlp4-devel
-Group:		Development/Languages
-Summary:	Pre-Processor-Pretty-Printer for Objective Caml
-Requires:	ocaml = %{version}-%{release}
+Group:          Development/Languages
+Summary:        Pre-Processor-Pretty-Printer for Objective Caml
+Requires:       ocaml = %{version}-%{release}
 Requires:       %{name}-camlp4 = %{version}-%{release}
 Provides:       camlp4 = %{version}-%{release}
 Obsoletes:      camlp4 < %{version}-%{release}
@@ -148,29 +152,29 @@ This package contains the development files.
 
 
 %package ocamldoc
-Group:		Development/Languages
-Summary:	Documentation generator for Objective Caml.
-Requires:	ocaml = %{version}-%{release}
+Group:          Development/Languages
+Summary:        Documentation generator for Objective Caml.
+Requires:       ocaml = %{version}-%{release}
 
 %description ocamldoc
 Documentation generator for Objective Caml.
 
 
 %package emacs
-Group:		Development/Languages
-Summary:	Emacs mode for Objective Caml
-Requires:	ocaml = %{version}-%{release}
-Requires:	emacs
+Group:          Development/Languages
+Summary:        Emacs mode for Objective Caml
+Requires:       ocaml = %{version}-%{release}
+Requires:       emacs
 
 %description emacs
 Emacs mode for Objective Caml.
 
 
 %package docs
-Group:		Development/Languages
-Summary:	Documentation for Objective Caml
-Requires:	ocaml = %{version}-%{release}
-Requires(post):	/sbin/install-info
+Group:          Development/Languages
+Summary:        Documentation for Objective Caml
+Requires:       ocaml = %{version}-%{release}
+Requires(post): /sbin/install-info
 Requires(preun): /sbin/install-info
 
 
@@ -193,9 +197,6 @@ man pages and info files.
 
 cp %{SOURCE2} refman.pdf
 
-%define _use_internal_dependency_generator 0
-%define __find_requires %{SOURCE4} -i Asttypes -i Outcometree -i Cmo_format -i Parsetree -c -f %{buildroot}%{_bindir}/ocamlobjinfo
-%define __find_provides %{SOURCE5} -f %{buildroot}%{_bindir}/ocamlobjinfo
 
 %build
 CFLAGS="$RPM_OPT_FLAGS" ./configure \
@@ -223,8 +224,8 @@ perl -pi -e "s|^$RPM_BUILD_ROOT||" $RPM_BUILD_ROOT%{_libdir}/ocaml/ld.conf
     # install emacs files
     cd emacs;
     make install \
-    	 BINDIR=$RPM_BUILD_ROOT%{_bindir} \
-	 EMACSDIR=$RPM_BUILD_ROOT%{_datadir}/emacs/site-lisp
+         BINDIR=$RPM_BUILD_ROOT%{_bindir} \
+         EMACSDIR=$RPM_BUILD_ROOT%{_datadir}/emacs/site-lisp
     make install-ocamltags BINDIR=$RPM_BUILD_ROOT%{_bindir}
 )
 
@@ -238,8 +239,8 @@ cp tools/objinfo $RPM_BUILD_ROOT%{_bindir}/ocamlobjinfo
 
 # install rpmbuild helper files
 mkdir -p $RPM_BUILD_ROOT/usr/lib/rpm/
-cp %{SOURCE4} $RPM_BUILD_ROOT/usr/lib/rpm/
-cp %{SOURCE5} $RPM_BUILD_ROOT/usr/lib/rpm/
+install -m 0755 %{SOURCE4} $RPM_BUILD_ROOT/usr/lib/rpm/
+install -m 0755 %{SOURCE5} $RPM_BUILD_ROOT/usr/lib/rpm/
 
 echo %{version} > $RPM_BUILD_ROOT%{_libdir}/ocaml/fedora-ocaml-release
 
@@ -253,7 +254,7 @@ rm -rf $RPM_BUILD_ROOT
 
 %post docs
 /sbin/install-info \
-    --entry "* ocaml: (ocaml).	 The Objective Caml compiler and programming environment" \
+    --entry "* ocaml: (ocaml).   The Objective Caml compiler and programming environment" \
     --section "Programming Languages" \
     %{_infodir}/%{name}.info \
     %{_infodir}/dir 2>/dev/null || :
@@ -324,7 +325,7 @@ fi
 %{_libdir}/ocaml/threads/*.cmi
 %{_libdir}/ocaml/threads/*.cma
 %{_libdir}/ocaml/fedora-ocaml-release
-%{_prefix}/lib/rpm/*
+%attr(755,root,root) %{_prefix}/lib/rpm/*
 %exclude %{_libdir}/ocaml/graphicsX11.cmi
 %exclude %{_libdir}/ocaml/stublibs/dllgraphics.so
 %exclude %{_libdir}/ocaml/stublibs/dlllabltk.so
@@ -431,6 +432,10 @@ fi
 
 
 %changelog
+* Mon Apr 21 2008 Richard W.M. Jones <rjones@redhat.com> - 3.10.2-1
+- New upstream version 3.10.2 for Fedora 10.
+- Cleaned up several rpmlint errors & warnings.
+
 * Fri Feb 29 2008 David Woodhouse <dwmw2@infradead.org> - 3.10.1-2
 - ppc64 port
 
@@ -517,7 +522,7 @@ fi
 - New Version 3.08.2
 
 * Thu Dec 30 2004 Thorsten Leemhuis <fedora[AT]leemhuis[DOT]info> - 0:3.07-6
-- add -x11lib %%{_prefix}/X11R6/%%{_lib} to configure; fixes labltk build
+- add -x11lib _prefix/X11R6/_lib to configure; fixes labltk build
   on x86_64
 
 * Tue Dec  2 2003 Gerard Milmeister <gemi@bluewin.ch> - 0:3.07-0.fdr.5
@@ -543,4 +548,4 @@ fi
 - Rebuilt for Red Hat 9.
 
 * Tue Nov 26 2002 Axel Thimm <Axel.Thimm@physik.fu-berlin.de>
-- Added %{_mandir}/mano/* entry
+- Added _mandir/mano/* entry
