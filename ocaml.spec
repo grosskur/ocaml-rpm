@@ -1,6 +1,6 @@
 Name:           ocaml
 Version:        3.10.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
@@ -17,6 +17,7 @@ Patch0:         ocaml-rpath.patch
 Patch1:         ocaml-user-cflags.patch
 Patch2:         ocaml-3.10.0-tclver.patch
 Patch3:         ocaml-3.10.1-ppc64.patch
+Patch4:         ocaml-3.10.1-map32bit.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:  ncurses-devel
 BuildRequires:  gdbm-devel
@@ -194,6 +195,7 @@ man pages and info files.
 %patch1 -p1 -b .cflags
 %patch2 -p1 -b .tclver
 %patch3 -p1 -b .ppc64
+%patch4 -p1 -b .map32bit
 
 cp %{SOURCE2} refman.pdf
 
@@ -432,6 +434,9 @@ fi
 
 
 %changelog
+* Thu May  8 2008 Richard W.M. Jones <rjones@redhat.com> - 3.10.2-2
+- Pass MAP_32BIT to mmap (bz #445545).
+
 * Mon Apr 21 2008 Richard W.M. Jones <rjones@redhat.com> - 3.10.2-1
 - New upstream version 3.10.2 for Fedora 10.
 - Cleaned up several rpmlint errors & warnings.
