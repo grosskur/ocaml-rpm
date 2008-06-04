@@ -1,6 +1,6 @@
 Name:           ocaml
 Version:        3.10.2
-Release:        2%{?dist}
+Release:        3%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
@@ -96,8 +96,6 @@ X11 support for Objective Caml.
 Group:          System Environment/Libraries
 Summary:        Tk bindings for Objective Caml
 Requires:       ocaml-runtime = %{version}-%{release}
-Provides:       labltk = %{version}-%{release}
-Obsoletes:      labltk < %{version}-%{release}
 
 %description labltk
 Labltk is a library for interfacing Objective Caml with the scripting
@@ -112,8 +110,6 @@ Summary:        Development files for labltk
 Requires:       ocaml = %{version}-%{release}
 Requires:       %{name}-labltk = %{version}-%{release}
 Requires:       libX11-devel
-Provides:       labltk = %{version}-%{release}
-Obsoletes:      labltk < %{version}-%{release}
 
 %description labltk-devel
 Labltk is a library for interfacing Objective Caml with the scripting
@@ -127,8 +123,6 @@ browser for code editing and library browsing.
 Group:          Development/Languages
 Summary:        Pre-Processor-Pretty-Printer for Objective Caml
 Requires:       ocaml-runtime = %{version}-%{release}
-Provides:       camlp4 = %{version}-%{release}
-Obsoletes:      camlp4 < %{version}-%{release}
 
 %description camlp4
 Camlp4 is a Pre-Processor-Pretty-Printer for Objective Caml, parsing a
@@ -142,8 +136,6 @@ Group:          Development/Languages
 Summary:        Pre-Processor-Pretty-Printer for Objective Caml
 Requires:       ocaml = %{version}-%{release}
 Requires:       %{name}-camlp4 = %{version}-%{release}
-Provides:       camlp4 = %{version}-%{release}
-Obsoletes:      camlp4 < %{version}-%{release}
 
 %description camlp4-devel
 Camlp4 is a Pre-Processor-Pretty-Printer for Objective Caml, parsing a
@@ -156,6 +148,7 @@ This package contains the development files.
 Group:          Development/Languages
 Summary:        Documentation generator for Objective Caml.
 Requires:       ocaml = %{version}-%{release}
+Provides:	ocamldoc
 
 %description ocamldoc
 Documentation generator for Objective Caml.
@@ -434,6 +427,12 @@ fi
 
 
 %changelog
+* Wed Jun  4 2008 Richard W.M. Jones <rjones@redhat.com> - 3.10.2-3
+- ocaml-ocamldoc provides ocamldoc (bz #449931).
+- REMOVED provides of labltk, camlp4.  Those are libraries and all
+  packages should now depend on ocaml-labltk / ocaml-camlp4 / -devel
+  as appropriate.
+
 * Thu May  8 2008 Richard W.M. Jones <rjones@redhat.com> - 3.10.2-2
 - Pass MAP_32BIT to mmap (bz #445545).
 
