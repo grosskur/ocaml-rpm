@@ -1,0 +1,299 @@
+Index: asmcomp/alpha/emit.mlp
+===================================================================
+RCS file: /caml/ocaml/asmcomp/alpha/emit.mlp,v
+retrieving revision 1.42
+diff -u -r1.42 emit.mlp
+--- asmcomp/alpha/emit.mlp	16 Apr 2006 23:28:14 -0000	1.42
++++ asmcomp/alpha/emit.mlp	9 Jun 2008 17:34:32 -0000
+@@ -858,4 +858,6 @@
+   `{emit_symbol lbl_frame}:\n`;
+   `	.quad	{emit_int (List.length !frame_descriptors)}\n`;
+   List.iter emit_frame !frame_descriptors;
+-  frame_descriptors := []
++  frame_descriptors := [];
++  (* Mark stack as non-executable for GNU tools. *)
++  `	.section .note.GNU-stack,\"\",%progbits; .previous\n`
+Index: asmcomp/amd64/emit.mlp
+===================================================================
+RCS file: /caml/ocaml/asmcomp/amd64/emit.mlp,v
+retrieving revision 1.15
+diff -u -r1.15 emit.mlp
+--- asmcomp/amd64/emit.mlp	11 Jan 2008 16:13:11 -0000	1.15
++++ asmcomp/amd64/emit.mlp	9 Jun 2008 17:34:32 -0000
+@@ -752,4 +752,6 @@
+       efa_label_rel = (fun lbl ofs ->
+                            `	.long	({emit_label lbl} - .) + {emit_int32 ofs}\n`);
+       efa_def_label = (fun l -> `{emit_label l}:\n`);
+-      efa_string = (fun s -> emit_string_directive "	.asciz	" s) }
++      efa_string = (fun s -> emit_string_directive "	.asciz	" s) };
++  (* Mark stack as non-executable for GNU tools. *)
++  `	.section .note.GNU-stack,\"\",%progbits; .previous\n`
+Index: asmcomp/arm/emit.mlp
+===================================================================
+RCS file: /caml/ocaml/asmcomp/arm/emit.mlp,v
+retrieving revision 1.19
+diff -u -r1.19 emit.mlp
+--- asmcomp/arm/emit.mlp	11 Jan 2008 16:13:11 -0000	1.19
++++ asmcomp/arm/emit.mlp	9 Jun 2008 17:34:33 -0000
+@@ -673,4 +673,6 @@
+   `{emit_symbol lbl}:\n`;
+   `	.word	{emit_int (List.length !frame_descriptors)}\n`;
+   List.iter emit_frame !frame_descriptors;
+-  frame_descriptors := []
++  frame_descriptors := [];
++  (* Mark stack as non-executable for GNU tools. *)
++  `	.section .note.GNU-stack,\"\",%progbits; .previous\n`
+Index: asmcomp/hppa/emit.mlp
+===================================================================
+RCS file: /caml/ocaml/asmcomp/hppa/emit.mlp,v
+retrieving revision 1.20
+diff -u -r1.20 emit.mlp
+--- asmcomp/hppa/emit.mlp	16 Apr 2006 23:28:14 -0000	1.20
++++ asmcomp/hppa/emit.mlp	9 Jun 2008 17:34:34 -0000
+@@ -1037,4 +1037,6 @@
+   `	.long	{emit_int (List.length !frame_descriptors)}\n`;
+   List.iter emit_frame !frame_descriptors;
+   frame_descriptors := [];
+-  emit_imports()
++  emit_imports();
++  (* Mark stack as non-executable for GNU tools. *)
++  `	.section .note.GNU-stack,\"\",%progbits; .previous\n`
+Index: asmcomp/i386/emit.mlp
+===================================================================
+RCS file: /caml/ocaml/asmcomp/i386/emit.mlp,v
+retrieving revision 1.40
+diff -u -r1.40 emit.mlp
+--- asmcomp/i386/emit.mlp	11 Jan 2008 16:13:11 -0000	1.40
++++ asmcomp/i386/emit.mlp	9 Jun 2008 17:34:34 -0000
+@@ -986,4 +986,6 @@
+         if use_ascii_dir
+         then emit_string_directive "	.ascii	" s
+         else emit_bytes_directive  "	.byte	" s) };
+-  if macosx then emit_external_symbols ()
++  if macosx then emit_external_symbols ();
++  (* Mark stack as non-executable for GNU tools. *)
++  `	.section .note.GNU-stack,\"\",%progbits; .previous\n`
+Index: asmcomp/ia64/emit.mlp
+===================================================================
+RCS file: /caml/ocaml/asmcomp/ia64/emit.mlp,v
+retrieving revision 1.17
+diff -u -r1.17 emit.mlp
+--- asmcomp/ia64/emit.mlp	13 Jul 2004 12:18:53 -0000	1.17
++++ asmcomp/ia64/emit.mlp	9 Jun 2008 17:34:36 -0000
+@@ -1324,4 +1324,6 @@
+   emit_define_symbol (Compilenv.make_symbol (Some "frametable"));
+   `	data8	{emit_int (List.length !frame_descriptors)}\n`;
+   List.iter emit_frame !frame_descriptors;
+-  frame_descriptors := []
++  frame_descriptors := [];
++  (* Mark stack as non-executable for GNU tools. *)
++  `	.section .note.GNU-stack,\"\",%progbits; .previous\n`
+Index: asmcomp/mips/emit.mlp
+===================================================================
+RCS file: /caml/ocaml/asmcomp/mips/emit.mlp,v
+retrieving revision 1.18
+diff -u -r1.18 emit.mlp
+--- asmcomp/mips/emit.mlp	5 Jan 2004 20:25:56 -0000	1.18
++++ asmcomp/mips/emit.mlp	9 Jun 2008 17:34:36 -0000
+@@ -591,4 +591,6 @@
+   `{emit_symbol lbl}:\n`;
+   `	.word	{emit_int (List.length !frame_descriptors)}\n`;
+   List.iter emit_frame !frame_descriptors;
+-  frame_descriptors := []
++  frame_descriptors := [];
++  (* Mark stack as non-executable for GNU tools. *)
++  `	.section .note.GNU-stack,\"\",%progbits; .previous\n`
+Index: asmcomp/power/emit.mlp
+===================================================================
+RCS file: /caml/ocaml/asmcomp/power/emit.mlp,v
+retrieving revision 1.26
+diff -u -r1.26 emit.mlp
+--- asmcomp/power/emit.mlp	9 Nov 2007 15:06:57 -0000	1.26
++++ asmcomp/power/emit.mlp	9 Jun 2008 17:34:37 -0000
+@@ -961,4 +961,6 @@
+                            `	.long	({emit_label lbl} - .) + {emit_int32 ofs}\n`);
+       efa_def_label = (fun l -> `{emit_label l}:\n`);
+       efa_string = (fun s -> emit_bytes_directive "	.byte	" (s ^ "\000"))
+-     }
++     };
++  (* Mark stack as non-executable for GNU tools. *)
++  `	.section .note.GNU-stack,\"\",%progbits; .previous\n`
+Index: asmcomp/sparc/emit.mlp
+===================================================================
+RCS file: /caml/ocaml/asmcomp/sparc/emit.mlp,v
+retrieving revision 1.24
+diff -u -r1.24 emit.mlp
+--- asmcomp/sparc/emit.mlp	16 Apr 2006 23:28:15 -0000	1.24
++++ asmcomp/sparc/emit.mlp	9 Jun 2008 17:34:37 -0000
+@@ -772,4 +772,6 @@
+   `	.word	{emit_int (List.length !frame_descriptors)}\n`;
+   List.iter emit_frame !frame_descriptors;
+   emit_size lbl;
+-  frame_descriptors := []
++  frame_descriptors := [];
++  (* Mark stack as non-executable for GNU tools. *)
++  `	.section .note.GNU-stack,\"\",%progbits; .previous\n`
+Index: asmrun/alpha.S
+===================================================================
+RCS file: /caml/ocaml/asmrun/alpha.S,v
+retrieving revision 1.29
+diff -u -r1.29 alpha.S
+--- asmrun/alpha.S	3 Jan 2004 12:51:18 -0000	1.29
++++ asmrun/alpha.S	9 Jun 2008 17:34:38 -0000
+@@ -438,3 +438,7 @@
+         .word   -1              /* negative frame size => use callback link */
+         .word   0               /* no roots here */
+         .align  3
++
++#if defined(__ELF__)
++	.section .note.GNU-stack,"",%progbits
++#endif
+Index: asmrun/amd64.S
+===================================================================
+RCS file: /caml/ocaml/asmrun/amd64.S,v
+retrieving revision 1.11
+diff -u -r1.11 amd64.S
+--- asmrun/amd64.S	29 Jan 2007 12:10:52 -0000	1.11
++++ asmrun/amd64.S	9 Jun 2008 17:34:38 -0000
+@@ -366,3 +366,7 @@
+         .align  16
+ caml_absf_mask:
+ 	.quad	0x7FFFFFFFFFFFFFFF, 0xFFFFFFFFFFFFFFFF
++
++#if defined(__ELF__)
++	.section .note.GNU-stack,"",%progbits
++#endif
+Index: asmrun/arm.S
+===================================================================
+RCS file: /caml/ocaml/asmrun/arm.S,v
+retrieving revision 1.16
+diff -u -r1.16 arm.S
+--- asmrun/arm.S	29 Feb 2008 14:21:21 -0000	1.16
++++ asmrun/arm.S	9 Jun 2008 17:34:38 -0000
+@@ -342,3 +342,7 @@
+         .short  -1              /* negative frame size => use callback link */
+         .short  0               /* no roots */
+         .align  2
++
++#if defined(__ELF__)
++	.section .note.GNU-stack,"",%progbits
++#endif
+Index: asmrun/hppa.S
+===================================================================
+RCS file: /caml/ocaml/asmrun/hppa.S,v
+retrieving revision 1.26
+diff -u -r1.26 hppa.S
+--- asmrun/hppa.S	16 Apr 2006 23:28:15 -0000	1.26
++++ asmrun/hppa.S	9 Jun 2008 17:34:38 -0000
+@@ -532,3 +532,7 @@
+         .long   L104 + 3        /* return address into callback */
+         .short  -1              /* negative frame size => use callback link */
+         .short  0               /* no roots */
++
++#if defined(__ELF__)
++	.section .note.GNU-stack,"",%progbits
++#endif
+Index: asmrun/i386.S
+===================================================================
+RCS file: /caml/ocaml/asmrun/i386.S,v
+retrieving revision 1.49
+diff -u -r1.49 i386.S
+--- asmrun/i386.S	11 Jan 2008 16:13:11 -0000	1.49
++++ asmrun/i386.S	9 Jun 2008 17:34:39 -0000
+@@ -424,3 +424,7 @@
+         hlt ; hlt ; hlt ; hlt ; hlt
+         .subsections_via_symbols
+ #endif
++
++#if defined(__ELF__)
++	.section .note.GNU-stack,"",%progbits
++#endif
+Index: asmrun/ia64.S
+===================================================================
+RCS file: /caml/ocaml/asmrun/ia64.S,v
+retrieving revision 1.13
+diff -u -r1.13 ia64.S
+--- asmrun/ia64.S	3 Jan 2004 12:51:19 -0000	1.13
++++ asmrun/ia64.S	9 Jun 2008 17:34:39 -0000
+@@ -528,3 +528,7 @@
+ 
+         .common caml_saved_bsp#, 8, 8
+         .common caml_saved_rnat#, 8, 8
++
++#if defined(__ELF__)
++	.section .note.GNU-stack,"",%progbits
++#endif
+Index: asmrun/m68k.S
+===================================================================
+RCS file: /caml/ocaml/asmrun/m68k.S,v
+retrieving revision 1.15
+diff -u -r1.15 m68k.S
+--- asmrun/m68k.S	3 Jan 2004 12:51:19 -0000	1.15
++++ asmrun/m68k.S	9 Jun 2008 17:34:39 -0000
+@@ -242,3 +242,7 @@
+         .long   L107            | return address into callback
+         .word   -1              | negative frame size => use callback link
+         .word   0               | no roots here
++
++#if defined(__ELF__)
++	.section .note.GNU-stack,"",%progbits
++#endif
+Index: asmrun/power-aix.S
+===================================================================
+RCS file: /caml/ocaml/asmrun/power-aix.S,v
+retrieving revision 1.15
+diff -u -r1.15 power-aix.S
+--- asmrun/power-aix.S	3 Jan 2004 12:51:19 -0000	1.15
++++ asmrun/power-aix.S	9 Jun 2008 17:34:40 -0000
+@@ -511,3 +511,7 @@
+         .csect  caml_callback3_exn[DS]
+ caml_callback3_exn:
+         .long   .caml_callback3_exn, TOC[tc0], 0
++
++#if defined(__ELF__)
++	.section .note.GNU-stack,"",%progbits
++#endif
+Index: asmrun/power-elf.S
+===================================================================
+RCS file: /caml/ocaml/asmrun/power-elf.S,v
+retrieving revision 1.18
+diff -u -r1.18 power-elf.S
+--- asmrun/power-elf.S	3 Jan 2004 12:51:19 -0000	1.18
++++ asmrun/power-elf.S	9 Jun 2008 17:34:40 -0000
+@@ -419,3 +419,6 @@
+         .short  -1              /* negative size count => use callback link */
+         .short  0               /* no roots here */
+ 
++#if defined(__ELF__)
++	.section .note.GNU-stack,"",%progbits
++#endif
+Index: asmrun/power-rhapsody.S
+===================================================================
+RCS file: /caml/ocaml/asmrun/power-rhapsody.S,v
+retrieving revision 1.15
+diff -u -r1.15 power-rhapsody.S
+--- asmrun/power-rhapsody.S	29 Jan 2007 12:10:52 -0000	1.15
++++ asmrun/power-rhapsody.S	9 Jun 2008 17:34:40 -0000
+@@ -472,3 +472,7 @@
+         .short  -1              /* negative size count => use callback link */
+         .short  0               /* no roots here */
+ 	.align	X(2,3)
++
++#if defined(__ELF__)
++	.section .note.GNU-stack,"",%progbits
++#endif
+Index: asmrun/sparc.S
+===================================================================
+RCS file: /caml/ocaml/asmrun/sparc.S,v
+retrieving revision 1.26
+diff -u -r1.26 sparc.S
+--- asmrun/sparc.S	6 Oct 2004 06:33:25 -0000	1.26
++++ asmrun/sparc.S	9 Jun 2008 17:34:41 -0000
+@@ -405,3 +405,7 @@
+         .type Caml_raise_exception, #function
+ 	.type Caml_system__frametable, #object
+ #endif
++
++#if defined(__ELF__)
++	.section .note.GNU-stack,"",%progbits
++#endif

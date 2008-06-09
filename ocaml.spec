@@ -1,6 +1,6 @@
 Name:           ocaml
 Version:        3.10.2
-Release:        3%{?dist}
+Release:        4%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
@@ -18,6 +18,7 @@ Patch1:         ocaml-user-cflags.patch
 Patch2:         ocaml-3.10.0-tclver.patch
 Patch3:         ocaml-3.10.1-ppc64.patch
 Patch4:         ocaml-3.10.1-map32bit.patch
+Patch5:         ocaml-3.11-dev12-no-executable-stack.patch
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 BuildRequires:  ncurses-devel
 BuildRequires:  gdbm-devel
@@ -189,6 +190,7 @@ man pages and info files.
 %patch2 -p1 -b .tclver
 %patch3 -p1 -b .ppc64
 %patch4 -p1 -b .map32bit
+%patch5 -p0 -b .noexecstack
 
 cp %{SOURCE2} refman.pdf
 
@@ -427,6 +429,9 @@ fi
 
 
 %changelog
+* Mon Jun  9 2008 Richard W.M. Jones <rjones@redhat.com> - 3.10.2-4
+- Add ocaml-3.11-dev12-no-executable-stack.patch (bz #450551).
+
 * Wed Jun  4 2008 Richard W.M. Jones <rjones@redhat.com> - 3.10.2-3
 - ocaml-ocamldoc provides ocamldoc (bz #449931).
 - REMOVED provides of labltk, camlp4.  Those are libraries and all
