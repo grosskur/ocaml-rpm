@@ -1,6 +1,8 @@
+%define _default_patch_fuzz 2
+
 Name:           ocaml
 Version:        3.10.2
-Release:        4%{?dist}
+Release:        5%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
@@ -429,6 +431,9 @@ fi
 
 
 %changelog
+* Thu Aug 29 2008 Richard W.M. Jones <rjones@redhat.com> - 3.10.2-5
+- Rebuild with patch fuzz.
+
 * Mon Jun  9 2008 Richard W.M. Jones <rjones@redhat.com> - 3.10.2-4
 - Add ocaml-3.11-dev12-no-executable-stack.patch (bz #450551).
 
