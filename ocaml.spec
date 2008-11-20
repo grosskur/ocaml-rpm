@@ -1,8 +1,12 @@
 %define _default_patch_fuzz 2
 
+# when beta/prerelease goes away, so also can these macros
+%define beta beta1
+%define beta_tag +%{beta}
+
 Name:           ocaml
-Version:        3.11.0+beta1
-Release:        2%{?dist}
+Version:        3.11.0
+Release:        0.3%{?beta:.%{beta}}%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
@@ -11,7 +15,7 @@ License:        QPL and (LGPLv2+ with exceptions)
 
 URL:            http://www.ocaml.org
 
-Source0:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-%{version}.tar.bz2
+Source0:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-%{version}%{?beta_tag}.tar.bz2
 Source1:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-3.11-refman.html.tar.gz
 Source2:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-3.11-refman.pdf
 Source3:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-3.11-refman.info.tar.gz
@@ -203,9 +207,9 @@ man pages and info files.
 
 
 %prep
-%setup -q -T -b 0
-%setup -q -T -D -a 1
-%setup -q -T -D -a 3
+%setup -q -T -b 0 -n %{name}-%{version}%{?beta_tag}
+%setup -q -T -D -a 1 -n %{name}-%{version}%{?beta_tag}
+%setup -q -T -D -a 3 -n %{name}-%{version}%{?beta_tag}
 %patch0 -p1 -b .rpath
 %patch1 -p1 -b .cflags
 #%patch2 -p1 -b .tclver
@@ -453,6 +457,9 @@ fi
 
 
 %changelog
+* Thu Nov 20 2008 Rex Dieter <rdieter@fedoraproject.org> - 3.11.0-0.3.beta1
+- fix NVR to match packaging guidelines
+
 * Thu Nov 20 2008 Richard W.M. Jones <rjones@redhat.com> - 3.11.0+beta1-2
 - Fix Invalid_argument("String.index_from") with patch from upstream.
 
