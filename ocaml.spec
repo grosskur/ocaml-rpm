@@ -2,7 +2,7 @@
 
 Name:           ocaml
 Version:        3.11.0+beta1
-Release:        1%{?dist}
+Release:        2%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
@@ -31,6 +31,12 @@ Patch3:         ocaml-3.11.0-ppc64.patch
 #Patch4:         ocaml-3.10.1-map32bit.patch
 # A similar fix went upstream in 3.11.0:
 #Patch5:         ocaml-3.11-dev12-no-executable-stack.patch
+
+# This is a patch from upstream which fixes PR#4637, PR#4582.
+# http://camlcvs.inria.fr/cgi-bin/cvsweb/ocaml/stdlib/string.ml.diff?r1=text&tr1=1.29&r2=text&tr2=1.28
+# commonly manifested as errors thrown saying:
+# Invalid_argument("String.index_from")
+Patch6:          ocaml-3.11.0-string-index-from.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -206,6 +212,7 @@ man pages and info files.
 %patch3 -p1 -b .ppc64
 #%patch4 -p1 -b .map32bit
 #%patch5 -p0 -b .noexecstack
+%patch6 -p1 -b .stringindexfrom
 
 cp %{SOURCE2} refman.pdf
 
@@ -446,6 +453,9 @@ fi
 
 
 %changelog
+* Thu Nov 20 2008 Richard W.M. Jones <rjones@redhat.com> - 3.11.0+beta1-2
+- Fix Invalid_argument("String.index_from") with patch from upstream.
+
 * Tue Nov 18 2008 Richard W.M. Jones <rjones@redhat.com> - 3.11.0+beta1-1
 - Rebuild for major new upstream release of 3.11.0 for Fedora 11.
 
