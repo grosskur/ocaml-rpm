@@ -1,27 +1,39 @@
 %define _default_patch_fuzz 2
 
 Name:           ocaml
-Version:        3.10.2
-Release:        5%{?dist}
+Version:        3.11.0+beta1
+Release:        1%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
 Group:          Development/Languages
 License:        QPL and (LGPLv2+ with exceptions)
+
 URL:            http://www.ocaml.org
-Source0:        http://caml.inria.fr/distrib/ocaml-3.10/ocaml-%{version}.tar.bz2
-Source1:        http://caml.inria.fr/distrib/ocaml-3.10/ocaml-3.10-refman.html.tar.gz
-Source2:        http://caml.inria.fr/distrib/ocaml-3.10/ocaml-3.10-refman.pdf
-Source3:        http://caml.inria.fr/distrib/ocaml-3.10/ocaml-3.10-refman.info.tar.gz
+
+Source0:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-%{version}.tar.bz2
+Source1:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-3.11-refman.html.tar.gz
+Source2:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-3.11-refman.pdf
+Source3:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-3.11-refman.info.tar.gz
 Source4:        ocaml-find-requires.sh
 Source5:        ocaml-find-provides.sh
-Patch0:         ocaml-rpath.patch
+
+Patch0:         ocaml-3.11.0-rpath.patch
 Patch1:         ocaml-user-cflags.patch
-Patch2:         ocaml-3.10.0-tclver.patch
-Patch3:         ocaml-3.10.1-ppc64.patch
-Patch4:         ocaml-3.10.1-map32bit.patch
-Patch5:         ocaml-3.11-dev12-no-executable-stack.patch
+
+# Not needed, this is upstream since 3.11.0:
+#Patch2:         ocaml-3.10.0-tclver.patch
+
+# Support for PPC64 platform by David Woodhouse:
+Patch3:         ocaml-3.11.0-ppc64.patch
+
+# Not needed because the GC allocator was completely rewritten:
+#Patch4:         ocaml-3.10.1-map32bit.patch
+# A similar fix went upstream in 3.11.0:
+#Patch5:         ocaml-3.11-dev12-no-executable-stack.patch
+
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+
 BuildRequires:  ncurses-devel
 BuildRequires:  gdbm-devel
 BuildRequires:  tcl-devel
@@ -49,8 +61,9 @@ Provides:       ocaml(compiler) = %{version}
 ExclusiveArch:  alpha armv4l %{ix86} ia64 x86_64 ppc sparc ppc64
 
 %define _use_internal_dependency_generator 0
-%define __find_requires %{SOURCE4} -i Asttypes -i Outcometree -i Cmo_format -i Parsetree -c -f %{buildroot}%{_bindir}/ocamlobjinfo
+%define __find_requires %{SOURCE4} -c -f %{buildroot}%{_bindir}/ocamlobjinfo
 %define __find_provides %{SOURCE5} -f %{buildroot}%{_bindir}/ocamlobjinfo
+
 
 %description
 Objective Caml is a high-level, strongly-typed, functional and
@@ -189,10 +202,10 @@ man pages and info files.
 %setup -q -T -D -a 3
 %patch0 -p1 -b .rpath
 %patch1 -p1 -b .cflags
-%patch2 -p1 -b .tclver
+#%patch2 -p1 -b .tclver
 %patch3 -p1 -b .ppc64
-%patch4 -p1 -b .map32bit
-%patch5 -p0 -b .noexecstack
+#%patch4 -p1 -b .map32bit
+#%patch5 -p0 -b .noexecstack
 
 cp %{SOURCE2} refman.pdf
 
@@ -295,10 +308,12 @@ fi
 %{_libdir}/ocaml/ld.conf
 %{_libdir}/ocaml/Makefile.config
 %{_libdir}/ocaml/*.a
+%{_libdir}/ocaml/*.cmxs
 %{_libdir}/ocaml/*.cmxa
 %{_libdir}/ocaml/*.cmx
 %{_libdir}/ocaml/*.mli
 %{_libdir}/ocaml/*.o
+%{_libdir}/ocaml/libcamlrun_shared.so
 %{_libdir}/ocaml/vmthreads/*.mli
 %{_libdir}/ocaml/vmthreads/*.a
 %{_libdir}/ocaml/threads/*.a
@@ -431,6 +446,9 @@ fi
 
 
 %changelog
+* Tue Nov 18 2008 Richard W.M. Jones <rjones@redhat.com> - 3.11.0+beta1-1
+- Rebuild for major new upstream release of 3.11.0 for Fedora 11.
+
 * Thu Aug 29 2008 Richard W.M. Jones <rjones@redhat.com> - 3.10.2-5
 - Rebuild with patch fuzz.
 

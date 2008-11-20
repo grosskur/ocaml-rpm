@@ -1,7 +1,7 @@
 #!/bin/sh -
 # OCaml-specific "find-requires" for RPM.
 # By Richard W.M. Jones <rjones@redhat.com>
-# $Id: ocaml-find-requires.sh,v 1.2 2007/09/03 14:35:10 rjones Exp $
+# $Id: ocaml-find-requires.sh,v 1.3 2007/09/06 11:49:59 rjones Exp $
 
 #set -x
 
@@ -63,6 +63,7 @@ while read md5sum module; do
     echo "ocaml($module) = $md5sum"
 done |
 grep -Ev "$ignore_modules_re" |
+grep -Ev "^ocaml\((Annot|Asttypes|Outcometree|Cmo_format|Parsetree)\) =" |
 sort -u
 
 if [ -n "$emit_compiler_version" ]; then

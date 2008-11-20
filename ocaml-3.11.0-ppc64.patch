@@ -14,7 +14,7 @@ diff -uNr ocaml-3.10.1/asmcomp/power64/arch.ml ocaml-3.10.1.ppc64/asmcomp/power6
 +(*                                                                     *)
 +(***********************************************************************)
 +
-+(* $Id: arch.ml,v 1.11 2004/06/19 16:13:32 xleroy Exp $ *)
++(* $Id: ocaml-3.11.0-ppc64.patch,v 1.1 2008/11/20 15:30:55 rjones Exp $ *)
 +
 +(* Specific operations for the PowerPC processor *)
 +
@@ -102,7 +102,7 @@ diff -uNr ocaml-3.10.1/asmcomp/power64/emit.mlp ocaml-3.10.1.ppc64/asmcomp/power
 +(*                                                                     *)
 +(***********************************************************************)
 +
-+(* $Id: emit.mlp,v 1.21 2004/06/19 17:39:34 xleroy Exp $ *)
++(* $Id: ocaml-3.11.0-ppc64.patch,v 1.1 2008/11/20 15:30:55 rjones Exp $ *)
 +
 +(* Emission of PowerPC assembly code *)
 +
@@ -1095,7 +1095,7 @@ diff -uNr ocaml-3.10.1/asmcomp/power64/proc.ml ocaml-3.10.1.ppc64/asmcomp/power6
 +(*                                                                     *)
 +(***********************************************************************)
 +
-+(* $Id: proc.ml,v 1.12 2004/06/19 17:39:35 xleroy Exp $ *)
++(* $Id: ocaml-3.11.0-ppc64.patch,v 1.1 2008/11/20 15:30:55 rjones Exp $ *)
 +
 +(* Description of the Power PC *)
 +
@@ -1344,7 +1344,7 @@ diff -uNr ocaml-3.10.1/asmcomp/power64/reload.ml ocaml-3.10.1.ppc64/asmcomp/powe
 +(*                                                                     *)
 +(***********************************************************************)
 +
-+(* $Id: reload.ml,v 1.3 1999/11/17 18:56:46 xleroy Exp $ *)
++(* $Id: ocaml-3.11.0-ppc64.patch,v 1.1 2008/11/20 15:30:55 rjones Exp $ *)
 +
 +(* Reloading for the PowerPC *)
 +
@@ -1366,7 +1366,7 @@ diff -uNr ocaml-3.10.1/asmcomp/power64/scheduling.ml ocaml-3.10.1.ppc64/asmcomp/
 +(*                                                                     *)
 +(***********************************************************************)
 +
-+(* $Id: scheduling.ml,v 1.6 2004/06/19 16:13:33 xleroy Exp $ *)
++(* $Id: ocaml-3.11.0-ppc64.patch,v 1.1 2008/11/20 15:30:55 rjones Exp $ *)
 +
 +(* Instruction scheduling for the Power PC *)
 +
@@ -1436,7 +1436,7 @@ diff -uNr ocaml-3.10.1/asmcomp/power64/selection.ml ocaml-3.10.1.ppc64/asmcomp/p
 +(*                                                                     *)
 +(***********************************************************************)
 +
-+(* $Id: selection.ml,v 1.6 2004/06/19 16:13:33 xleroy Exp $ *)
++(* $Id: ocaml-3.11.0-ppc64.patch,v 1.1 2008/11/20 15:30:55 rjones Exp $ *)
 +
 +(* Instruction selection for the Power PC processor *)
 +
@@ -1560,7 +1560,7 @@ diff -uNr ocaml-3.10.1/asmrun/power64-elf.S ocaml-3.10.1.ppc64/asmrun/power64-el
 +/*                                                                   */
 +/*********************************************************************/
 +
-+/* $Id: power-elf.S,v 1.18 2004/01/03 12:51:19 doligez Exp $ */
++/* $Id: ocaml-3.11.0-ppc64.patch,v 1.1 2008/11/20 15:30:55 rjones Exp $ */
 +
 +#define Addrglobal(reg,glob) \
 +        addis   reg, 0, glob@ha; \
@@ -2052,18 +2052,18 @@ diff -uNr ocaml-3.10.1/asmrun/stack.h ocaml-3.10.1.ppc64/asmrun/stack.h
  #ifdef TARGET_m68k
  #define Saved_return_address(sp) *((intnat *)((sp) - 4))
  #define Callback_link(sp) ((struct caml_context *)((sp) + 8))
-diff -uNr ocaml-3.10.1/configure ocaml-3.10.1.ppc64/configure
---- ocaml-3.10.1/configure	2008-01-04 08:26:38.000000000 -0500
-+++ ocaml-3.10.1.ppc64/configure	2008-02-29 09:07:05.000000000 -0500
-@@ -590,6 +590,7 @@
+diff -uNr ocaml-3.11.0+beta1/configure ocaml-3.11.0+beta1.ppc64/configure
+--- ocaml-3.11.0+beta1/configure.ppc64	2008-11-18 15:46:57.000000000 +0000
++++ ocaml-3.11.0+beta1/configure	2008-11-18 15:49:19.000000000 +0000
+@@ -632,6 +632,7 @@
+   hppa2.0*-*-hpux*)             arch=hppa; system=hpux;;
    hppa*-*-linux*)               arch=hppa; system=linux;;
    hppa*-*-gnu*)                 arch=hppa; system=gnu;;
 +  powerpc64-*-linux*)           arch=power64; model=ppc64; system=elf;;
    powerpc*-*-linux*)            arch=power; model=ppc; system=elf;;
    powerpc-*-netbsd*)            arch=power; model=ppc; system=elf;;
    powerpc-*-rhapsody*)          arch=power; model=ppc; system=rhapsody;;
-   powerpc-*-darwin*)            arch=power; system=rhapsody
-@@ -612,7 +613,7 @@
+@@ -655,7 +656,7 @@
  
  if $arch64; then
    case "$arch,$model" in
@@ -2072,11 +2072,12 @@ diff -uNr ocaml-3.10.1/configure ocaml-3.10.1.ppc64/configure
        arch=none; model=default; system=unknown;;
    esac
  fi
-@@ -670,6 +671,7 @@
-   i386,*,*)         aspp='gcc'; asppflags='-c -DSYS_$(SYSTEM)';;
-   hppa,*,*)         aspp="$cc"; asppflags='-traditional -c -DSYS_$(SYSTEM)';;
-   power,*,elf)      aspp='gcc'; asppflags='-c';;
-+  power64,*,elf)      aspp='gcc'; asppflags='-c';;
-   power,*,bsd)      aspp='gcc'; asppflags='-c -DSYS_$(SYSTEM)';;
-   power,*,rhapsody) aspp="$bytecc"; asppflags='-c';;
-   arm,*,linux)      aspp='gcc'; asppflags='-c -DSYS_$(SYSTEM)';;
+@@ -712,6 +713,8 @@
+                     aspp='as -n32 -O2';;
+   power,*,elf)      as='as -u -m ppc'
+                     aspp='gcc -c';;
++  power64,*,elf)    as='as -u -m ppc64'
++		    aspp='gcc -c';;
+   power,*,bsd)      as='as'
+                     aspp='gcc -c';;
+   power,*,rhapsody) as="as -arch $model"
