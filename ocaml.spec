@@ -6,7 +6,7 @@
 
 Name:           ocaml
 Version:        3.11.0
-Release:        0.3%{?beta:.%{beta}}%{?dist}
+Release:        0.4%{?beta:.%{beta}}%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
@@ -40,7 +40,7 @@ Patch3:         ocaml-3.11.0-ppc64.patch
 # http://camlcvs.inria.fr/cgi-bin/cvsweb/ocaml/stdlib/string.ml.diff?r1=text&tr1=1.29&r2=text&tr2=1.28
 # commonly manifested as errors thrown saying:
 # Invalid_argument("String.index_from")
-Patch6:          ocaml-3.11.0-string-index-from.patch
+Patch6:         ocaml-3.11.0-string-index-from.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -457,6 +457,9 @@ fi
 
 
 %changelog
+* Mon Nov 24 2008 Richard W.M. Jones <rjnes@redhat.com> - 3.11.0-0.4.beta1
+- Rebuild.
+
 * Thu Nov 20 2008 Rex Dieter <rdieter@fedoraproject.org> - 3.11.0-0.3.beta1
 - fix NVR to match packaging guidelines
 
