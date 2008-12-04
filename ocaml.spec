@@ -1,12 +1,8 @@
 %define _default_patch_fuzz 2
 
-# when beta/prerelease goes away, so also can these macros
-%define beta beta1
-%define beta_tag +%{beta}
-
 Name:           ocaml
 Version:        3.11.0
-Release:        0.4%{?beta:.%{beta}}%{?dist}
+Release:        0.5.rc1%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
@@ -15,7 +11,7 @@ License:        QPL and (LGPLv2+ with exceptions)
 
 URL:            http://www.ocaml.org
 
-Source0:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-%{version}%{?beta_tag}.tar.bz2
+Source0:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-%{version}+rc1.tar.bz2
 Source1:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-3.11-refman.html.tar.gz
 Source2:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-3.11-refman.pdf
 Source3:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-3.11-refman.info.tar.gz
@@ -35,12 +31,6 @@ Patch3:         ocaml-3.11.0-ppc64.patch
 #Patch4:         ocaml-3.10.1-map32bit.patch
 # A similar fix went upstream in 3.11.0:
 #Patch5:         ocaml-3.11-dev12-no-executable-stack.patch
-
-# This is a patch from upstream which fixes PR#4637, PR#4582.
-# http://camlcvs.inria.fr/cgi-bin/cvsweb/ocaml/stdlib/string.ml.diff?r1=text&tr1=1.29&r2=text&tr2=1.28
-# commonly manifested as errors thrown saying:
-# Invalid_argument("String.index_from")
-Patch6:         ocaml-3.11.0-string-index-from.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -207,16 +197,15 @@ man pages and info files.
 
 
 %prep
-%setup -q -T -b 0 -n %{name}-%{version}%{?beta_tag}
-%setup -q -T -D -a 1 -n %{name}-%{version}%{?beta_tag}
-%setup -q -T -D -a 3 -n %{name}-%{version}%{?beta_tag}
+%setup -q -T -b 0 -n %{name}-%{version}+rc1
+%setup -q -T -D -a 1 -n %{name}-%{version}+rc1
+%setup -q -T -D -a 3 -n %{name}-%{version}+rc1
 %patch0 -p1 -b .rpath
 %patch1 -p1 -b .cflags
 #%patch2 -p1 -b .tclver
 %patch3 -p1 -b .ppc64
 #%patch4 -p1 -b .map32bit
 #%patch5 -p0 -b .noexecstack
-%patch6 -p1 -b .stringindexfrom
 
 cp %{SOURCE2} refman.pdf
 
@@ -457,7 +446,10 @@ fi
 
 
 %changelog
-* Mon Nov 24 2008 Richard W.M. Jones <rjnes@redhat.com> - 3.11.0-0.4.beta1
+* Thu Dec  4 2008 Richard W.M. Jones <rjones@redhat.com> - 3.11.0-0.5.rc1
+- New upstream version 3.11.0+rc1.
+
+* Mon Nov 24 2008 Richard W.M. Jones <rjones@redhat.com> - 3.11.0-0.4.beta1
 - Rebuild.
 
 * Thu Nov 20 2008 Rex Dieter <rdieter@fedoraproject.org> - 3.11.0-0.3.beta1
