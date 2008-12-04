@@ -2,7 +2,7 @@
 
 Name:           ocaml
 Version:        3.11.0
-Release:        0.6.rc1%{?dist}
+Release:        1%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
@@ -11,7 +11,7 @@ License:        QPL and (LGPLv2+ with exceptions)
 
 URL:            http://www.ocaml.org
 
-Source0:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-%{version}+rc1.tar.bz2
+Source0:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-%{version}.tar.bz2
 Source1:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-3.11-refman.html.tar.gz
 Source2:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-3.11-refman.pdf
 Source3:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-3.11-refman.info.tar.gz
@@ -197,9 +197,9 @@ man pages and info files.
 
 
 %prep
-%setup -q -T -b 0 -n %{name}-%{version}+rc1
-%setup -q -T -D -a 1 -n %{name}-%{version}+rc1
-%setup -q -T -D -a 3 -n %{name}-%{version}+rc1
+%setup -q -T -b 0 -n %{name}-%{version}
+%setup -q -T -D -a 1 -n %{name}-%{version}
+%setup -q -T -D -a 3 -n %{name}-%{version}
 %patch0 -p1 -b .rpath
 %patch1 -p1 -b .cflags
 #%patch2 -p1 -b .tclver
@@ -446,6 +446,9 @@ fi
 
 
 %changelog
+* Thu Dec  4 2008 Richard W.M. Jones <rjones@redhat.com> - 3.11.0-1
+- Official release of 3.11.0.
+
 * Thu Dec  4 2008 Richard W.M. Jones <rjones@redhat.com> - 3.11.0-0.6.rc1
 - Fixed sources file.
 
