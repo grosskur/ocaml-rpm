@@ -1,8 +1,8 @@
 %define _default_patch_fuzz 2
 
 Name:           ocaml
-Version:        3.11.0
-Release:        2%{?dist}
+Version:        3.11.1
+Release:        0.rc0.1%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
@@ -11,7 +11,7 @@ License:        QPL and (LGPLv2+ with exceptions)
 
 URL:            http://www.ocaml.org
 
-Source0:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-%{version}.tar.bz2
+Source0:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-%{version}+rc0.tar.gz
 Source1:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-3.11-refman.html.tar.gz
 Source2:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-3.11-refman.pdf
 Source3:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-3.11-refman.info.tar.gz
@@ -21,16 +21,8 @@ Source5:        ocaml-find-provides.sh
 Patch0:         ocaml-3.11.0-rpath.patch
 Patch1:         ocaml-user-cflags.patch
 
-# Not needed, this is upstream since 3.11.0:
-#Patch2:         ocaml-3.10.0-tclver.patch
-
 # Support for PPC64 platform by David Woodhouse:
 Patch3:         ocaml-3.11.0-ppc64.patch
-
-# Not needed because the GC allocator was completely rewritten:
-#Patch4:         ocaml-3.10.1-map32bit.patch
-# A similar fix went upstream in 3.11.0:
-#Patch5:         ocaml-3.11-dev12-no-executable-stack.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -197,15 +189,12 @@ man pages and info files.
 
 
 %prep
-%setup -q -T -b 0 -n %{name}-%{version}
-%setup -q -T -D -a 1 -n %{name}-%{version}
-%setup -q -T -D -a 3 -n %{name}-%{version}
+%setup -q -T -b 0 -n %{name}-%{version}rc0
+%setup -q -T -D -a 1 -n %{name}-%{version}rc0
+%setup -q -T -D -a 3 -n %{name}-%{version}rc0
 %patch0 -p1 -b .rpath
 %patch1 -p1 -b .cflags
-#%patch2 -p1 -b .tclver
 %patch3 -p1 -b .ppc64
-#%patch4 -p1 -b .map32bit
-#%patch5 -p0 -b .noexecstack
 
 cp %{SOURCE2} refman.pdf
 
@@ -446,6 +435,9 @@ fi
 
 
 %changelog
+* Fri May 22 2009 Richard W.M. Jones <rjones@redhat.com> - 3.11.1-0.rc0.1
+- 3.11.1 release candidate 0.
+
 * Wed Feb 25 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.11.0-2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_11_Mass_Rebuild
 
