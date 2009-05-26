@@ -2,7 +2,7 @@
 
 Name:           ocaml
 Version:        3.11.1
-Release:        0.rc0.1%{?dist}
+Release:        0.rc0.2%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
@@ -23,6 +23,9 @@ Patch1:         ocaml-user-cflags.patch
 
 # Support for PPC64 platform by David Woodhouse:
 Patch3:         ocaml-3.11.0-ppc64.patch
+
+# Backport ocamlbuild -where fix to 3.11.1+rc0.
+Patch4:         ocamlbuild_where.ml.diff
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -195,6 +198,7 @@ man pages and info files.
 %patch0 -p1 -b .rpath
 %patch1 -p1 -b .cflags
 %patch3 -p1 -b .ppc64
+%patch4 -p1 -b .ocamlbuild
 
 cp %{SOURCE2} refman.pdf
 
@@ -435,6 +439,9 @@ fi
 
 
 %changelog
+* Tue May 26 2009 Richard W.M. Jones <rjones@redhat.com> - 3.11.1-0.rc0.2
+- Backport ocamlbuild -where fix.
+
 * Fri May 22 2009 Richard W.M. Jones <rjones@redhat.com> - 3.11.1-0.rc0.1
 - 3.11.1 release candidate 0.
 

@@ -1,0 +1,12 @@
+--- ocaml/ocamlbuild/ocamlbuild_where.ml	2009/03/05 14:33:06	1.1.2.2
++++ ocaml/ocamlbuild/ocamlbuild_where.ml	2009/05/24 09:11:39	1.1.2.3
+@@ -1,5 +1,7 @@
+ let bindir = ref Ocamlbuild_Myocamlbuild_config.bindir;;
+ let libdir = ref begin
+-  try Filename.concat (Sys.getenv "OCAMLLIB") "ocamlbuild"
+-  with Not_found -> Ocamlbuild_Myocamlbuild_config.libdir
++  Filename.concat
++    (try Sys.getenv "OCAMLLIB"
++     with Not_found -> Ocamlbuild_Myocamlbuild_config.libdir)
++    "ocamlbuild"
+ end;;
