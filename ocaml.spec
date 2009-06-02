@@ -2,7 +2,7 @@
 
 Name:           ocaml
 Version:        3.11.1
-Release:        0.rc0.2%{?dist}
+Release:        0.rc0.3%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
@@ -334,7 +334,6 @@ fi
 %{_libdir}/ocaml/fedora-ocaml-release
 %attr(755,root,root) %{_prefix}/lib/rpm/*
 %exclude %{_libdir}/ocaml/graphicsX11.cmi
-%exclude %{_libdir}/ocaml/stublibs/dllgraphics.so
 %exclude %{_libdir}/ocaml/stublibs/dlllabltk.so
 %exclude %{_libdir}/ocaml/stublibs/dlltkanim.so
 %doc README LICENSE Changes
@@ -349,7 +348,6 @@ fi
 %defattr(-,root,root,-)
 %{_libdir}/ocaml/graphicsX11.cmi
 %{_libdir}/ocaml/graphicsX11.mli
-%{_libdir}/ocaml/stublibs/dllgraphics.so
 
 
 %files labltk
@@ -439,6 +437,9 @@ fi
 
 
 %changelog
+* Tue Jun  2 2009 Richard W.M. Jones <rjones@redhat.com> - 3.11.1-0.rc0.3
+- Move dllgraphics.so into runtime package (RHBZ#468506).
+
 * Tue May 26 2009 Richard W.M. Jones <rjones@redhat.com> - 3.11.1-0.rc0.2
 - Backport ocamlbuild -where fix.
 
