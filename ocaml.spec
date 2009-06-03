@@ -2,7 +2,7 @@
 
 Name:           ocaml
 Version:        3.11.1
-Release:        0.rc0.3%{?dist}
+Release:        0.rc1.1%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
@@ -11,7 +11,8 @@ License:        QPL and (LGPLv2+ with exceptions)
 
 URL:            http://www.ocaml.org
 
-Source0:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-%{version}+rc0.tar.gz
+Source0:        ftp://ftp.inria.fr/INRIA/cristal/ocaml/ocaml-3.11/ocaml-3.11.1+rc1.tar.gz
+#Source0:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-%{version}.tar.bz2
 Source1:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-3.11-refman.html.tar.gz
 Source2:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-3.11-refman.pdf
 Source3:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-3.11-refman.info.tar.gz
@@ -23,9 +24,6 @@ Patch1:         ocaml-user-cflags.patch
 
 # Support for PPC64 platform by David Woodhouse:
 Patch3:         ocaml-3.11.0-ppc64.patch
-
-# Backport ocamlbuild -where fix to 3.11.1+rc0.
-Patch4:         ocamlbuild_where.ml.diff
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -192,13 +190,12 @@ man pages and info files.
 
 
 %prep
-%setup -q -T -b 0 -n %{name}-%{version}rc0
-%setup -q -T -D -a 1 -n %{name}-%{version}rc0
-%setup -q -T -D -a 3 -n %{name}-%{version}rc0
+%setup -q -T -b 0 -n %{name}-%{version}+rc1
+%setup -q -T -D -a 1 -n %{name}-%{version}+rc1
+%setup -q -T -D -a 3 -n %{name}-%{version}+rc1
 %patch0 -p1 -b .rpath
 %patch1 -p1 -b .cflags
 %patch3 -p1 -b .ppc64
-%patch4 -p1 -b .ocamlbuild
 
 cp %{SOURCE2} refman.pdf
 
@@ -437,6 +434,10 @@ fi
 
 
 %changelog
+* Wed Jun  3 2009 Richard W.M. Jones <rjones@redhat.com> - 3.11.1-0.rc1.1
+- New upstream release candidate 3.11.1+rc1.
+- Remove ocamlbuild -where patch (now upstream).
+
 * Tue Jun  2 2009 Richard W.M. Jones <rjones@redhat.com> - 3.11.1-0.rc0.3
 - Move dllgraphics.so into runtime package (RHBZ#468506).
 
