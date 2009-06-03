@@ -2,7 +2,7 @@
 
 Name:           ocaml
 Version:        3.11.1
-Release:        0.rc1.1%{?dist}
+Release:        0.rc1.2%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
@@ -434,6 +434,9 @@ fi
 
 
 %changelog
+* Wed Jun  3 2009 Richard W.M. Jones <rjones@redhat.com> - 3.11.1-0.rc1.2
+- Remember to upload the source this time.
+
 * Wed Jun  3 2009 Richard W.M. Jones <rjones@redhat.com> - 3.11.1-0.rc1.1
 - New upstream release candidate 3.11.1+rc1.
 - Remove ocamlbuild -where patch (now upstream).
