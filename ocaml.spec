@@ -2,7 +2,7 @@
 
 Name:           ocaml
 Version:        3.11.1
-Release:        0.rc1.2%{?dist}.1
+Release:        1%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
@@ -11,8 +11,7 @@ License:        QPL and (LGPLv2+ with exceptions)
 
 URL:            http://www.ocaml.org
 
-Source0:        ftp://ftp.inria.fr/INRIA/cristal/ocaml/ocaml-3.11/ocaml-3.11.1+rc1.tar.gz
-#Source0:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-%{version}.tar.bz2
+Source0:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-%{version}.tar.bz2
 Source1:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-3.11-refman.html.tar.gz
 Source2:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-3.11-refman.pdf
 Source3:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-3.11-refman.info.tar.gz
@@ -190,9 +189,9 @@ man pages and info files.
 
 
 %prep
-%setup -q -T -b 0 -n %{name}-%{version}+rc1
-%setup -q -T -D -a 1 -n %{name}-%{version}+rc1
-%setup -q -T -D -a 3 -n %{name}-%{version}+rc1
+%setup -q -T -b 0 -n %{name}-%{version}
+%setup -q -T -D -a 1 -n %{name}-%{version}
+%setup -q -T -D -a 3 -n %{name}-%{version}
 %patch0 -p1 -b .rpath
 %patch1 -p1 -b .cflags
 %patch3 -p1 -b .ppc64
@@ -434,6 +433,10 @@ fi
 
 
 %changelog
+* Wed Sep 30 2009 Richard W.M. Jones <rjones@redhat.com> - 3.11.1-1
+- OCaml 3.11.1 (this is virtually the same as the release candidate
+  that we were using for Fedora 12).
+
 * Sat Jul 25 2009 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.11.1-0.rc1.2.1
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_12_Mass_Rebuild
 
