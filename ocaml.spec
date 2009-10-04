@@ -2,7 +2,7 @@
 
 Name:           ocaml
 Version:        3.11.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
@@ -433,6 +433,10 @@ fi
 
 
 %changelog
+* Sun Oct  4 2009 Richard W.M. Jones <rjones@redhat.com> - 3.11.1-2
+- ocaml-find-requires.sh: Calculate runtime version using ocamlrun
+  -version instead of fedora-ocaml-release file.
+
 * Wed Sep 30 2009 Richard W.M. Jones <rjones@redhat.com> - 3.11.1-1
 - OCaml 3.11.1 (this is virtually the same as the release candidate
   that we were using for Fedora 12).
