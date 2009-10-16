@@ -2,7 +2,7 @@
 
 Name:           ocaml
 Version:        3.11.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
@@ -17,6 +17,11 @@ Source2:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-3.11-refman.pdf
 Source3:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-3.11-refman.info.tar.gz
 Source4:        ocaml-find-requires.sh
 Source5:        ocaml-find-provides.sh
+
+# Useful utilities from Debian, and sent upstream.
+# http://git.debian.org/?p=pkg-ocaml-maint/packages/ocaml.git;a=tree;f=debian/ocamlbyteinfo;hb=HEAD
+Source6:        ocamlbyteinfo.ml
+Source7:        ocamlplugininfo.ml
 
 Patch0:         ocaml-3.11.0-rpath.patch
 Patch1:         ocaml-user-cflags.patch
@@ -212,6 +217,13 @@ make -C emacs ocamltags
 # make -C tools objinfo
 (cd tools; ../boot/ocamlrun ../ocamlopt -nostdlib -I ../stdlib -I ../utils -I ../parsing -I ../typing -I ../bytecomp -I ../asmcomp -I ../driver -o objinfo config.cmx objinfo.ml)
 
+# Currently these tools are supplied by Debian, but are expected
+# to go upstream at some point.
+cp %{SOURCE6} %{SOURCE7} .
+boot/ocamlrun ./ocamlc -I otherlibs/dynlink dynlinkaux.cmo ocamlbyteinfo.ml -o ocamlbyteinfo
+cp otherlibs/dynlink/natdynlink.ml .
+boot/ocamlrun ./ocamlopt unix.cmxa str.cmxa natdynlink.ml ocamlplugininfo.ml -o ocamlplugininfo
+
 
 %install
 rm -rf $RPM_BUILD_ROOT
@@ -248,6 +260,9 @@ echo %{version} > $RPM_BUILD_ROOT%{_libdir}/ocaml/fedora-ocaml-release
 # Remove rpaths from stublibs .so files.
 chrpath --delete $RPM_BUILD_ROOT%{_libdir}/ocaml/stublibs/*.so
 
+install -m 0755 ocamlbyteinfo $RPM_BUILD_ROOT%{_bindir}
+install -m 0755 ocamlplugininfo $RPM_BUILD_ROOT%{_bindir}
+
 
 %clean
 rm -rf $RPM_BUILD_ROOT
@@ -270,6 +285,7 @@ fi
 %files
 %defattr(-,root,root,-)
 %{_bindir}/ocaml
+%{_bindir}/ocamlbyteinfo
 %{_bindir}/ocamlbuild
 %{_bindir}/ocamlbuild.byte
 %{_bindir}/ocamlbuild.native
@@ -286,6 +302,7 @@ fi
 %{_bindir}/ocamlobjinfo
 %{_bindir}/ocamlopt
 %{_bindir}/ocamlopt.opt
+%{_bindir}/ocamlplugininfo
 %{_bindir}/ocamlprof
 %{_bindir}/ocamlyacc
 %{_libdir}/ocaml/addlabels
@@ -433,6 +450,9 @@ fi
 
 
 %changelog
+* Fri Oct 16 2009 Richard W.M. Jones <rjones@redhat.com> - 3.11.1-3
+- Add ocamlbyteinfo and ocamlplugininfo programs from Debian.
+
 * Sun Oct  4 2009 Richard W.M. Jones <rjones@redhat.com> - 3.11.1-2
 - ocaml-find-requires.sh: Calculate runtime version using ocamlrun
   -version instead of fedora-ocaml-release file.
