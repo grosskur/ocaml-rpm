@@ -2,7 +2,7 @@
 
 Name:           ocaml
 Version:        3.11.1
-Release:        3%{?dist}
+Release:        4%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
@@ -220,9 +220,10 @@ make -C emacs ocamltags
 # Currently these tools are supplied by Debian, but are expected
 # to go upstream at some point.
 cp %{SOURCE6} %{SOURCE7} .
-boot/ocamlrun ./ocamlc -I otherlibs/dynlink dynlinkaux.cmo ocamlbyteinfo.ml -o ocamlbyteinfo
+includes="-nostdlib -I stdlib -I utils -I parsing -I typing -I bytecomp -I asmcomp -I driver -I otherlibs/unix -I otherlibs/str -I otherlibs/dynlink"
+boot/ocamlrun ./ocamlc $includes dynlinkaux.cmo ocamlbyteinfo.ml -o ocamlbyteinfo
 cp otherlibs/dynlink/natdynlink.ml .
-boot/ocamlrun ./ocamlopt unix.cmxa str.cmxa natdynlink.ml ocamlplugininfo.ml -o ocamlplugininfo
+boot/ocamlrun ./ocamlopt $includes unix.cmxa str.cmxa natdynlink.ml ocamlplugininfo.ml -o ocamlplugininfo
 
 
 %install
@@ -450,6 +451,10 @@ fi
 
 
 %changelog
+* Fri Oct 16 2009 Richard W.M. Jones <rjones@redhat.com> - 3.11.1-4
+- Set includes so building the *info programs works without
+  having OCaml already installed.
+
 * Fri Oct 16 2009 Richard W.M. Jones <rjones@redhat.com> - 3.11.1-3
 - Add ocamlbyteinfo and ocamlplugininfo programs from Debian.
 
