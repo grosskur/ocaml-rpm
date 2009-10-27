@@ -2,7 +2,7 @@
 
 Name:           ocaml
 Version:        3.11.1
-Release:        4%{?dist}
+Release:        5%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
@@ -271,8 +271,8 @@ rm -rf $RPM_BUILD_ROOT
 
 %post docs
 /sbin/install-info \
-    --entry "* ocaml: (ocaml).   The Objective Caml compiler and programming environment" \
-    --section "Programming Languages" \
+    --entry="* ocaml: (ocaml).   The Objective Caml compiler and programming environment" \
+    --section="Programming Languages" \
     %{_infodir}/%{name}.info \
     %{_infodir}/dir 2>/dev/null || :
 
@@ -451,6 +451,9 @@ fi
 
 
 %changelog
+* Tue Oct 27 2009 Richard W.M. Jones <rjones@redhat.com> - 3.11.1-5
+- Install ocaml.info files correctly (RHBZ#531204).
+
 * Fri Oct 16 2009 Richard W.M. Jones <rjones@redhat.com> - 3.11.1-4
 - Set includes so building the *info programs works without
   having OCaml already installed.
