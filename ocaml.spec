@@ -2,7 +2,7 @@
 
 Name:           ocaml
 Version:        3.11.1
-Release:        5%{?dist}
+Release:        6%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
@@ -55,7 +55,7 @@ Requires:       gcc
 Requires:       ncurses-devel
 Requires:       gdbm-devel
 Provides:       ocaml(compiler) = %{version}
-ExclusiveArch:  alpha armv4l %{ix86} ia64 x86_64 ppc sparc ppc64
+ExclusiveArch:  alpha armv4l %{ix86} ia64 x86_64 ppc sparc sparcv9 ppc64
 
 %define _use_internal_dependency_generator 0
 %define __find_requires %{SOURCE4} -c -f %{buildroot}%{_bindir}/ocamlobjinfo
@@ -451,6 +451,9 @@ fi
 
 
 %changelog
+* Thu Nov 05 2009 Dennis Gilmore <dennis@ausil.us> - 3.11.1-6
+- include sparcv9 in the arch list
+
 * Tue Oct 27 2009 Richard W.M. Jones <rjones@redhat.com> - 3.11.1-5
 - Install ocaml.info files correctly (RHBZ#531204).
 
