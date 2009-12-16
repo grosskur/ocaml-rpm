@@ -1,8 +1,8 @@
-%define _default_patch_fuzz 2
+%global _default_patch_fuzz 2
 
 Name:           ocaml
 Version:        3.11.1
-Release:        6%{?dist}
+Release:        7%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
@@ -15,8 +15,6 @@ Source0:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-%{version}.tar.bz2
 Source1:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-3.11-refman.html.tar.gz
 Source2:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-3.11-refman.pdf
 Source3:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-3.11-refman.info.tar.gz
-Source4:        ocaml-find-requires.sh
-Source5:        ocaml-find-provides.sh
 
 # Useful utilities from Debian, and sent upstream.
 # http://git.debian.org/?p=pkg-ocaml-maint/packages/ocaml.git;a=tree;f=debian/ocamlbyteinfo;hb=HEAD
@@ -54,12 +52,12 @@ BuildRequires:  chrpath
 Requires:       gcc
 Requires:       ncurses-devel
 Requires:       gdbm-devel
+Requires:       rpm-build >= 4.8.0
 Provides:       ocaml(compiler) = %{version}
 ExclusiveArch:  alpha armv4l %{ix86} ia64 x86_64 ppc sparc sparcv9 ppc64
 
-%define _use_internal_dependency_generator 0
-%define __find_requires %{SOURCE4} -c -f %{buildroot}%{_bindir}/ocamlobjinfo
-%define __find_provides %{SOURCE5} -f %{buildroot}%{_bindir}/ocamlobjinfo
+%global __ocaml_requires %{_rpmconfigdir}/ocaml-find-requires.sh -c -f %{buildroot}%{_bindir}/ocamlobjinfo
+%global __ocaml_provides %{_rpmconfigdir}/ocaml-find-provides.sh -f %{buildroot}%{_bindir}/ocamlobjinfo
 
 
 %description
@@ -251,11 +249,6 @@ perl -pi -e "s|^$RPM_BUILD_ROOT||" $RPM_BUILD_ROOT%{_libdir}/ocaml/ld.conf
 
 cp tools/objinfo $RPM_BUILD_ROOT%{_bindir}/ocamlobjinfo
 
-# install rpmbuild helper files
-mkdir -p $RPM_BUILD_ROOT/usr/lib/rpm/
-install -m 0755 %{SOURCE4} $RPM_BUILD_ROOT/usr/lib/rpm/
-install -m 0755 %{SOURCE5} $RPM_BUILD_ROOT/usr/lib/rpm/
-
 echo %{version} > $RPM_BUILD_ROOT%{_libdir}/ocaml/fedora-ocaml-release
 
 # Remove rpaths from stublibs .so files.
@@ -346,7 +339,6 @@ fi
 %{_libdir}/ocaml/threads/*.cmi
 %{_libdir}/ocaml/threads/*.cma
 %{_libdir}/ocaml/fedora-ocaml-release
-%attr(755,root,root) %{_prefix}/lib/rpm/*
 %exclude %{_libdir}/ocaml/graphicsX11.cmi
 %exclude %{_libdir}/ocaml/stublibs/dlllabltk.so
 %exclude %{_libdir}/ocaml/stublibs/dlltkanim.so
@@ -451,6 +443,11 @@ fi
 
 
 %changelog
+* Wed Dec 16 2009 Richard W.M. Jones <rjones@redhat.com> - 3.11.1-7
+- Remove ocaml-find-{requires,provides}.sh from this package.  These are
+  now in upstream RPM 4.8 (RHBZ#545116).
+- define -> global in a few places.
+
 * Thu Nov 05 2009 Dennis Gilmore <dennis@ausil.us> - 3.11.1-6
 - include sparcv9 in the arch list
 
