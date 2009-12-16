@@ -2,7 +2,7 @@
 
 Name:           ocaml
 Version:        3.11.1
-Release:        7%{?dist}
+Release:        8%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
@@ -56,8 +56,8 @@ Requires:       rpm-build >= 4.8.0
 Provides:       ocaml(compiler) = %{version}
 ExclusiveArch:  alpha armv4l %{ix86} ia64 x86_64 ppc sparc sparcv9 ppc64
 
-%global __ocaml_requires %{_rpmconfigdir}/ocaml-find-requires.sh -c -f %{buildroot}%{_bindir}/ocamlobjinfo
-%global __ocaml_provides %{_rpmconfigdir}/ocaml-find-provides.sh -f %{buildroot}%{_bindir}/ocamlobjinfo
+%global __ocaml_requires_opts -c -f %{buildroot}%{_bindir}/ocamlobjinfo
+%global __ocaml_provides_opts -f %{buildroot}%{_bindir}/ocamlobjinfo
 
 
 %description
@@ -443,6 +443,9 @@ fi
 
 
 %changelog
+* Wed Dec 16 2009 Richard W.M. Jones <rjones@redhat.com> - 3.11.1-8
+- Use __ocaml_requires_opts / __ocaml_provides_opts.
+
 * Wed Dec 16 2009 Richard W.M. Jones <rjones@redhat.com> - 3.11.1-7
 - Remove ocaml-find-{requires,provides}.sh from this package.  These are
   now in upstream RPM 4.8 (RHBZ#545116).
