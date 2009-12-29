@@ -1,8 +1,8 @@
 %global _default_patch_fuzz 2
 
 Name:           ocaml
-Version:        3.11.1
-Release:        8%{?dist}
+Version:        3.11.2
+Release:        0.rc1.1%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
@@ -11,7 +11,8 @@ License:        QPL and (LGPLv2+ with exceptions)
 
 URL:            http://www.ocaml.org
 
-Source0:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-%{version}.tar.bz2
+#Source0:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-%{version}.tar.bz2
+Source0:        ftp://ftp.inria.fr/INRIA/Projects/cristal/ocaml/ocaml-3.11/ocaml-3.11.2+rc1.tar.bz2
 Source1:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-3.11-refman.html.tar.gz
 Source2:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-3.11-refman.pdf
 Source3:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-3.11-refman.info.tar.gz
@@ -192,9 +193,9 @@ man pages and info files.
 
 
 %prep
-%setup -q -T -b 0 -n %{name}-%{version}
-%setup -q -T -D -a 1 -n %{name}-%{version}
-%setup -q -T -D -a 3 -n %{name}-%{version}
+%setup -q -T -b 0 -n %{name}-%{version}+rc1
+%setup -q -T -D -a 1 -n %{name}-%{version}+rc1
+%setup -q -T -D -a 3 -n %{name}-%{version}+rc1
 %patch0 -p1 -b .rpath
 %patch1 -p1 -b .cflags
 %patch3 -p1 -b .ppc64
@@ -443,6 +444,9 @@ fi
 
 
 %changelog
+* Tue Dec 29 2009 Richard W.M. Jones <rjones@redhat.com> - 3.11.2-0.rc1.1
+- Update to (release candidate) 3.11.2+rc1.
+
 * Wed Dec 16 2009 Richard W.M. Jones <rjones@redhat.com> - 3.11.1-8
 - Use __ocaml_requires_opts / __ocaml_provides_opts.
 
