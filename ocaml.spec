@@ -2,7 +2,7 @@
 
 Name:           ocaml
 Version:        3.11.2
-Release:        0.rc1.1%{?dist}
+Release:        0.rc1.2%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
@@ -122,6 +122,8 @@ Summary:        Development files for labltk
 Requires:       ocaml = %{version}-%{release}
 Requires:       %{name}-labltk = %{version}-%{release}
 Requires:       libX11-devel
+Requires:       tcl-devel
+Requires:       tk-devel
 
 %description labltk-devel
 Labltk is a library for interfacing Objective Caml with the scripting
@@ -444,6 +446,9 @@ fi
 
 
 %changelog
+* Tue Jan  5 2010 Richard W.M. Jones <rjones@redhat.com> - 3.11.2-0.rc1.2
+- ocaml-labltk-devel should require tcl-devel and tk-devel.
+
 * Tue Dec 29 2009 Richard W.M. Jones <rjones@redhat.com> - 3.11.2-0.rc1.1
 - Update to (release candidate) 3.11.2+rc1.
 
