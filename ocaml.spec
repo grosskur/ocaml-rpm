@@ -2,7 +2,7 @@
 
 Name:           ocaml
 Version:        3.11.2
-Release:        0.rc1.2%{?dist}
+Release:        1%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
@@ -11,8 +11,7 @@ License:        QPL and (LGPLv2+ with exceptions)
 
 URL:            http://www.ocaml.org
 
-#Source0:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-%{version}.tar.bz2
-Source0:        ftp://ftp.inria.fr/INRIA/Projects/cristal/ocaml/ocaml-3.11/ocaml-3.11.2+rc1.tar.bz2
+Source0:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-%{version}.tar.bz2
 Source1:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-3.11-refman.html.tar.gz
 Source2:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-3.11-refman.pdf
 Source3:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-3.11-refman.info.tar.gz
@@ -195,9 +194,9 @@ man pages and info files.
 
 
 %prep
-%setup -q -T -b 0 -n %{name}-%{version}+rc1
-%setup -q -T -D -a 1 -n %{name}-%{version}+rc1
-%setup -q -T -D -a 3 -n %{name}-%{version}+rc1
+%setup -q -T -b 0 -n %{name}-%{version}
+%setup -q -T -D -a 1 -n %{name}-%{version}
+%setup -q -T -D -a 3 -n %{name}-%{version}
 %patch0 -p1 -b .rpath
 %patch1 -p1 -b .cflags
 %patch3 -p1 -b .ppc64
@@ -446,6 +445,9 @@ fi
 
 
 %changelog
+* Wed Jan 20 2010 Richard W.M. Jones <rjones@redhat.com> - 3.11.2-1
+- Update to 3.11.2 official release.
+
 * Tue Jan  5 2010 Richard W.M. Jones <rjones@redhat.com> - 3.11.2-0.rc1.2
 - ocaml-labltk-devel should require tcl-devel and tk-devel.
 
