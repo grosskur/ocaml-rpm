@@ -2,7 +2,7 @@
 
 Name:           ocaml
 Version:        3.11.2
-Release:        1%{?dist}
+Release:        2%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
@@ -445,6 +445,9 @@ fi
 
 
 %changelog
+* Fri Jan 29 2010 Richard W.M. Jones <rjones@redhat.com> - 3.11.2-2
+- Update reference manual to latest version from website.
+
 * Wed Jan 20 2010 Richard W.M. Jones <rjones@redhat.com> - 3.11.2-1
 - Update to 3.11.2 official release.
 
