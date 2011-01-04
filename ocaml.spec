@@ -2,7 +2,7 @@
 
 Name:           ocaml
 Version:        3.12.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
@@ -25,6 +25,10 @@ Patch0:         ocaml-3.12.0-rpath.patch
 Patch1:         ocaml-user-cflags.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+
+# Depend on previous version of OCaml so that ocamlobjinfo
+# can run.
+BuildRequires:  ocaml
 
 BuildRequires:  ncurses-devel
 BuildRequires:  gdbm-devel
@@ -438,6 +442,10 @@ fi
 
 
 %changelog
+* Tue Jan  4 2011 Richard W.M. Jones <rjones@redhat.com> - 3.12.0-2
+- Try depending on OCaml BR to fix:
+  /usr/lib/rpm/ocaml-find-provides.sh: /builddir/build/BUILDROOT/ocaml-3.12.0-1.fc15.i386/usr/bin/ocamlobjinfo: /usr/bin/ocamlrun: bad interpreter: No such file or directory
+
 * Tue Jan  4 2011 Richard W.M. Jones <rjones@redhat.com> - 3.12.0-1
 - New upstream version 3.12.0.
   http://fedoraproject.org/wiki/Features/OCaml3.12
