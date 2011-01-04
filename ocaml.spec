@@ -1,8 +1,8 @@
 %global _default_patch_fuzz 2
 
 Name:           ocaml
-Version:        3.11.2
-Release:        2%{?dist}
+Version:        3.12.0
+Release:        1%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
@@ -11,21 +11,18 @@ License:        QPL and (LGPLv2+ with exceptions)
 
 URL:            http://www.ocaml.org
 
-Source0:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-%{version}.tar.bz2
-Source1:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-3.11-refman.html.tar.gz
-Source2:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-3.11-refman.pdf
-Source3:        http://caml.inria.fr/distrib/ocaml-3.11/ocaml-3.11-refman.info.tar.gz
+Source0:        http://caml.inria.fr/distrib/ocaml-3.12/ocaml-%{version}.tar.gz
+Source1:        http://caml.inria.fr/distrib/ocaml-3.12/ocaml-3.12-refman.html.tar.gz
+Source2:        http://caml.inria.fr/distrib/ocaml-3.12/ocaml-3.12-refman.pdf
+Source3:        http://caml.inria.fr/distrib/ocaml-3.12/ocaml-3.12-refman.info.tar.gz
 
 # Useful utilities from Debian, and sent upstream.
 # http://git.debian.org/?p=pkg-ocaml-maint/packages/ocaml.git;a=tree;f=debian/ocamlbyteinfo;hb=HEAD
 Source6:        ocamlbyteinfo.ml
-Source7:        ocamlplugininfo.ml
+#Source7:        ocamlplugininfo.ml
 
-Patch0:         ocaml-3.11.0-rpath.patch
+Patch0:         ocaml-3.12.0-rpath.patch
 Patch1:         ocaml-user-cflags.patch
-
-# Support for PPC64 platform by David Woodhouse:
-Patch3:         ocaml-3.11.0-ppc64.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -199,7 +196,6 @@ man pages and info files.
 %setup -q -T -D -a 3 -n %{name}-%{version}
 %patch0 -p1 -b .rpath
 %patch1 -p1 -b .cflags
-%patch3 -p1 -b .ppc64
 
 cp %{SOURCE2} refman.pdf
 
@@ -214,16 +210,14 @@ CFLAGS="$RPM_OPT_FLAGS" ./configure \
 make world opt opt.opt
 # %{?_smp_mflags} breaks the build
 make -C emacs ocamltags
-# make -C tools objinfo
-(cd tools; ../boot/ocamlrun ../ocamlopt -nostdlib -I ../stdlib -I ../utils -I ../parsing -I ../typing -I ../bytecomp -I ../asmcomp -I ../driver -o objinfo config.cmx objinfo.ml)
 
 # Currently these tools are supplied by Debian, but are expected
 # to go upstream at some point.
-cp %{SOURCE6} %{SOURCE7} .
+cp %{SOURCE6} .
 includes="-nostdlib -I stdlib -I utils -I parsing -I typing -I bytecomp -I asmcomp -I driver -I otherlibs/unix -I otherlibs/str -I otherlibs/dynlink"
 boot/ocamlrun ./ocamlc $includes dynlinkaux.cmo ocamlbyteinfo.ml -o ocamlbyteinfo
-cp otherlibs/dynlink/natdynlink.ml .
-boot/ocamlrun ./ocamlopt $includes unix.cmxa str.cmxa natdynlink.ml ocamlplugininfo.ml -o ocamlplugininfo
+#cp otherlibs/dynlink/natdynlink.ml .
+#boot/ocamlrun ./ocamlopt $includes unix.cmxa str.cmxa natdynlink.ml ocamlplugininfo.ml -o ocamlplugininfo
 
 
 %install
@@ -249,15 +243,13 @@ perl -pi -e "s|^$RPM_BUILD_ROOT||" $RPM_BUILD_ROOT%{_libdir}/ocaml/ld.conf
     cd infoman; cp ocaml*.gz $RPM_BUILD_ROOT%{_infodir}
 )
 
-cp tools/objinfo $RPM_BUILD_ROOT%{_bindir}/ocamlobjinfo
-
 echo %{version} > $RPM_BUILD_ROOT%{_libdir}/ocaml/fedora-ocaml-release
 
 # Remove rpaths from stublibs .so files.
 chrpath --delete $RPM_BUILD_ROOT%{_libdir}/ocaml/stublibs/*.so
 
 install -m 0755 ocamlbyteinfo $RPM_BUILD_ROOT%{_bindir}
-install -m 0755 ocamlplugininfo $RPM_BUILD_ROOT%{_bindir}
+#install -m 0755 ocamlplugininfo $RPM_BUILD_ROOT%{_bindir}
 
 
 %clean
@@ -298,11 +290,11 @@ fi
 %{_bindir}/ocamlobjinfo
 %{_bindir}/ocamlopt
 %{_bindir}/ocamlopt.opt
-%{_bindir}/ocamlplugininfo
+#%{_bindir}/ocamlplugininfo
 %{_bindir}/ocamlprof
 %{_bindir}/ocamlyacc
-%{_libdir}/ocaml/addlabels
-%{_libdir}/ocaml/scrapelabels
+#%{_libdir}/ocaml/addlabels
+#%{_libdir}/ocaml/scrapelabels
 %{_libdir}/ocaml/camlheader
 %{_libdir}/ocaml/camlheader_ur
 %{_libdir}/ocaml/expunge
@@ -316,6 +308,7 @@ fi
 %{_libdir}/ocaml/*.mli
 %{_libdir}/ocaml/*.o
 %{_libdir}/ocaml/libcamlrun_shared.so
+%{_libdir}/ocaml/objinfo_helper
 %{_libdir}/ocaml/vmthreads/*.mli
 %{_libdir}/ocaml/vmthreads/*.a
 %{_libdir}/ocaml/threads/*.a
@@ -343,7 +336,7 @@ fi
 %{_libdir}/ocaml/fedora-ocaml-release
 %exclude %{_libdir}/ocaml/graphicsX11.cmi
 %exclude %{_libdir}/ocaml/stublibs/dlllabltk.so
-%exclude %{_libdir}/ocaml/stublibs/dlltkanim.so
+#%exclude %{_libdir}/ocaml/stublibs/dlltkanim.so
 %doc README LICENSE Changes
 
 
@@ -366,7 +359,7 @@ fi
 %{_libdir}/ocaml/labltk/*.cma
 %{_libdir}/ocaml/labltk/*.cmo
 %{_libdir}/ocaml/stublibs/dlllabltk.so
-%{_libdir}/ocaml/stublibs/dlltkanim.so
+#%{_libdir}/ocaml/stublibs/dlltkanim.so
 
 
 %files labltk-devel
@@ -445,6 +438,17 @@ fi
 
 
 %changelog
+* Tue Jan  4 2011 Richard W.M. Jones <rjones@redhat.com> - 3.12.0-1
+- New upstream version 3.12.0.
+  http://fedoraproject.org/wiki/Features/OCaml3.12
+- Remove ppc64 support patch.
+- Rebase rpath removal patch.
+- ocamlobjinfo is now an official tool, so no need to compile it by hand.
+  Add objinfo_helper.
+- Disable ocamlplugininfo.
+- Remove addlabels, scrapelabels.
+- Remove ocaml/stublibs/dlltkanim.so.
+
 * Fri Jan 29 2010 Richard W.M. Jones <rjones@redhat.com> - 3.11.2-2
 - Update reference manual to latest version from website.
 
