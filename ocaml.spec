@@ -2,7 +2,7 @@
 
 Name:           ocaml
 Version:        3.12.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
@@ -442,6 +442,9 @@ fi
 
 
 %changelog
+* Wed Jan  5 2011 Richard W.M. Jones <rjones@redhat.com> - 3.12.0-3
+- Rebuild with self.
+
 * Tue Jan  4 2011 Richard W.M. Jones <rjones@redhat.com> - 3.12.0-2
 - Try depending on OCaml BR to fix:
   /usr/lib/rpm/ocaml-find-provides.sh: /builddir/build/BUILDROOT/ocaml-3.12.0-1.fc15.i386/usr/bin/ocamlobjinfo: /usr/bin/ocamlrun: bad interpreter: No such file or directory
