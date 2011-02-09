@@ -2,7 +2,7 @@
 
 Name:           ocaml
 Version:        3.12.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
@@ -442,6 +442,9 @@ fi
 
 
 %changelog
+* Tue Feb 08 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.12.0-4
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
+
 * Wed Jan  5 2011 Richard W.M. Jones <rjones@redhat.com> - 3.12.0-3
 - Rebuild with self.
 
