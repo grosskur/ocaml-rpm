@@ -2,7 +2,7 @@
 
 Name:           ocaml
 Version:        3.12.0
-Release:        4%{?dist}
+Release:        5%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
@@ -23,6 +23,9 @@ Source6:        ocamlbyteinfo.ml
 
 Patch0:         ocaml-3.12.0-rpath.patch
 Patch1:         ocaml-user-cflags.patch
+
+# Fix for RHBZ#691896.  This is upstream in 3.12.1.
+Patch2:         0007-Fix-ocamlopt-w.r.t.-binutils-2.21.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -200,6 +203,7 @@ man pages and info files.
 %setup -q -T -D -a 3 -n %{name}-%{version}
 %patch0 -p1 -b .rpath
 %patch1 -p1 -b .cflags
+%patch2 -p1 -b .rhbz691896
 
 cp %{SOURCE2} refman.pdf
 
@@ -442,6 +446,9 @@ fi
 
 
 %changelog
+* Wed Mar 30 2011 Richard W.M. Jones <rjones@redhat.com> - 3.12.0-5
+- Fix for invalid assembler generation (RHBZ#691896).
+
 * Tue Feb 08 2011 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 3.12.0-4
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_15_Mass_Rebuild
 
