@@ -2,7 +2,7 @@
 
 Name:           ocaml
 Version:        3.12.0
-Release:        5%{?dist}
+Release:        6%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
@@ -26,6 +26,9 @@ Patch1:         ocaml-user-cflags.patch
 
 # Fix for RHBZ#691896.  This is upstream in 3.12.1.
 Patch2:         0007-Fix-ocamlopt-w.r.t.-binutils-2.21.patch
+
+# Patch from Debian for ARM (sent upstream).
+Patch3:         debian_patches_0013-ocamlopt-arm-add-.type-directive-for-code-symbols.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -58,7 +61,7 @@ Requires:       ncurses-devel
 Requires:       gdbm-devel
 Requires:       rpm-build >= 4.8.0
 Provides:       ocaml(compiler) = %{version}
-ExclusiveArch:  alpha armv4l %{ix86} ia64 x86_64 ppc sparc sparcv9 ppc64
+ExclusiveArch:  alpha %{arm} %{ix86} ia64 x86_64 ppc sparc sparcv9 ppc64
 
 %global __ocaml_requires_opts -c -f %{buildroot}%{_bindir}/ocamlobjinfo
 %global __ocaml_provides_opts -f %{buildroot}%{_bindir}/ocamlobjinfo
@@ -204,6 +207,7 @@ man pages and info files.
 %patch0 -p1 -b .rpath
 %patch1 -p1 -b .cflags
 %patch2 -p1 -b .rhbz691896
+%patch3 -p1 -b .arm-type-dir
 
 cp %{SOURCE2} refman.pdf
 
@@ -310,7 +314,9 @@ fi
 %{_libdir}/ocaml/ld.conf
 %{_libdir}/ocaml/Makefile.config
 %{_libdir}/ocaml/*.a
+%ifnarch %{arm}
 %{_libdir}/ocaml/*.cmxs
+%endif
 %{_libdir}/ocaml/*.cmxa
 %{_libdir}/ocaml/*.cmx
 %{_libdir}/ocaml/*.mli
@@ -446,6 +452,11 @@ fi
 
 
 %changelog
+* Fri Sep 23 2011 DJ Delorie <dj@redhat.com> - 3.12.0-6
+- Add arm type directive patch.
+- Allow more arm arches.
+- Don't package *.cmxs on arm.
+
 * Wed Mar 30 2011 Richard W.M. Jones <rjones@redhat.com> - 3.12.0-5
 - Fix for invalid assembler generation (RHBZ#691896).
 
