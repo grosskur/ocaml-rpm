@@ -2,7 +2,7 @@
 
 Name:           ocaml
 Version:        3.12.0
-Release:        6%{?dist}
+Release:        7%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
@@ -61,7 +61,22 @@ Requires:       ncurses-devel
 Requires:       gdbm-devel
 Requires:       rpm-build >= 4.8.0
 Provides:       ocaml(compiler) = %{version}
+
+# We can compile OCaml on just about anything, but the native code
+# backend is only available on a subset of architectures.
 ExclusiveArch:  alpha %{arm} %{ix86} ia64 x86_64 ppc sparc sparcv9 ppc64
+
+%ifarch alpha %{arm} %{ix86} ia64 ppc sparc sparcv9 x86_64
+%global native_compiler 1
+%else
+%global native_compiler 0
+%endif
+
+%ifarch %{ix86} sparc sparcv9 x86_64
+%global natdynlink 1
+%else
+%global natdynlink 0
+%endif
 
 %global __ocaml_requires_opts -c -f %{buildroot}%{_bindir}/ocamlobjinfo
 %global __ocaml_provides_opts -f %{buildroot}%{_bindir}/ocamlobjinfo
@@ -219,7 +234,10 @@ CFLAGS="$RPM_OPT_FLAGS" ./configure \
     -x11lib %{_libdir} \
     -x11include %{_includedir} \
     -mandir %{_mandir}/man1
-make world opt opt.opt
+make world
+%if %{native_compiler}
+make opt opt.opt
+%endif
 # %{?_smp_mflags} breaks the build
 make -C emacs ocamltags
 
@@ -288,20 +306,30 @@ fi
 %{_bindir}/ocamlbyteinfo
 %{_bindir}/ocamlbuild
 %{_bindir}/ocamlbuild.byte
+%if %{native_compiler}
 %{_bindir}/ocamlbuild.native
+%endif
 %{_bindir}/ocamlc
+%if %{native_compiler}
 %{_bindir}/ocamlc.opt
+%endif
 %{_bindir}/ocamlcp
 %{_bindir}/ocamldebug
 %{_bindir}/ocamldep
+%if %{native_compiler}
 %{_bindir}/ocamldep.opt
+%endif
 %{_bindir}/ocamllex
+%if %{native_compiler}
 %{_bindir}/ocamllex.opt
+%endif
 %{_bindir}/ocamlmklib
 %{_bindir}/ocamlmktop
 %{_bindir}/ocamlobjinfo
+%if %{native_compiler}
 %{_bindir}/ocamlopt
 %{_bindir}/ocamlopt.opt
+%endif
 #%{_bindir}/ocamlplugininfo
 %{_bindir}/ocamlprof
 %{_bindir}/ocamlyacc
@@ -314,20 +342,24 @@ fi
 %{_libdir}/ocaml/ld.conf
 %{_libdir}/ocaml/Makefile.config
 %{_libdir}/ocaml/*.a
-%ifnarch %{arm}
+%if %{natdynlink}
 %{_libdir}/ocaml/*.cmxs
 %endif
+%if %{native_compiler}
 %{_libdir}/ocaml/*.cmxa
 %{_libdir}/ocaml/*.cmx
-%{_libdir}/ocaml/*.mli
 %{_libdir}/ocaml/*.o
+%endif
+%{_libdir}/ocaml/*.mli
 %{_libdir}/ocaml/libcamlrun_shared.so
 %{_libdir}/ocaml/objinfo_helper
 %{_libdir}/ocaml/vmthreads/*.mli
 %{_libdir}/ocaml/vmthreads/*.a
+%if %{native_compiler}
 %{_libdir}/ocaml/threads/*.a
 %{_libdir}/ocaml/threads/*.cmxa
 %{_libdir}/ocaml/threads/*.cmx
+%endif
 %{_libdir}/ocaml/caml
 %{_libdir}/ocaml/ocamlbuild
 %exclude %{_libdir}/ocaml/graphicsX11.mli
@@ -383,10 +415,12 @@ fi
 %{_libdir}/ocaml/labltk/pp
 %{_libdir}/ocaml/labltk/tkcompiler
 %{_libdir}/ocaml/labltk/*.a
+%if %{native_compiler}
 %{_libdir}/ocaml/labltk/*.cmxa
 %{_libdir}/ocaml/labltk/*.cmx
-%{_libdir}/ocaml/labltk/*.mli
 %{_libdir}/ocaml/labltk/*.o
+%endif
+%{_libdir}/ocaml/labltk/*.mli
 %doc otherlibs/labltk/examples_labltk
 %doc otherlibs/labltk/examples_camltk
 
@@ -415,6 +449,7 @@ fi
 %defattr(-,root,root,-)
 %{_bindir}/camlp4*
 %{_bindir}/mkcamlp4
+%if %{native_compiler}
 %{_libdir}/ocaml/camlp4/*.a
 %{_libdir}/ocaml/camlp4/*.cmxa
 %{_libdir}/ocaml/camlp4/*.cmx
@@ -427,6 +462,7 @@ fi
 %{_libdir}/ocaml/camlp4/Camlp4Printers/*.o
 %{_libdir}/ocaml/camlp4/Camlp4Top/*.cmx
 %{_libdir}/ocaml/camlp4/Camlp4Top/*.o
+%endif
 %{_mandir}/man1/*
 
 
@@ -441,7 +477,9 @@ fi
 %defattr(-,root,root,-)
 %doc refman.pdf htmlman
 %{_infodir}/*
+%if %{native_compiler}
 %{_mandir}/man3/*
+%endif
 
 
 %files emacs
@@ -452,6 +490,11 @@ fi
 
 
 %changelog
+* Thu Dec  8 2011 Richard W.M. Jones <rjones@redhat.com> - 3.12.0-7
+- Allow this package to be compiled on platforms without native
+  support and/or natdynlink, specifically ppc64.  This updates (and
+  hopefully does not break) DJ's previous *.cmxs change for arm.
+
 * Fri Sep 23 2011 DJ Delorie <dj@redhat.com> - 3.12.0-6
 - Add arm type directive patch.
 - Allow more arm arches.
