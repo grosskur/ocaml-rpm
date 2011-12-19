@@ -2,7 +2,7 @@
 
 Name:           ocaml
 Version:        3.12.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
@@ -26,6 +26,9 @@ Patch1:         ocaml-user-cflags.patch
 
 # Patch from Debian for ARM (sent upstream).
 Patch3:         debian_patches_0013-ocamlopt-arm-add-.type-directive-for-code-symbols.patch
+
+# Non-upstream patch to build on ppc64.
+Patch4:         ocaml-ppc64.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -63,13 +66,13 @@ Provides:       ocaml(compiler) = %{version}
 # backend is only available on a subset of architectures.
 ExclusiveArch:  alpha %{arm} %{ix86} ia64 x86_64 ppc sparc sparcv9 ppc64
 
-%ifarch alpha %{arm} %{ix86} ia64 ppc sparc sparcv9 x86_64
+%ifarch alpha %{arm} %{ix86} ia64 ppc ppc64 sparc sparcv9 x86_64
 %global native_compiler 1
 %else
 %global native_compiler 0
 %endif
 
-%ifarch %{ix86} sparc sparcv9 x86_64
+%ifarch %{ix86} ppc64 sparc sparcv9 x86_64
 %global natdynlink 1
 %else
 %global natdynlink 0
@@ -219,6 +222,9 @@ man pages and info files.
 %patch0 -p1 -b .rpath
 %patch1 -p1 -b .cflags
 %patch3 -p1 -b .arm-type-dir
+%ifarch ppc ppc64
+%patch4 -p1 -b .ppc64
+%endif
 
 cp %{SOURCE2} refman.pdf
 
@@ -486,6 +492,11 @@ fi
 
 
 %changelog
+* Thu Jan 12 2012 Richard W.M. Jones <rjones@redhat.com> 3.12.1-2
+- add back ocaml-ppc64.patch for ppc secondary arch, drop .cmxs files
+  from file list on ppc (cherry picked from F16 - this should have
+  gone into Rawhide originally then been cherry picked back to F16)
+
 * Fri Jan  6 2012 Richard W.M. Jones <rjones@redhat.com> - 3.12.1-1
 - New upstream version 3.12.1.  This is a bugfix update.
 
