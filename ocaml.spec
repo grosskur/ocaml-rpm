@@ -43,7 +43,7 @@ BuildRequires:  tk-devel
 BuildRequires:  emacs
 BuildRequires:  gawk
 BuildRequires:  perl
-BuildRequires:  util-linux-ng
+BuildRequires:  util-linux
 BuildRequires:  libICE-devel
 BuildRequires:  libSM-devel
 BuildRequires:  libX11-devel
@@ -95,7 +95,7 @@ and a comprehensive library.
 %package runtime
 Group:          System Environment/Libraries
 Summary:        Objective Caml runtime environment
-Requires:       util-linux-ng
+Requires:       util-linux
 Provides:       ocaml(runtime) = %{version}
 
 %description runtime
