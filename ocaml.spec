@@ -1,8 +1,8 @@
 %global _default_patch_fuzz 2
 
 Name:           ocaml
-Version:        3.12.0
-Release:        7%{?dist}
+Version:        3.12.1
+Release:        1%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
@@ -23,9 +23,6 @@ Source6:        ocamlbyteinfo.ml
 
 Patch0:         ocaml-3.12.0-rpath.patch
 Patch1:         ocaml-user-cflags.patch
-
-# Fix for RHBZ#691896.  This is upstream in 3.12.1.
-Patch2:         0007-Fix-ocamlopt-w.r.t.-binutils-2.21.patch
 
 # Patch from Debian for ARM (sent upstream).
 Patch3:         debian_patches_0013-ocamlopt-arm-add-.type-directive-for-code-symbols.patch
@@ -221,7 +218,6 @@ man pages and info files.
 %setup -q -T -D -a 3 -n %{name}-%{version}
 %patch0 -p1 -b .rpath
 %patch1 -p1 -b .cflags
-%patch2 -p1 -b .rhbz691896
 %patch3 -p1 -b .arm-type-dir
 
 cp %{SOURCE2} refman.pdf
@@ -490,6 +486,9 @@ fi
 
 
 %changelog
+* Fri Jan  6 2012 Richard W.M. Jones <rjones@redhat.com> - 3.12.1-1
+- New upstream version 3.12.1.  This is a bugfix update.
+
 * Thu Dec  8 2011 Richard W.M. Jones <rjones@redhat.com> - 3.12.0-7
 - Allow this package to be compiled on platforms without native
   support and/or natdynlink, specifically ppc64.  This updates (and
