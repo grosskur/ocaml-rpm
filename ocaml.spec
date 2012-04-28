@@ -2,7 +2,7 @@
 
 Name:           ocaml
 Version:        3.12.1
-Release:        2%{?dist}
+Release:        3%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
@@ -21,6 +21,11 @@ Source3:        http://caml.inria.fr/distrib/ocaml-3.12/ocaml-3.12-refman.info.t
 Source6:        ocamlbyteinfo.ml
 #Source7:        ocamlplugininfo.ml
 
+# GNU config.guess and config.sub supplied with OCaml are 8 years old.
+# Use newer versions.
+Source8:        config.guess
+Source9:        config.sub
+
 Patch0:         ocaml-3.12.0-rpath.patch
 Patch1:         ocaml-user-cflags.patch
 
@@ -29,6 +34,9 @@ Patch3:         debian_patches_0013-ocamlopt-arm-add-.type-directive-for-code-sy
 
 # Non-upstream patch to build on ppc64.
 Patch4:         ocaml-ppc64.patch
+
+# New ARM backend by Benedikt Meurer (PR#5433), backported to OCaml 3.12.1.
+Patch5:         ocaml-3.12.1-merge-the-new-ARM-backend-into-trunk-PR-5433.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -72,7 +80,7 @@ ExclusiveArch:  alpha %{arm} %{ix86} ia64 x86_64 ppc sparc sparcv9 ppc64
 %global native_compiler 0
 %endif
 
-%ifarch %{ix86} ppc64 sparc sparcv9 x86_64
+%ifarch %{arm} %{ix86} ppc64 sparc sparcv9 x86_64
 %global natdynlink 1
 %else
 %global natdynlink 0
@@ -225,8 +233,12 @@ man pages and info files.
 %ifarch ppc ppc64
 %patch4 -p1 -b .ppc64
 %endif
+%patch5 -p1 -b .new-arm
 
 cp %{SOURCE2} refman.pdf
+
+cp %{SOURCE8} %{SOURCE9} config/gnu/
+chmod +x config/gnu/config.{guess,sub}
 
 
 %build
@@ -492,6 +504,11 @@ fi
 
 
 %changelog
+* Sat Apr 28 2012 Richard W.M. Jones <rjones@redhat.com> 3.12.1-3
+- New ARM backend by Benedikt Meurer, backported to OCaml 3.12.1.
+  This has several advantages, including enabling natdynlink on ARM.
+- Provide updated config.guess and config.sub (from OCaml upstream tree).
+
 * Thu Jan 12 2012 Richard W.M. Jones <rjones@redhat.com> 3.12.1-2
 - add back ocaml-ppc64.patch for ppc secondary arch, drop .cmxs files
   from file list on ppc (cherry picked from F16 - this should have
