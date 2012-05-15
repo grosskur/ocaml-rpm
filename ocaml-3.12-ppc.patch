@@ -1,0 +1,12 @@
+diff -up ocaml-3.12.1/asmcomp/power64/selection.ml.ppc_1 ocaml-3.12.1/asmcomp/power64/selection.ml
+--- ocaml-3.12.1/asmcomp/power64/selection.ml.ppc_1	2012-05-15 15:28:45.240364647 +0200
++++ ocaml-3.12.1/asmcomp/power64/selection.ml	2012-05-15 15:28:58.170366764 +0200
+@@ -52,7 +52,7 @@ inherit Selectgen.selector_generic as su
+ 
+ method is_immediate n = (n <= 32767) && (n >= -32768)
+ 
+-method select_addressing exp =
++method select_addressing chunk exp =
+   match select_addr exp with
+     (Asymbol s, d) ->
+       (Ibased(s, d), Ctuple [])
