@@ -235,9 +235,9 @@ man pages and info files.
 %patch3 -p1 -b .arm-type-dir
 %ifarch ppc ppc64
 %patch4 -p1 -b .ppc64
+%patch6 -p1 -b .ppc64_1
 %endif
 %patch5 -p1 -b .new-arm
-%patch6 -p1 -b .ppc_1
 
 cp %{SOURCE2} refman.pdf
 
