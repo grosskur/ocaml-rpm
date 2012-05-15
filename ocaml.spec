@@ -2,7 +2,7 @@
 
 Name:           ocaml
 Version:        3.12.1
-Release:        3%{?dist}
+Release:        4%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
@@ -37,6 +37,9 @@ Patch4:         ocaml-ppc64.patch
 
 # New ARM backend by Benedikt Meurer (PR#5433), backported to OCaml 3.12.1.
 Patch5:         ocaml-3.12.1-merge-the-new-ARM-backend-into-trunk-PR-5433.patch
+
+# the new arm backend missed one small patch for PPC:
+Patch6:		ocaml-3.12-ppc.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
 
@@ -234,6 +237,7 @@ man pages and info files.
 %patch4 -p1 -b .ppc64
 %endif
 %patch5 -p1 -b .new-arm
+%patch6 -p1 -b .ppc_1
 
 cp %{SOURCE2} refman.pdf
 
@@ -504,6 +508,9 @@ fi
 
 
 %changelog
+* Tue May 15 2012 Tue May 15 2012 Karsten Hopp <karsten@redhat.com> 3.12.1-4
+- ppc64 got broken by the new ARM backend, add a minor patch
+
 * Sat Apr 28 2012 Richard W.M. Jones <rjones@redhat.com> 3.12.1-3
 - New ARM backend by Benedikt Meurer, backported to OCaml 3.12.1.
   This has several advantages, including enabling natdynlink on ARM.
