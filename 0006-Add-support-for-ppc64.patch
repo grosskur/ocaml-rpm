@@ -1,6 +1,41 @@
-diff -uNr ocaml-3.10.1/asmcomp/power64/arch.ml ocaml-3.10.1.ppc64/asmcomp/power64/arch.ml
---- ocaml-3.10.1/asmcomp/power64/arch.ml        1969-12-31 19:00:00.000000000 -0500
-+++ ocaml-3.10.1.ppc64/asmcomp/power64/arch.ml  2008-02-29 08:37:45.000000000 -0500
+From a9648ff01cea44e6892663e97c3c388686b4fcd7 Mon Sep 17 00:00:00 2001
+From: "Richard W.M. Jones" <rjones@redhat.com>
+Date: Tue, 29 May 2012 20:47:07 +0100
+Subject: [PATCH 6/7] Add support for ppc64.
+
+Note (1): This patch was rejected upstream because they don't have
+appropriate hardware for testing.
+
+Note (2): Upstream powerpc directory has some support for ppc64, but
+only for Macs, and I couldn't get it to work at all with IBM hardware.
+
+This patch was collaborated on by several people, most notably David
+Woodhouse.
+---
+ asmcomp/power64/arch.ml       |   84 ++++
+ asmcomp/power64/emit.mlp      |  989 +++++++++++++++++++++++++++++++++++++++++
+ asmcomp/power64/proc.ml       |  245 ++++++++++
+ asmcomp/power64/reload.ml     |   18 +
+ asmcomp/power64/scheduling.ml |   66 +++
+ asmcomp/power64/selection.ml  |  103 +++++
+ asmrun/Makefile               |    6 +
+ asmrun/power64-elf.S          |  486 ++++++++++++++++++++
+ asmrun/stack.h                |    9 +
+ configure                     |    5 +-
+ 10 files changed, 2010 insertions(+), 1 deletion(-)
+ create mode 100644 asmcomp/power64/arch.ml
+ create mode 100644 asmcomp/power64/emit.mlp
+ create mode 100644 asmcomp/power64/proc.ml
+ create mode 100644 asmcomp/power64/reload.ml
+ create mode 100644 asmcomp/power64/scheduling.ml
+ create mode 100644 asmcomp/power64/selection.ml
+ create mode 100644 asmrun/power64-elf.S
+
+diff --git a/asmcomp/power64/arch.ml b/asmcomp/power64/arch.ml
+new file mode 100644
+index 0000000..93b5b18
+--- /dev/null
++++ b/asmcomp/power64/arch.ml
 @@ -0,0 +1,84 @@
 +(***********************************************************************)
 +(*                                                                     *)
@@ -86,9 +121,11 @@ diff -uNr ocaml-3.10.1/asmcomp/power64/arch.ml ocaml-3.10.1.ppc64/asmcomp/power6
 +  | Ialloc_far n ->
 +      fprintf ppf "alloc_far %d" n
 +
-diff -uNr ocaml-3.10.1/asmcomp/power64/emit.mlp ocaml-3.10.1.ppc64/asmcomp/power64/emit.mlp
---- ocaml-3.10.1/asmcomp/power64/emit.mlp       1969-12-31 19:00:00.000000000 -0500
-+++ ocaml-3.10.1.ppc64/asmcomp/power64/emit.mlp 2008-02-29 08:37:45.000000000 -0500
+diff --git a/asmcomp/power64/emit.mlp b/asmcomp/power64/emit.mlp
+new file mode 100644
+index 0000000..95eb193
+--- /dev/null
++++ b/asmcomp/power64/emit.mlp
 @@ -0,0 +1,989 @@
 +(***********************************************************************)
 +(*                                                                     *)
@@ -1079,9 +1116,11 @@ diff -uNr ocaml-3.10.1/asmcomp/power64/emit.mlp ocaml-3.10.1.ppc64/asmcomp/power
 +  `    .quad   {emit_int (List.length !frame_descriptors)}\n`;
 +  List.iter emit_frame !frame_descriptors;
 +  frame_descriptors := []
-diff -uNr ocaml-3.10.1/asmcomp/power64/proc.ml ocaml-3.10.1.ppc64/asmcomp/power64/proc.ml
---- ocaml-3.10.1/asmcomp/power64/proc.ml        1969-12-31 19:00:00.000000000 -0500
-+++ ocaml-3.10.1.ppc64/asmcomp/power64/proc.ml  2008-02-29 08:37:45.000000000 -0500
+diff --git a/asmcomp/power64/proc.ml b/asmcomp/power64/proc.ml
+new file mode 100644
+index 0000000..95bf6c4
+--- /dev/null
++++ b/asmcomp/power64/proc.ml
 @@ -0,0 +1,245 @@
 +(***********************************************************************)
 +(*                                                                     *)
@@ -1328,9 +1367,11 @@ diff -uNr ocaml-3.10.1/asmcomp/power64/proc.ml ocaml-3.10.1.ppc64/asmcomp/power6
 +
 +open Clflags;;
 +open Config;;
-diff -uNr ocaml-3.10.1/asmcomp/power64/reload.ml ocaml-3.10.1.ppc64/asmcomp/power64/reload.ml
---- ocaml-3.10.1/asmcomp/power64/reload.ml      1969-12-31 19:00:00.000000000 -0500
-+++ ocaml-3.10.1.ppc64/asmcomp/power64/reload.ml        2008-02-29 08:37:45.000000000 -0500
+diff --git a/asmcomp/power64/reload.ml b/asmcomp/power64/reload.ml
+new file mode 100644
+index 0000000..42d5d4d
+--- /dev/null
++++ b/asmcomp/power64/reload.ml
 @@ -0,0 +1,18 @@
 +(***********************************************************************)
 +(*                                                                     *)
@@ -1350,9 +1391,11 @@ diff -uNr ocaml-3.10.1/asmcomp/power64/reload.ml ocaml-3.10.1.ppc64/asmcomp/powe
 +
 +let fundecl f =
 +  (new Reloadgen.reload_generic)#fundecl f
-diff -uNr ocaml-3.10.1/asmcomp/power64/scheduling.ml ocaml-3.10.1.ppc64/asmcomp/power64/scheduling.ml
---- ocaml-3.10.1/asmcomp/power64/scheduling.ml  1969-12-31 19:00:00.000000000 -0500
-+++ ocaml-3.10.1.ppc64/asmcomp/power64/scheduling.ml    2008-02-29 08:37:45.000000000 -0500
+diff --git a/asmcomp/power64/scheduling.ml b/asmcomp/power64/scheduling.ml
+new file mode 100644
+index 0000000..d73e333
+--- /dev/null
++++ b/asmcomp/power64/scheduling.ml
 @@ -0,0 +1,66 @@
 +(***********************************************************************)
 +(*                                                                     *)
@@ -1420,9 +1463,11 @@ diff -uNr ocaml-3.10.1/asmcomp/power64/scheduling.ml ocaml-3.10.1.ppc64/asmcomp/
 +
 +let fundecl f = (new scheduler)#schedule_fundecl f
 +
-diff -uNr ocaml-3.10.1/asmcomp/power64/selection.ml ocaml-3.10.1.ppc64/asmcomp/power64/selection.ml
---- ocaml-3.10.1/asmcomp/power64/selection.ml   1969-12-31 19:00:00.000000000 -0500
-+++ ocaml-3.10.1.ppc64/asmcomp/power64/selection.ml     2008-02-29 08:37:45.000000000 -0500
+diff --git a/asmcomp/power64/selection.ml b/asmcomp/power64/selection.ml
+new file mode 100644
+index 0000000..afc7649
+--- /dev/null
++++ b/asmcomp/power64/selection.ml
 @@ -0,0 +1,103 @@
 +(***********************************************************************)
 +(*                                                                     *)
@@ -1527,12 +1572,13 @@ diff -uNr ocaml-3.10.1/asmcomp/power64/selection.ml ocaml-3.10.1.ppc64/asmcomp/p
 +end
 +
 +let fundecl f = (new selector)#emit_fundecl f
-diff -uNr ocaml-3.10.1/asmrun/Makefile ocaml-3.10.1.ppc64/asmrun/Makefile
---- ocaml-3.10.1/asmrun/Makefile        2007-02-23 04:29:45.000000000 -0500
-+++ ocaml-3.10.1.ppc64/asmrun/Makefile  2008-02-29 08:37:45.000000000 -0500
-@@ -74,6 +74,12 @@
+diff --git a/asmrun/Makefile b/asmrun/Makefile
+index efffa33..3525b82 100644
+--- a/asmrun/Makefile
++++ b/asmrun/Makefile
+@@ -74,6 +74,12 @@ power.o: power-$(SYSTEM).o
  power.p.o: power-$(SYSTEM).o
-	cp power-$(SYSTEM).o power.p.o
+ 	cp power-$(SYSTEM).o power.p.o
  
 +power64.o: power64-$(SYSTEM).o
 +	cp power64-$(SYSTEM).o power64.o
@@ -1541,11 +1587,13 @@ diff -uNr ocaml-3.10.1/asmrun/Makefile ocaml-3.10.1.ppc64/asmrun/Makefile
 +	cp power64-$(SYSTEM).o power64.p.o
 +
  main.c: ../byterun/main.c
-        ln -s ../byterun/main.c main.c
+ 	ln -s ../byterun/main.c main.c
  misc.c: ../byterun/misc.c
-diff -uNr ocaml-3.10.1/asmrun/power64-elf.S ocaml-3.10.1.ppc64/asmrun/power64-elf.S
---- ocaml-3.10.1/asmrun/power64-elf.S   1969-12-31 19:00:00.000000000 -0500
-+++ ocaml-3.10.1.ppc64/asmrun/power64-elf.S     2008-02-29 08:37:45.000000000 -0500
+diff --git a/asmrun/power64-elf.S b/asmrun/power64-elf.S
+new file mode 100644
+index 0000000..b2c24d6
+--- /dev/null
++++ b/asmrun/power64-elf.S
 @@ -0,0 +1,486 @@
 +/*********************************************************************/
 +/*                                                                   */
@@ -2033,9 +2081,10 @@ diff -uNr ocaml-3.10.1/asmrun/power64-elf.S ocaml-3.10.1.ppc64/asmrun/power64-el
 +        .short  0               /* no roots here */
 +        .align  3
 +
-diff -uNr ocaml-3.10.1/asmrun/stack.h ocaml-3.10.1.ppc64/asmrun/stack.h
---- ocaml-3.10.1/asmrun/stack.h 2007-02-15 13:35:20.000000000 -0500
-+++ ocaml-3.10.1.ppc64/asmrun/stack.h   2008-02-29 08:37:45.000000000 -0500
+diff --git a/asmrun/stack.h b/asmrun/stack.h
+index c778873..f1d2e6a 100644
+--- a/asmrun/stack.h
++++ b/asmrun/stack.h
 @@ -65,6 +65,15 @@
  #define Callback_link(sp) ((struct caml_context *)((sp) + Trap_frame_size))
  #endif
@@ -2052,10 +2101,11 @@ diff -uNr ocaml-3.10.1/asmrun/stack.h ocaml-3.10.1.ppc64/asmrun/stack.h
  #ifdef TARGET_m68k
  #define Saved_return_address(sp) *((intnat *)((sp) - 4))
  #define Callback_link(sp) ((struct caml_context *)((sp) + 8))
-diff -uNr ocaml-3.11.0+beta1/configure ocaml-3.11.0+beta1.ppc64/configure
---- ocaml-3.11.0+beta1/configure.ppc64  2008-11-18 15:46:57.000000000 +0000
-+++ ocaml-3.11.0+beta1/configure        2008-11-18 15:49:19.000000000 +0000
-@@ -632,6 +632,7 @@
+diff --git a/configure b/configure
+index d0a6b0f..6ed0a9c 100755
+--- a/configure
++++ b/configure
+@@ -685,6 +685,7 @@ case "$host" in
    hppa2.0*-*-hpux*)             arch=hppa; system=hpux;;
    hppa*-*-linux*)               arch=hppa; system=linux;;
    hppa*-*-gnu*)                 arch=hppa; system=gnu;;
@@ -2063,7 +2113,7 @@ diff -uNr ocaml-3.11.0+beta1/configure ocaml-3.11.0+beta1.ppc64/configure
    powerpc*-*-linux*)            arch=power; model=ppc; system=elf;;
    powerpc-*-netbsd*)            arch=power; model=ppc; system=elf;;
    powerpc-*-rhapsody*)          arch=power; model=ppc; system=rhapsody;;
-@@ -655,7 +656,7 @@
+@@ -709,7 +710,7 @@ esac
  
  if $arch64; then
    case "$arch,$model" in
@@ -2072,7 +2122,7 @@ diff -uNr ocaml-3.11.0+beta1/configure ocaml-3.11.0+beta1.ppc64/configure
        arch=none; model=default; system=unknown;;
    esac
  fi
-@@ -712,6 +713,8 @@
+@@ -772,6 +773,8 @@ case "$arch,$model,$system" in
                      aspp='as -n32 -O2';;
    power,*,elf)      as='as -u -m ppc'
                      aspp='gcc -c';;
@@ -2081,3 +2131,6 @@ diff -uNr ocaml-3.11.0+beta1/configure ocaml-3.11.0+beta1.ppc64/configure
    power,*,bsd)      as='as'
                      aspp='gcc -c';;
    power,*,rhapsody) as="as -arch $model"
+-- 
+1.7.10
+

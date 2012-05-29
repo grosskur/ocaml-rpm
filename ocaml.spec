@@ -2,7 +2,7 @@
 
 Name:           ocaml
 Version:        3.12.1
-Release:        4%{?dist}
+Release:        5%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
@@ -16,32 +16,26 @@ Source1:        http://caml.inria.fr/distrib/ocaml-3.12/ocaml-3.12-refman.html.t
 Source2:        http://caml.inria.fr/distrib/ocaml-3.12/ocaml-3.12-refman.pdf
 Source3:        http://caml.inria.fr/distrib/ocaml-3.12/ocaml-3.12-refman.info.tar.gz
 
-# Useful utilities from Debian, and sent upstream.
-# http://git.debian.org/?p=pkg-ocaml-maint/packages/ocaml.git;a=tree;f=debian/ocamlbyteinfo;hb=HEAD
-Source6:        ocamlbyteinfo.ml
-#Source7:        ocamlplugininfo.ml
-
-# GNU config.guess and config.sub supplied with OCaml are 8 years old.
-# Use newer versions.
-Source8:        config.guess
-Source9:        config.sub
-
-Patch0:         ocaml-3.12.0-rpath.patch
-Patch1:         ocaml-user-cflags.patch
-
-# Patch from Debian for ARM (sent upstream).
-Patch3:         debian_patches_0013-ocamlopt-arm-add-.type-directive-for-code-symbols.patch
-
-# Non-upstream patch to build on ppc64.
-Patch4:         ocaml-ppc64.patch
-
-# New ARM backend by Benedikt Meurer (PR#5433), backported to OCaml 3.12.1.
-Patch5:         ocaml-3.12.1-merge-the-new-ARM-backend-into-trunk-PR-5433.patch
-
-# the new arm backend missed one small patch for PPC:
-Patch6:		ocaml-3.12-ppc.patch
-
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root-%(%{__id_u} -n)
+# IMPORTANT NOTE:
+#
+# These patches are generated from unpacked sources stored in a
+# fedorahosted git repository.  If you change the patches here, they
+# will be OVERWRITTEN by the next update.  Instead, request commit
+# access to the fedorahosted project:
+#
+# http://git.fedorahosted.org/git/?p=fedora-ocaml.git
+#
+# ALTERNATIVELY add a patch to the end of the list (leaving the
+# existing patches unchanged) adding a comment to note that it should
+# be incorporated into the git repo at a later time.
+#
+Patch0001:      0001-ocamlbyteinfo-ocamlplugininfo-Useful-utilities-from-.patch
+Patch0002:      0002-GNU-config.guess-and-config.sub-replacements.patch
+Patch0003:      0003-Don-t-add-rpaths-to-libraries.patch
+Patch0004:      0004-configure-Allow-user-defined-C-compiler-flags.patch
+Patch0005:      0005-ocamlopt-arm-add-.type-directive-for-code-symbols.patch
+Patch0006:      0006-Add-support-for-ppc64.patch
+Patch0007:      0007-New-ARM-backend-written-by-Benedikt-Meurer-PR-5433.patch
 
 # Depend on previous version of OCaml so that ocamlobjinfo
 # can run.
@@ -230,18 +224,16 @@ man pages and info files.
 %setup -q -T -b 0 -n %{name}-%{version}
 %setup -q -T -D -a 1 -n %{name}-%{version}
 %setup -q -T -D -a 3 -n %{name}-%{version}
-%patch0 -p1 -b .rpath
-%patch1 -p1 -b .cflags
-%patch3 -p1 -b .arm-type-dir
-%ifarch ppc ppc64
-%patch4 -p1 -b .ppc64
-%patch6 -p1 -b .ppc64_1
-%endif
-%patch5 -p1 -b .new-arm
+
+git init
+git config user.email "noone@example.com"
+git config user.name "no one"
+git add .
+git commit -a -q -m "%{version} baseline"
+git am %{patches}
 
 cp %{SOURCE2} refman.pdf
 
-cp %{SOURCE8} %{SOURCE9} config/gnu/
 chmod +x config/gnu/config.{guess,sub}
 
 
@@ -261,7 +253,6 @@ make -C emacs ocamltags
 
 # Currently these tools are supplied by Debian, but are expected
 # to go upstream at some point.
-cp %{SOURCE6} .
 includes="-nostdlib -I stdlib -I utils -I parsing -I typing -I bytecomp -I asmcomp -I driver -I otherlibs/unix -I otherlibs/str -I otherlibs/dynlink"
 boot/ocamlrun ./ocamlc $includes dynlinkaux.cmo ocamlbyteinfo.ml -o ocamlbyteinfo
 #cp otherlibs/dynlink/natdynlink.ml .
@@ -508,7 +499,12 @@ fi
 
 
 %changelog
-* Tue May 15 2012 Tue May 15 2012 Karsten Hopp <karsten@redhat.com> 3.12.1-4
+* Tue May 29 2012 Richard W.M. Jones <rjones@redhat.com> 3.12.1-5
+- Move patches to external git repo:
+  http://git.fedorahosted.org/git/?p=fedora-ocaml.git
+  There should be no change introduced here.
+
+* Tue May 15 2012 Karsten Hopp <karsten@redhat.com> 3.12.1-4
 - ppc64 got broken by the new ARM backend, add a minor patch
 
 * Sat Apr 28 2012 Richard W.M. Jones <rjones@redhat.com> 3.12.1-3

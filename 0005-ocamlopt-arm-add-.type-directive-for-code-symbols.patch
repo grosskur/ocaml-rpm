@@ -1,6 +1,7 @@
+From e3b5b13c53b62b99c4d6764b52a7269a6fe5b983 Mon Sep 17 00:00:00 2001
 From: Stephane Glondu <steph@glondu.net>
-Date: Fri, 12 Aug 2011 21:13:17 +0200
-Subject: ocamlopt/arm: add .type directive for code symbols
+Date: Tue, 29 May 2012 20:45:32 +0100
+Subject: [PATCH 5/7] ocamlopt/arm: add .type directive for code symbols
 
 Bug: http://caml.inria.fr/mantis/view.php?id=5336
 Bug-Ubuntu: https://bugs.launchpad.net/bugs/810402
@@ -8,7 +9,7 @@ Signed-off-by: Stephane Glondu <steph@glondu.net>
 ---
  asmcomp/arm/emit.mlp |    1 +
  asmrun/arm.S         |   12 ++++++++++++
- 2 files changed, 13 insertions(+), 0 deletions(-)
+ 2 files changed, 13 insertions(+)
 
 diff --git a/asmcomp/arm/emit.mlp b/asmcomp/arm/emit.mlp
 index 2003313..a4b2241 100644
@@ -123,3 +124,5 @@ index 164f731..1313e9c 100644
      /* Load address of [caml_array_bound_error] in r12 */
          ldr     r12, .Lcaml_array_bound_error
 -- 
+1.7.10
+

@@ -1,0 +1,27 @@
+From 0febdfe1698639ce53e6ed8935cdc573be302b49 Mon Sep 17 00:00:00 2001
+From: "Richard W.M. Jones" <rjones@redhat.com>
+Date: Tue, 29 May 2012 20:44:18 +0100
+Subject: [PATCH 4/7] configure: Allow user defined C compiler flags.
+
+---
+ configure |    4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/configure b/configure
+index 9be5199..d0a6b0f 100755
+--- a/configure
++++ b/configure
+@@ -1600,6 +1600,10 @@ case "$buggycc" in
+     nativecccompopts="$nativecccompopts -fomit-frame-pointer";;
+ esac
+ 
++# Allow user defined C Compiler flags
++bytecccompopts="$bytecccompopts $CFLAGS"
++nativecccompopts="$nativecccompopts $CFLAGS"
++
+ # Finish generated files
+ 
+ cclibs="$cclibs $mathlib"
+-- 
+1.7.10
+

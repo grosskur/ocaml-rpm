@@ -1,7 +1,33 @@
-diff -urN ocaml-3.12.1-noarm/asmcomp/amd64/selection.ml ocaml-3.12.1-arm/asmcomp/amd64/selection.ml
---- ocaml-3.12.1-noarm/asmcomp/amd64/selection.ml	2010-04-08 04:58:41.000000000 +0100
-+++ ocaml-3.12.1-arm/asmcomp/amd64/selection.ml	2012-04-28 12:19:05.173844703 +0100
-@@ -121,7 +121,7 @@
+From 03318d9e7ef402f137dd100fe31bd01c37c1b94f Mon Sep 17 00:00:00 2001
+From: "Richard W.M. Jones" <rjones@redhat.com>
+Date: Tue, 29 May 2012 20:50:42 +0100
+Subject: [PATCH 7/7] New ARM backend, written by Benedikt Meurer (PR#5433).
+
+Backported from upstream sources to 3.12.1 by RWMJ.
+---
+ asmcomp/amd64/selection.ml   |   14 +-
+ asmcomp/arm/arch.ml          |  152 +++++++-
+ asmcomp/arm/emit.mlp         |  850 ++++++++++++++++++++++++++++--------------
+ asmcomp/arm/proc.ml          |  185 ++++++---
+ asmcomp/arm/reload.ml        |    4 +-
+ asmcomp/arm/scheduling.ml    |   80 ++--
+ asmcomp/arm/selection.ml     |  343 ++++++++++-------
+ asmcomp/i386/selection.ml    |   14 +-
+ asmcomp/power/selection.ml   |    2 +-
+ asmcomp/power64/selection.ml |    2 +-
+ asmcomp/selectgen.ml         |   13 +-
+ asmcomp/selectgen.mli        |    2 +-
+ asmcomp/sparc/selection.ml   |    2 +-
+ asmrun/arm.S                 |  544 ++++++++++++++++-----------
+ asmrun/signals_osdep.h       |    2 +-
+ configure                    |   11 +-
+ 16 files changed, 1477 insertions(+), 743 deletions(-)
+
+diff --git a/asmcomp/amd64/selection.ml b/asmcomp/amd64/selection.ml
+index f0546cf..5d9f6fa 100644
+--- a/asmcomp/amd64/selection.ml
++++ b/asmcomp/amd64/selection.ml
+@@ -121,7 +121,7 @@ method is_immediate n = n <= 0x7FFFFFFF && n >= -0x80000000
  
  method is_immediate_natint n = n <= 0x7FFFFFFFn && n >= -0x80000000n
  
@@ -10,7 +36,7 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/amd64/selection.ml ocaml-3.12.1-arm/asmcomp
    let (a, d) = select_addr exp in
    (* PR#4625: displacement must be a signed 32-bit immediate *)
    if d < -0x8000_0000 || d > 0x7FFF_FFFF
-@@ -157,7 +157,7 @@
+@@ -157,7 +157,7 @@ method! select_operation op args =
    match op with
    (* Recognize the LEA instruction *)
      Caddi | Cadda | Csubi | Csuba ->
@@ -19,7 +45,7 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/amd64/selection.ml ocaml-3.12.1-arm/asmcomp
          (Iindexed d, _) -> super#select_operation op args
        | (Iindexed2 0, _) -> super#select_operation op args
        | (addr, arg) -> (Ispecific(Ilea addr), [arg])
-@@ -191,7 +191,7 @@
+@@ -191,7 +191,7 @@ method! select_operation op args =
        begin match args with
          [loc; Cop(Caddi, [Cop(Cload _, [loc']); Cconst_int n])]
          when loc = loc' && self#is_immediate n ->
@@ -28,7 +54,7 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/amd64/selection.ml ocaml-3.12.1-arm/asmcomp
            (Ispecific(Ioffset_loc(n, addr)), [arg])
        | _ ->
            super#select_operation op args
-@@ -202,12 +202,12 @@
+@@ -202,12 +202,12 @@ method! select_operation op args =
  
  method select_floatarith commutative regular_op mem_op args =
    match args with
@@ -45,9 +71,10 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/amd64/selection.ml ocaml-3.12.1-arm/asmcomp
        (Ispecific(Ifloatarithmem(mem_op, addr)),
                   [arg2; arg1])
    | [arg1; arg2] ->
-diff -urN ocaml-3.12.1-noarm/asmcomp/arm/arch.ml ocaml-3.12.1-arm/asmcomp/arm/arch.ml
---- ocaml-3.12.1-noarm/asmcomp/arm/arch.ml	2002-11-29 15:03:37.000000000 +0000
-+++ ocaml-3.12.1-arm/asmcomp/arm/arch.ml	2012-04-28 09:20:35.016065972 +0100
+diff --git a/asmcomp/arm/arch.ml b/asmcomp/arm/arch.ml
+index 998fa4b..c4aca8d 100644
+--- a/asmcomp/arm/arch.ml
++++ b/asmcomp/arm/arch.ml
 @@ -1,25 +1,98 @@
  (***********************************************************************)
  (*                                                                     *)
@@ -154,7 +181,7 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/arm/arch.ml ocaml-3.12.1-arm/asmcomp/arm/ar
  
  (* Addressing modes *)
  
-@@ -37,6 +110,14 @@
+@@ -37,6 +110,14 @@ type specific_operation =
      Ishiftarith of arith_operation * int
    | Ishiftcheckbound of int
    | Irevsubimm of int
@@ -169,7 +196,7 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/arm/arch.ml ocaml-3.12.1-arm/asmcomp/arm/ar
  
  and arith_operation =
      Ishiftadd
-@@ -51,6 +132,10 @@
+@@ -51,6 +132,10 @@ let size_addr = 4
  let size_int = 4
  let size_float = 8
  
@@ -180,7 +207,7 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/arm/arch.ml ocaml-3.12.1-arm/asmcomp/arm/ar
  (* Operations on addressing modes *)
  
  let identity_addressing = Iindexed 0
-@@ -84,3 +169,56 @@
+@@ -84,3 +169,56 @@ let print_specific_operation printreg op ppf arg =
        fprintf ppf "check %a >> %i > %a" printreg arg.(0) n printreg arg.(1)
    | Irevsubimm n ->
        fprintf ppf "%i %s %a" n "-" printreg arg.(0)
@@ -237,9 +264,10 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/arm/arch.ml ocaml-3.12.1-arm/asmcomp/arm/ar
 +    s := !s + 2
 +  done;
 +  !s <= m
-diff -urN ocaml-3.12.1-noarm/asmcomp/arm/emit.mlp ocaml-3.12.1-arm/asmcomp/arm/emit.mlp
---- ocaml-3.12.1-noarm/asmcomp/arm/emit.mlp	2012-04-27 20:51:07.196775304 +0100
-+++ ocaml-3.12.1-arm/asmcomp/arm/emit.mlp	2012-04-28 09:20:35.037066348 +0100
+diff --git a/asmcomp/arm/emit.mlp b/asmcomp/arm/emit.mlp
+index a4b2241..846ee4a 100644
+--- a/asmcomp/arm/emit.mlp
++++ b/asmcomp/arm/emit.mlp
 @@ -1,16 +1,17 @@
  (***********************************************************************)
  (*                                                                     *)
@@ -264,7 +292,7 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/arm/emit.mlp ocaml-3.12.1-arm/asmcomp/arm/e
  
  (* Emission of ARM assembly code *)
  
-@@ -33,16 +34,28 @@
+@@ -33,16 +34,28 @@ let fastcode_flag = ref true
  let emit_label lbl =
    emit_string ".L"; emit_int lbl
  
@@ -297,7 +325,7 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/arm/emit.mlp ocaml-3.12.1-arm/asmcomp/arm/e
    | _ -> fatal_error "Emit_arm.emit_reg"
  
  (* Layout of the stack frame *)
-@@ -53,14 +66,23 @@
+@@ -53,14 +66,23 @@ let frame_size () =
    let sz =
      !stack_offset +
      4 * num_stack_slots.(0) +
@@ -324,7 +352,7 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/arm/emit.mlp ocaml-3.12.1-arm/asmcomp/arm/e
  
  (* Output a stack reference *)
  
-@@ -79,20 +101,13 @@
+@@ -79,20 +101,13 @@ let emit_addressing addr r n =
  
  (* Record live pointers at call points *)
  
@@ -347,12 +375,22 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/arm/emit.mlp ocaml-3.12.1-arm/asmcomp/arm/e
        | {typ = Addr; loc = Stack s} as reg ->
            live_offset := slot_offset s (register_class reg) :: !live_offset
        | _ -> ())
-@@ -100,18 +115,57 @@
+@@ -100,18 +115,57 @@ let record_frame live =
    frame_descriptors :=
      { fd_lbl = lbl;
        fd_frame_size = frame_size();
 -      fd_live_offset = !live_offset } :: !frame_descriptors;
 -  `{emit_label lbl}:`
+-
+-let emit_frame fd =
+-  `	.word	{emit_label fd.fd_lbl} + 4\n`;
+-  `	.short	{emit_int fd.fd_frame_size}\n`;
+-  `	.short	{emit_int (List.length fd.fd_live_offset)}\n`;
+-  List.iter
+-    (fun n ->
+-      `	.short	{emit_int n}\n`)
+-    fd.fd_live_offset;
+-  `	.align	2\n`
 +      fd_live_offset = !live_offset;
 +      fd_debuginfo = dbg } :: !frame_descriptors;
 +  lbl
@@ -394,16 +432,7 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/arm/emit.mlp ocaml-3.12.1-arm/asmcomp/arm/e
 +  end else begin
 +    let bd = List.hd !bound_error_sites in bd.bd_lbl
 +  end
- 
--let emit_frame fd =
--  `	.word	{emit_label fd.fd_lbl} + 4\n`;
--  `	.short	{emit_int fd.fd_frame_size}\n`;
--  `	.short	{emit_int (List.length fd.fd_live_offset)}\n`;
--  List.iter
--    (fun n ->
--      `	.short	{emit_int n}\n`)
--    fd.fd_live_offset;
--  `	.align	2\n`
++
 +let emit_call_bound_error bd =
 +  `{emit_label bd.bd_lbl}:	{emit_call "caml_ml_array_bound_error"}\n`;
 +  `{emit_label bd.bd_frame_lbl}:\n`
@@ -416,7 +445,7 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/arm/emit.mlp ocaml-3.12.1-arm/asmcomp/arm/e
  
  (* Names of various instructions *)
  
-@@ -121,22 +175,13 @@
+@@ -121,22 +175,13 @@ let name_for_comparison = function
    | Iunsigned Ceq -> "eq" | Iunsigned Cne -> "ne" | Iunsigned Cle -> "ls"
    | Iunsigned Cge -> "cs" | Iunsigned Clt -> "cc" | Iunsigned Cgt -> "hi"
  
@@ -442,7 +471,7 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/arm/emit.mlp ocaml-3.12.1-arm/asmcomp/arm/e
    | _ -> assert false
  
  let name_for_shift_operation = function
-@@ -145,60 +190,54 @@
+@@ -145,60 +190,54 @@ let name_for_shift_operation = function
    | Iasr -> "asr"
    | _ -> assert false
  
@@ -529,7 +558,7 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/arm/emit.mlp ocaml-3.12.1-arm/asmcomp/arm/e
          first := false)
    end
  
-@@ -206,46 +245,105 @@
+@@ -206,46 +245,105 @@ let emit_intconst r n =
  
  let emit_stack_adjustment instr n =
    if n <= 0 then 0 else
@@ -573,13 +602,7 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/arm/emit.mlp ocaml-3.12.1-arm/asmcomp/arm/e
      lbl
  
 -(* Emit all pending constants *)
-+(* Label a GOTREL literal *)
-+let gotrel_literal l =
-+  let lbl = new_label() in
-+  num_literals := !num_literals + 1;
-+  gotrel_literals := (l, lbl) :: !gotrel_literals;
-+  lbl
- 
+-
 -let emit_constants () =
 -  Hashtbl.iter
 -    (fun s lbl ->
@@ -591,6 +614,13 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/arm/emit.mlp ocaml-3.12.1-arm/asmcomp/arm/e
 -    float_constants;
 -  Hashtbl.clear symbol_constants;
 -  Hashtbl.clear float_constants;
++(* Label a GOTREL literal *)
++let gotrel_literal l =
++  let lbl = new_label() in
++  num_literals := !num_literals + 1;
++  gotrel_literals := (l, lbl) :: !gotrel_literals;
++  lbl
++
 +(* Label a symbol literal *)
 +let symbol_literal s =
 +  try
@@ -659,7 +689,7 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/arm/emit.mlp ocaml-3.12.1-arm/asmcomp/arm/e
  (* Output the assembly code for an instruction *)
  
  let emit_instr i =
-@@ -254,40 +352,76 @@
+@@ -254,40 +352,76 @@ let emit_instr i =
      | Lop(Imove | Ispill | Ireload) ->
          let src = i.arg.(0) and dst = i.res.(0) in
          if src.loc = dst.loc then 0 else begin
@@ -760,7 +790,7 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/arm/emit.mlp ocaml-3.12.1-arm/asmcomp/arm/e
      | Lop(Itailcall_ind) ->
          let n = frame_size() in
          if !contains_calls then
-@@ -303,17 +437,16 @@
+@@ -303,17 +437,16 @@ let emit_instr i =
            if !contains_calls then
              `	ldr	lr, [sp, #{emit_int (n-4)}]\n`;
            let ninstr = emit_stack_adjustment "add" n in
@@ -786,7 +816,7 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/arm/emit.mlp ocaml-3.12.1-arm/asmcomp/arm/e
      | Lop(Istackoffset n) ->
          assert (n mod 8 = 0);
          let ninstr =
-@@ -322,16 +455,28 @@
+@@ -322,16 +455,28 @@ let emit_instr i =
            else emit_stack_adjustment "add" (-n) in
          stack_offset := !stack_offset + n;
          ninstr
@@ -825,7 +855,7 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/arm/emit.mlp ocaml-3.12.1-arm/asmcomp/arm/e
      | Lop(Iload(size, addr)) ->
          let r = i.res.(0) in
          let instr =
-@@ -340,65 +485,114 @@
+@@ -340,65 +485,114 @@ let emit_instr i =
            | Byte_signed -> "ldrsb"
            | Sixteen_unsigned -> "ldrh"
            | Sixteen_signed -> "ldrsh"
@@ -971,7 +1001,7 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/arm/emit.mlp ocaml-3.12.1-arm/asmcomp/arm/e
      | Lop(Iintop_imm(Imod, n)) -> (* n is a power of 2 *)
          let l = Misc.log2 n in
          let a = i.arg.(0) in
-@@ -409,40 +603,71 @@
+@@ -409,40 +603,71 @@ let emit_instr i =
          `	mov	{emit_reg r}, {emit_reg r}, lsr #{emit_int (32-l)}\n`;
          `	bpl	{emit_label lbl}\n`;
          `	cmp	{emit_reg r}, #0\n`;
@@ -1064,7 +1094,7 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/arm/emit.mlp ocaml-3.12.1-arm/asmcomp/arm/e
      | Lreloadretaddr ->
          let n = frame_size() in
          `	ldr	lr, [sp, #{emit_int(n-4)}]\n`; 1
-@@ -458,29 +683,41 @@
+@@ -458,29 +683,41 @@ let emit_instr i =
          begin match tst with
            Itruetest ->
              `	cmp	{emit_reg i.arg.(0)}, #0\n`;
@@ -1116,7 +1146,7 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/arm/emit.mlp ocaml-3.12.1-arm/asmcomp/arm/e
          `	cmp	{emit_reg i.arg.(0)}, #1\n`;
          begin match lbl0 with
            None -> ()
-@@ -495,108 +732,135 @@
+@@ -495,108 +732,135 @@ let emit_instr i =
          | Some lbl -> `	bgt	{emit_label lbl}\n`
          end;
          4
@@ -1309,7 +1339,7 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/arm/emit.mlp ocaml-3.12.1-arm/asmcomp/arm/e
  
  let data l =
    `	.data\n`;
-@@ -605,32 +869,62 @@
+@@ -605,32 +869,62 @@ let data l =
  (* Beginning / end of an assembly file *)
  
  let begin_assembly() =
@@ -1385,9 +1415,10 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/arm/emit.mlp ocaml-3.12.1-arm/asmcomp/arm/e
 +      `	.section	.note.GNU-stack,\"\",%progbits\n`
 +  | _ -> ()
 +  end
-diff -urN ocaml-3.12.1-noarm/asmcomp/arm/proc.ml ocaml-3.12.1-arm/asmcomp/arm/proc.ml
---- ocaml-3.12.1-noarm/asmcomp/arm/proc.ml	2009-05-04 14:46:46.000000000 +0100
-+++ ocaml-3.12.1-arm/asmcomp/arm/proc.ml	2012-04-28 09:20:35.055066672 +0100
+diff --git a/asmcomp/arm/proc.ml b/asmcomp/arm/proc.ml
+index e56ac6e..aed2b01 100644
+--- a/asmcomp/arm/proc.ml
++++ b/asmcomp/arm/proc.ml
 @@ -1,16 +1,17 @@
  (***********************************************************************)
  (*                                                                     *)
@@ -1412,7 +1443,7 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/arm/proc.ml ocaml-3.12.1-arm/asmcomp/arm/pr
  
  (* Description of the ARM processor *)
  
-@@ -26,32 +27,56 @@
+@@ -26,32 +27,56 @@ let word_addressed = false
  
  (* Registers available for register allocation *)
  
@@ -1449,8 +1480,7 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/arm/proc.ml ocaml-3.12.1-arm/asmcomp/arm/pr
 -|]
 +let int_reg_name =
 +  [| "r0"; "r1"; "r2"; "r3"; "r4"; "r5"; "r6"; "r7"; "r12" |]
- 
--let num_register_classes = 1
++
 +let float_reg_name =
 +  [| "d0";  "d1";  "d2";  "d3";  "d4";  "d5";  "d6";  "d7";
 +     "d8";  "d9";  "d10"; "d11"; "d12"; "d13"; "d14"; "d15";
@@ -1464,7 +1494,8 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/arm/proc.ml ocaml-3.12.1-arm/asmcomp/arm/pr
 +   This way we can choose between VFPv3-D16 and VFPv3
 +   at (ocamlopt) runtime using command line switches.
 +*)
-+
+ 
+-let num_register_classes = 1
 +let num_register_classes = 3
  
 -let register_class r = assert (r.typ <> Float); 0
@@ -1488,7 +1519,7 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/arm/proc.ml ocaml-3.12.1-arm/asmcomp/arm/pr
  
  let rotate_registers = true
  
-@@ -59,25 +84,34 @@
+@@ -59,25 +84,34 @@ let rotate_registers = true
  
  let hard_int_reg =
    let v = Array.create 9 Reg.dummy in
@@ -1496,16 +1527,16 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/arm/proc.ml ocaml-3.12.1-arm/asmcomp/arm/pr
 +  for i = 0 to 8 do
 +    v.(i) <- Reg.at_location Int (Reg i)
 +  done;
-   v
- 
--let all_phys_regs = hard_int_reg
++  v
++
 +let hard_float_reg =
 +  let v = Array.create 32 Reg.dummy in
 +  for i = 0 to 31 do
 +    v.(i) <- Reg.at_location Float (Reg(100 + i))
 +  done;
-+  v
-+
+   v
+ 
+-let all_phys_regs = hard_int_reg
 +let all_phys_regs =
 +  Array.append hard_int_reg hard_float_reg
  
@@ -1531,7 +1562,7 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/arm/proc.ml ocaml-3.12.1-arm/asmcomp/arm/pr
    let ofs = ref 0 in
    for i = 0 to Array.length arg - 1 do
      match arg.(i).typ with
-@@ -90,37 +124,86 @@
+@@ -90,37 +124,86 @@ let calling_conventions first_int last_int make_stack arg =
            ofs := !ofs + size_int
          end
      | Float ->
@@ -1630,7 +1661,7 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/arm/proc.ml ocaml-3.12.1-arm/asmcomp/arm/pr
    | _ -> [||]
  
  let destroyed_at_raise = all_phys_regs
-@@ -128,15 +211,16 @@
+@@ -128,15 +211,16 @@ let destroyed_at_raise = all_phys_regs
  (* Maximal register pressure *)
  
  let safe_register_pressure = function
@@ -1651,16 +1682,17 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/arm/proc.ml ocaml-3.12.1-arm/asmcomp/arm/pr
  let contains_calls = ref false
  
  (* Calling the assembler *)
-@@ -144,6 +228,3 @@
+@@ -144,6 +228,3 @@ let contains_calls = ref false
  let assemble_file infile outfile =
    Ccomp.command (Config.asm ^ " -o " ^
                   Filename.quote outfile ^ " " ^ Filename.quote infile)
 -
 -open Clflags;;
 -open Config;;
-diff -urN ocaml-3.12.1-noarm/asmcomp/arm/reload.ml ocaml-3.12.1-arm/asmcomp/arm/reload.ml
---- ocaml-3.12.1-noarm/asmcomp/arm/reload.ml	1999-11-17 18:59:06.000000000 +0000
-+++ ocaml-3.12.1-arm/asmcomp/arm/reload.ml	2012-04-28 09:20:35.060066764 +0100
+diff --git a/asmcomp/arm/reload.ml b/asmcomp/arm/reload.ml
+index 0917438..c5b137a 100644
+--- a/asmcomp/arm/reload.ml
++++ b/asmcomp/arm/reload.ml
 @@ -1,6 +1,6 @@
  (***********************************************************************)
  (*                                                                     *)
@@ -1678,9 +1710,10 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/arm/reload.ml ocaml-3.12.1-arm/asmcomp/arm/
  
  (* Reloading for the ARM *)
  
-diff -urN ocaml-3.12.1-noarm/asmcomp/arm/scheduling.ml ocaml-3.12.1-arm/asmcomp/arm/scheduling.ml
---- ocaml-3.12.1-noarm/asmcomp/arm/scheduling.ml	1999-11-17 18:59:06.000000000 +0000
-+++ ocaml-3.12.1-arm/asmcomp/arm/scheduling.ml	2012-04-28 09:20:35.065066855 +0100
+diff --git a/asmcomp/arm/scheduling.ml b/asmcomp/arm/scheduling.ml
+index 930e1bc..4b47733 100644
+--- a/asmcomp/arm/scheduling.ml
++++ b/asmcomp/arm/scheduling.ml
 @@ -1,51 +1,79 @@
  (***********************************************************************)
  (*                                                                     *)
@@ -1787,9 +1820,10 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/arm/scheduling.ml ocaml-3.12.1-arm/asmcomp/
    | _ -> 1
  
  end
-diff -urN ocaml-3.12.1-noarm/asmcomp/arm/selection.ml ocaml-3.12.1-arm/asmcomp/arm/selection.ml
---- ocaml-3.12.1-noarm/asmcomp/arm/selection.ml	2010-04-22 13:39:40.000000000 +0100
-+++ ocaml-3.12.1-arm/asmcomp/arm/selection.ml	2012-04-28 09:20:35.171068774 +0100
+diff --git a/asmcomp/arm/selection.ml b/asmcomp/arm/selection.ml
+index f09d146..94d0367 100644
+--- a/asmcomp/arm/selection.ml
++++ b/asmcomp/arm/selection.ml
 @@ -1,54 +1,77 @@
  (***********************************************************************)
  (*                                                                     *)
@@ -1834,25 +1868,6 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/arm/selection.ml ocaml-3.12.1-arm/asmcomp/a
 -  if shift > 22 then false
 -  else if n land (0xFF lsl shift) = n then true
 -  else is_immed n (shift + 2)
--
--(* We have 12-bit + sign byte offsets for word accesses,
--   8-bit + sign word offsets for float accesses,
--   and 8-bit + sign byte offsets for bytes and shorts.
--   Use lowest common denominator. *)
--
--let is_offset n = n < 256 && n > -256
--
--let is_intconst = function Cconst_int n -> true | _ -> false
--
--(* Soft emulation of float comparisons *)
--
--let float_comparison_function = function
--  | Ceq -> "__eqdf2"
--  | Cne -> "__nedf2"
--  | Clt -> "__ltdf2"
--  | Cle -> "__ledf2"
--  | Cgt -> "__gtdf2"
--  | Cge -> "__gedf2"
 +let is_offset chunk n =
 +  match chunk with
 +  (* VFPv3 load/store have -1020 to 1020 *)
@@ -1871,17 +1886,31 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/arm/selection.ml ocaml-3.12.1-arm/asmcomp/a
 +  (* Everything else has -255 to 255 *)
 +  | _ ->
 +      n >= -255 && n <= 255
-+
+ 
+-(* We have 12-bit + sign byte offsets for word accesses,
+-   8-bit + sign word offsets for float accesses,
+-   and 8-bit + sign byte offsets for bytes and shorts.
+-   Use lowest common denominator. *)
 +let is_intconst = function
 +    Cconst_int _ -> true
 +  | _ -> false
-+
+ 
+-let is_offset n = n < 256 && n > -256
 +(* Special constraints on operand and result registers *)
-+
+ 
+-let is_intconst = function Cconst_int n -> true | _ -> false
 +exception Use_default
-+
+ 
+-(* Soft emulation of float comparisons *)
 +let r1 = phys_reg 1
-+
+ 
+-let float_comparison_function = function
+-  | Ceq -> "__eqdf2"
+-  | Cne -> "__nedf2"
+-  | Clt -> "__ltdf2"
+-  | Cle -> "__ledf2"
+-  | Cgt -> "__gtdf2"
+-  | Cge -> "__gedf2"
 +let pseudoregs_for_operation op arg res =
 +  match op with
 +  (* For mul rd,rm,rs and mla rd,rm,rs,ra (pre-ARMv6) the registers rm
@@ -1906,7 +1935,7 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/arm/selection.ml ocaml-3.12.1-arm/asmcomp/a
  
  (* Instruction selection *)
  class selector = object(self)
-@@ -56,23 +79,32 @@
+@@ -56,23 +79,32 @@ class selector = object(self)
  inherit Selectgen.selector_generic as super
  
  method! regs_for tyv =
@@ -1933,15 +1962,15 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/arm/selection.ml ocaml-3.12.1-arm/asmcomp/a
  method is_immediate n =
 -  n land 0xFF = n || is_immed n 2
 +  is_immediate (Int32.of_int n)
- 
--method select_addressing = function
--    Cop(Cadda, [arg; Cconst_int n]) when is_offset n ->
++
 +method! is_simple_expr = function
 +  (* inlined floating-point ops are simple if their arguments are *)
 +  | Cop(Cextcall("sqrt", _, _, _), args) when !fpu >= VFPv3_D16 ->
 +      List.for_all self#is_simple_expr args
 +  | e -> super#is_simple_expr e
-+
+ 
+-method select_addressing = function
+-    Cop(Cadda, [arg; Cconst_int n]) when is_offset n ->
 +method select_addressing chunk = function
 +  | Cop(Cadda, [arg; Cconst_int n])
 +    when is_offset chunk n ->
@@ -1952,7 +1981,7 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/arm/selection.ml ocaml-3.12.1-arm/asmcomp/a
        (Iindexed n, Cop(Cadda, [arg1; arg2]))
    | arg ->
        (Iindexed 0, arg)
-@@ -91,109 +123,146 @@
+@@ -91,109 +123,146 @@ method select_shift_arith op shiftop shiftrevop args =
    | [Cop(Casr, [arg1; Cconst_int n]); arg2]
      when n > 0 && n < 32 && not(is_intconst arg1) ->
        (Ispecific(Ishiftarith(shiftrevop, -n)), [arg2; arg1])
@@ -2111,7 +2140,8 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/arm/selection.ml ocaml-3.12.1-arm/asmcomp/a
 +        Cop(Cextcall("__aeabi_d2f", typ_int, false, Debuginfo.none),
 +            [arg2]) in
 +      self#select_operation (Cstore Word) [arg1; arg2']
-+  (* Other operations are regular *)
+   (* Other operations are regular *)
+-  | _ -> super#select_operation op args
 +  | (op, args) -> super#select_operation op args
 +
 +method private select_operation_vfpv3 op args =
@@ -2136,8 +2166,7 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/arm/selection.ml ocaml-3.12.1-arm/asmcomp/a
 +  (* Recognize floating-point square root *)
 +  | (Cextcall("sqrt", _, false, _), args) ->
 +      (Ispecific Isqrtf, args)
-   (* Other operations are regular *)
--  | _ -> super#select_operation op args
++  (* Other operations are regular *)
 +  | (op, args) -> super#select_operation op args
  
  method! select_condition = function
@@ -2190,10 +2219,11 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/arm/selection.ml ocaml-3.12.1-arm/asmcomp/a
  
  end
  
-diff -urN ocaml-3.12.1-noarm/asmcomp/i386/selection.ml ocaml-3.12.1-arm/asmcomp/i386/selection.ml
---- ocaml-3.12.1-noarm/asmcomp/i386/selection.ml	2010-04-08 04:58:41.000000000 +0100
-+++ ocaml-3.12.1-arm/asmcomp/i386/selection.ml	2012-04-28 12:19:05.529851563 +0100
-@@ -168,7 +168,7 @@
+diff --git a/asmcomp/i386/selection.ml b/asmcomp/i386/selection.ml
+index 1700bf3..827a63d 100644
+--- a/asmcomp/i386/selection.ml
++++ b/asmcomp/i386/selection.ml
+@@ -168,7 +168,7 @@ method! is_simple_expr e =
    | _ ->
        super#is_simple_expr e
  
@@ -2202,7 +2232,7 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/i386/selection.ml ocaml-3.12.1-arm/asmcomp/
    match select_addr exp with
      (Asymbol s, d) ->
        (Ibased(s, d), Ctuple [])
-@@ -200,7 +200,7 @@
+@@ -200,7 +200,7 @@ method! select_operation op args =
    match op with
    (* Recognize the LEA instruction *)
      Caddi | Cadda | Csubi | Csuba ->
@@ -2211,7 +2241,7 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/i386/selection.ml ocaml-3.12.1-arm/asmcomp/
          (Iindexed d, _) -> super#select_operation op args
        | (Iindexed2 0, _) -> super#select_operation op args
        | (addr, arg) -> (Ispecific(Ilea addr), [arg])
-@@ -233,7 +233,7 @@
+@@ -233,7 +233,7 @@ method! select_operation op args =
        begin match args with
          [loc; Cop(Caddi, [Cop(Cload _, [loc']); Cconst_int n])]
          when loc = loc' ->
@@ -2220,7 +2250,7 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/i386/selection.ml ocaml-3.12.1-arm/asmcomp/
            (Ispecific(Ioffset_loc(n, addr)), [arg])
        | _ ->
            super#select_operation op args
-@@ -250,11 +250,11 @@
+@@ -250,11 +250,11 @@ method! select_operation op args =
  method select_floatarith regular_op reversed_op mem_op mem_rev_op args =
    match args with
      [arg1; Cop(Cload chunk, [loc2])] ->
@@ -2234,7 +2264,7 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/i386/selection.ml ocaml-3.12.1-arm/asmcomp/
        (Ispecific(Ifloatarithmem(chunk_double chunk, mem_rev_op, addr)),
                   [arg2; arg1])
    | [arg1; arg2] ->
-@@ -295,10 +295,10 @@
+@@ -295,10 +295,10 @@ method select_push exp =
    | Cconst_natpointer n -> (Ispecific(Ipush_int n), Ctuple [])
    | Cconst_symbol s -> (Ispecific(Ipush_symbol s), Ctuple [])
    | Cop(Cload Word, [loc]) ->
@@ -2247,10 +2277,11 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/i386/selection.ml ocaml-3.12.1-arm/asmcomp/
        (Ispecific(Ipush_load_float addr), arg)
    | _ -> (Ispecific(Ipush), exp)
  
-diff -urN ocaml-3.12.1-noarm/asmcomp/power/selection.ml ocaml-3.12.1-arm/asmcomp/power/selection.ml
---- ocaml-3.12.1-noarm/asmcomp/power/selection.ml	2010-04-22 13:51:06.000000000 +0100
-+++ ocaml-3.12.1-arm/asmcomp/power/selection.ml	2012-04-28 12:19:05.537851684 +0100
-@@ -52,7 +52,7 @@
+diff --git a/asmcomp/power/selection.ml b/asmcomp/power/selection.ml
+index ed15efb..0532d6b 100644
+--- a/asmcomp/power/selection.ml
++++ b/asmcomp/power/selection.ml
+@@ -52,7 +52,7 @@ inherit Selectgen.selector_generic as super
  
  method is_immediate n = (n <= 32767) && (n >= -32768)
  
@@ -2259,10 +2290,24 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/power/selection.ml ocaml-3.12.1-arm/asmcomp
    match select_addr exp with
      (Asymbol s, d) ->
        (Ibased(s, d), Ctuple [])
-diff -urN ocaml-3.12.1-noarm/asmcomp/selectgen.ml ocaml-3.12.1-arm/asmcomp/selectgen.ml
---- ocaml-3.12.1-noarm/asmcomp/selectgen.ml	2010-09-02 14:29:21.000000000 +0100
-+++ ocaml-3.12.1-arm/asmcomp/selectgen.ml	2012-04-28 12:19:05.538851709 +0100
-@@ -204,7 +204,7 @@
+diff --git a/asmcomp/power64/selection.ml b/asmcomp/power64/selection.ml
+index afc7649..18b5318 100644
+--- a/asmcomp/power64/selection.ml
++++ b/asmcomp/power64/selection.ml
+@@ -52,7 +52,7 @@ inherit Selectgen.selector_generic as super
+ 
+ method is_immediate n = (n <= 32767) && (n >= -32768)
+ 
+-method select_addressing exp =
++method select_addressing chunk exp =
+   match select_addr exp with
+     (Asymbol s, d) ->
+       (Ibased(s, d), Ctuple [])
+diff --git a/asmcomp/selectgen.ml b/asmcomp/selectgen.ml
+index 2fc40f7..0bc9efb 100644
+--- a/asmcomp/selectgen.ml
++++ b/asmcomp/selectgen.ml
+@@ -204,7 +204,7 @@ method virtual is_immediate : int -> bool
  (* Selection of addressing modes *)
  
  method virtual select_addressing :
@@ -2271,7 +2316,7 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/selectgen.ml ocaml-3.12.1-arm/asmcomp/selec
  
  (* Default instruction selection for stores (of words) *)
  
-@@ -219,10 +219,10 @@
+@@ -219,10 +219,10 @@ method select_operation op args =
    | (Capply(ty, dbg), _) -> (Icall_ind, args)
    | (Cextcall(s, ty, alloc, dbg), _) -> (Iextcall(s, alloc), args)
    | (Cload chunk, [arg]) ->
@@ -2284,7 +2329,7 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/selectgen.ml ocaml-3.12.1-arm/asmcomp/selec
        if chunk = Word then begin
          let (op, newarg2) = self#select_store addr arg2 in
          (op, [newarg2; eloc])
-@@ -366,7 +366,7 @@
+@@ -366,7 +366,7 @@ method insert_move src dst =
      self#insert (Iop Imove) [|src|] [|dst|]
  
  method insert_moves src dst =
@@ -2293,7 +2338,7 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/selectgen.ml ocaml-3.12.1-arm/asmcomp/selec
      self#insert_move src.(i) dst.(i)
    done
  
-@@ -490,9 +490,8 @@
+@@ -490,9 +490,8 @@ method emit_expr env exp =
                let (loc_arg, stack_ofs) =
                  self#emit_extcall_args env new_args in
                let rd = self#regs_for ty in
@@ -2305,10 +2350,11 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/selectgen.ml ocaml-3.12.1-arm/asmcomp/selec
                self#insert_move_results loc_res rd stack_ofs;
                Some rd
            | Ialloc _ ->
-diff -urN ocaml-3.12.1-noarm/asmcomp/selectgen.mli ocaml-3.12.1-arm/asmcomp/selectgen.mli
---- ocaml-3.12.1-noarm/asmcomp/selectgen.mli	2010-05-21 13:00:49.000000000 +0100
-+++ ocaml-3.12.1-arm/asmcomp/selectgen.mli	2012-04-28 12:19:05.539851737 +0100
-@@ -26,7 +26,7 @@
+diff --git a/asmcomp/selectgen.mli b/asmcomp/selectgen.mli
+index ae53cda..69dae6d 100644
+--- a/asmcomp/selectgen.mli
++++ b/asmcomp/selectgen.mli
+@@ -26,7 +26,7 @@ class virtual selector_generic : object
      (* Must be defined to indicate whether a constant is a suitable
         immediate operand to arithmetic instructions *)
    method virtual select_addressing :
@@ -2317,10 +2363,11 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/selectgen.mli ocaml-3.12.1-arm/asmcomp/sele
      (* Must be defined to select addressing modes *)
    method is_simple_expr: Cmm.expression -> bool
      (* Can be overridden to reflect special extcalls known to be pure *)
-diff -urN ocaml-3.12.1-noarm/asmcomp/sparc/selection.ml ocaml-3.12.1-arm/asmcomp/sparc/selection.ml
---- ocaml-3.12.1-noarm/asmcomp/sparc/selection.ml	2010-04-22 13:51:06.000000000 +0100
-+++ ocaml-3.12.1-arm/asmcomp/sparc/selection.ml	2012-04-28 12:19:05.540851767 +0100
-@@ -26,7 +26,7 @@
+diff --git a/asmcomp/sparc/selection.ml b/asmcomp/sparc/selection.ml
+index 82758dc..c1f30fd 100644
+--- a/asmcomp/sparc/selection.ml
++++ b/asmcomp/sparc/selection.ml
+@@ -26,7 +26,7 @@ inherit Selectgen.selector_generic as super
  
  method is_immediate n = (n <= 4095) && (n >= -4096)
  
@@ -2329,9 +2376,10 @@ diff -urN ocaml-3.12.1-noarm/asmcomp/sparc/selection.ml ocaml-3.12.1-arm/asmcomp
      Cconst_symbol s ->
        (Ibased(s, 0), Ctuple [])
    | Cop(Cadda, [Cconst_symbol s; Cconst_int n]) ->
-diff -urN ocaml-3.12.1-noarm/asmrun/arm.S ocaml-3.12.1-arm/asmrun/arm.S
---- ocaml-3.12.1-noarm/asmrun/arm.S	2012-04-27 20:51:07.197775311 +0100
-+++ ocaml-3.12.1-arm/asmrun/arm.S	2012-04-28 13:39:34.463111027 +0100
+diff --git a/asmrun/arm.S b/asmrun/arm.S
+index 1313e9c..6482956 100644
+--- a/asmrun/arm.S
++++ b/asmrun/arm.S
 @@ -1,286 +1,411 @@
  /***********************************************************************/
  /*                                                                     */
@@ -2794,10 +2842,10 @@ diff -urN ocaml-3.12.1-noarm/asmrun/arm.S ocaml-3.12.1-arm/asmrun/arm.S
 +        .size   .Lcaml_retaddr, .-.Lcaml_retaddr
 +        .type   caml_start_program, %function
 +        .size   caml_start_program, .-caml_start_program
++
++/* The trap handler */
  
 -    /* The trap handler */
-+/* The trap handler */
-+
 +        .align  2
  .Ltrap_handler:
      /* Save exception pointer */
@@ -2934,7 +2982,7 @@ diff -urN ocaml-3.12.1-noarm/asmrun/arm.S ocaml-3.12.1-arm/asmrun/arm.S
      /* Initial shuffling of arguments */
      /* (r0 = closure, r1 = arg1, r2 = arg2, r3 = arg3) */
          mov     r12, r0
-@@ -288,43 +413,36 @@
+@@ -288,43 +413,36 @@ caml_callback3_exn:
          mov     r1, r2          /* r1 = second arg */
          mov     r2, r3          /* r2 = third arg */
          mov     r3, r12         /* r3 = closure environment */
@@ -2994,9 +3042,10 @@ diff -urN ocaml-3.12.1-noarm/asmrun/arm.S ocaml-3.12.1-arm/asmrun/arm.S
          .align  2
 +        .type   caml_system__frametable, %object
 +        .size   caml_system__frametable, .-caml_system__frametable
-diff -urN ocaml-3.12.1-noarm/asmrun/signals_osdep.h ocaml-3.12.1-arm/asmrun/signals_osdep.h
---- ocaml-3.12.1-noarm/asmrun/signals_osdep.h	2009-05-20 12:52:42.000000000 +0100
-+++ ocaml-3.12.1-arm/asmrun/signals_osdep.h	2012-04-28 09:23:12.209919224 +0100
+diff --git a/asmrun/signals_osdep.h b/asmrun/signals_osdep.h
+index 1e91327..732f3a0 100644
+--- a/asmrun/signals_osdep.h
++++ b/asmrun/signals_osdep.h
 @@ -78,7 +78,7 @@
  
  /****************** ARM, Linux */
@@ -3006,10 +3055,11 @@ diff -urN ocaml-3.12.1-noarm/asmrun/signals_osdep.h ocaml-3.12.1-arm/asmrun/sign
  
    #include <sys/ucontext.h>
  
-diff -urN ocaml-3.12.1-noarm/configure ocaml-3.12.1-arm/configure
---- ocaml-3.12.1-noarm/configure	2012-04-27 20:51:07.193775283 +0100
-+++ ocaml-3.12.1-arm/configure	2012-04-28 09:23:59.270773673 +0100
-@@ -636,6 +636,7 @@
+diff --git a/configure b/configure
+index 6ed0a9c..4e07c92 100755
+--- a/configure
++++ b/configure
+@@ -636,6 +636,7 @@ if test $withsharedlibs = "yes"; then
      i[345]86-*-netbsd*)           natdynlink=true;;
      x86_64-*-netbsd*)             natdynlink=true;;
      i386-*-gnu0.3)                natdynlink=true;;
@@ -3017,7 +3067,7 @@ diff -urN ocaml-3.12.1-noarm/configure ocaml-3.12.1-arm/configure
    esac
  fi
  
-@@ -690,8 +691,13 @@
+@@ -691,8 +692,13 @@ case "$host" in
    powerpc-*-rhapsody*)          arch=power; model=ppc; system=rhapsody;;
    powerpc-*-darwin*)            arch=power; system=rhapsody
                                  if $arch64; then model=ppc64; else model=ppc; fi;;
@@ -3033,7 +3083,7 @@ diff -urN ocaml-3.12.1-noarm/configure ocaml-3.12.1-arm/configure
    ia64-*-linux*)                arch=ia64; system=linux;;
    ia64-*-gnu*)                  arch=ia64; system=gnu;;
    ia64-*-freebsd*)              arch=ia64; system=freebsd;;
-@@ -801,6 +807,7 @@
+@@ -804,6 +810,7 @@ case "$arch,$model,$system" in
      case "$nativecc" in gcc*) ;; *) cc_profile='-xpg';; esac;;
    amd64,*,linux) profiling='prof';;
    amd64,*,gnu) profiling='prof';;
@@ -3041,3 +3091,6 @@ diff -urN ocaml-3.12.1-noarm/configure ocaml-3.12.1-arm/configure
    *) profiling='noprof';;
  esac
  
+-- 
+1.7.10
+
