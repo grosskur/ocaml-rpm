@@ -2,7 +2,7 @@
 
 Name:           ocaml
 Version:        3.12.1
-Release:        5%{?dist}
+Release:        6%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
@@ -61,10 +61,15 @@ BuildRequires:  libXt-devel
 BuildRequires:  mesa-libGL-devel
 BuildRequires:  mesa-libGLU-devel
 BuildRequires:  chrpath
+
+# git is required for patch management.
+BuildRequires:  git
+
 Requires:       gcc
 Requires:       ncurses-devel
 Requires:       gdbm-devel
 Requires:       rpm-build >= 4.8.0
+
 Provides:       ocaml(compiler) = %{version}
 
 # We can compile OCaml on just about anything, but the native code
@@ -499,7 +504,7 @@ fi
 
 
 %changelog
-* Tue May 29 2012 Richard W.M. Jones <rjones@redhat.com> 3.12.1-5
+* Tue May 29 2012 Richard W.M. Jones <rjones@redhat.com> 3.12.1-6
 - Move patches to external git repo:
   http://git.fedorahosted.org/git/?p=fedora-ocaml.git
   There should be no change introduced here.
