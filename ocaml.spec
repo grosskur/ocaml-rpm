@@ -1,5 +1,3 @@
-%global _default_patch_fuzz 2
-
 Name:           ocaml
 Version:        3.12.1
 Release:        8%{?dist}
@@ -229,6 +227,7 @@ man pages and info files.
 %setup -q -T -b 0 -n %{name}-%{version}
 %setup -q -T -D -a 1 -n %{name}-%{version}
 %setup -q -T -D -a 3 -n %{name}-%{version}
+cp %{SOURCE2} refman.pdf
 
 git init
 git config user.email "noone@example.com"
@@ -237,13 +236,10 @@ git add .
 git commit -a -q -m "%{version} baseline"
 git am %{patches}
 
-cp %{SOURCE2} refman.pdf
-
-chmod +x config/gnu/config.{guess,sub}
-
 
 %build
-CFLAGS="$RPM_OPT_FLAGS" ./configure \
+CFLAGS="$RPM_OPT_FLAGS" \
+./configure \
     -bindir %{_bindir} \
     -libdir %{_libdir}/ocaml \
     -x11lib %{_libdir} \
@@ -265,7 +261,6 @@ boot/ocamlrun ./ocamlc $includes dynlinkaux.cmo ocamlbyteinfo.ml -o ocamlbyteinf
 
 
 %install
-rm -rf $RPM_BUILD_ROOT
 make install \
      BINDIR=$RPM_BUILD_ROOT%{_bindir} \
      LIBDIR=$RPM_BUILD_ROOT%{_libdir}/ocaml \
@@ -294,10 +289,6 @@ chrpath --delete $RPM_BUILD_ROOT%{_libdir}/ocaml/stublibs/*.so
 
 install -m 0755 ocamlbyteinfo $RPM_BUILD_ROOT%{_bindir}
 #install -m 0755 ocamlplugininfo $RPM_BUILD_ROOT%{_bindir}
-
-
-%clean
-rm -rf $RPM_BUILD_ROOT
 
 
 %post docs
@@ -506,7 +497,15 @@ fi
 %changelog
 * Wed May 29 2012 Richard W.M. Jones <rjones@redhat.com> 3.12.1-8
 - Modify the ppc64 patch to reduce the delta between power64 and
-  upstream power backends.  Note there is no functional change.
+  upstream power backends.
+- Clean up the spec file and bring it up to modern standards.
+  * Remove patch fuzz directive.
+  * Remove buildroot directive.
+  * Rearrange source unpacking.
+  * Remove chmod of GNU config.* files, since git does it.
+  * Don't need to remove buildroot in install section.
+  * Remove clean section.
+- Note there is no functional change in the above.
 
 * Tue May 29 2012 Richard W.M. Jones <rjones@redhat.com> 3.12.1-6
 - Move patches to external git repo:
