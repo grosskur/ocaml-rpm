@@ -234,7 +234,7 @@ git config user.email "noone@example.com"
 git config user.name "no one"
 git add .
 git commit -a -q -m "%{version} baseline"
-git am %{patches}
+git am %{patches} </dev/null
 
 
 %build
@@ -505,6 +505,7 @@ fi
   * Remove chmod of GNU config.* files, since git does it.
   * Don't need to remove buildroot in install section.
   * Remove clean section.
+  * git am </dev/null to avoid hang (thanks Adam Jackson).
 - Note there is no functional change in the above.
 
 * Tue May 29 2012 Richard W.M. Jones <rjones@redhat.com> 3.12.1-6
