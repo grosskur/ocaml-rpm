@@ -9,7 +9,7 @@ http://git.debian.org/?p=pkg-ocaml-maint/packages/ocaml.git;a=tree;f=debian/ocam
 ---
  ocamlbyteinfo.ml   |  101 ++++++++++++++++++++++++++++++++++++++++++++++++
  ocamlplugininfo.ml |  109 ++++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 210 insertions(+)
+ 2 files changed, 210 insertions(+), 0 deletions(-)
  create mode 100644 ocamlbyteinfo.ml
  create mode 100644 ocamlplugininfo.ml
 
@@ -236,5 +236,5 @@ index 0000000..e28800f
 +        header.units
 +    end
 -- 
-1.7.10
+1.7.7.6
 

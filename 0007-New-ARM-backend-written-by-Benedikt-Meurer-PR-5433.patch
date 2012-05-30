@@ -1,4 +1,4 @@
-From 03318d9e7ef402f137dd100fe31bd01c37c1b94f Mon Sep 17 00:00:00 2001
+From 5017142a41b2ea9b81d41ff7d513847b9df7bae9 Mon Sep 17 00:00:00 2001
 From: "Richard W.M. Jones" <rjones@redhat.com>
 Date: Tue, 29 May 2012 20:50:42 +0100
 Subject: [PATCH 7/7] New ARM backend, written by Benedikt Meurer (PR#5433).
@@ -8,9 +8,9 @@ Backported from upstream sources to 3.12.1 by RWMJ.
  asmcomp/amd64/selection.ml   |   14 +-
  asmcomp/arm/arch.ml          |  152 +++++++-
  asmcomp/arm/emit.mlp         |  850 ++++++++++++++++++++++++++++--------------
- asmcomp/arm/proc.ml          |  185 ++++++---
+ asmcomp/arm/proc.ml          |  185 +++++++---
  asmcomp/arm/reload.ml        |    4 +-
- asmcomp/arm/scheduling.ml    |   80 ++--
+ asmcomp/arm/scheduling.ml    |   80 +++--
  asmcomp/arm/selection.ml     |  343 ++++++++++-------
  asmcomp/i386/selection.ml    |   14 +-
  asmcomp/power/selection.ml   |    2 +-
@@ -2291,7 +2291,7 @@ index ed15efb..0532d6b 100644
      (Asymbol s, d) ->
        (Ibased(s, d), Ctuple [])
 diff --git a/asmcomp/power64/selection.ml b/asmcomp/power64/selection.ml
-index afc7649..18b5318 100644
+index 7b8e2a4..d2325e1 100644
 --- a/asmcomp/power64/selection.ml
 +++ b/asmcomp/power64/selection.ml
 @@ -52,7 +52,7 @@ inherit Selectgen.selector_generic as super
@@ -3092,5 +3092,5 @@ index 6ed0a9c..4e07c92 100755
  esac
  
 -- 
-1.7.10
+1.7.7.6
 

@@ -9,7 +9,7 @@ Signed-off-by: Stephane Glondu <steph@glondu.net>
 ---
  asmcomp/arm/emit.mlp |    1 +
  asmrun/arm.S         |   12 ++++++++++++
- 2 files changed, 13 insertions(+)
+ 2 files changed, 13 insertions(+), 0 deletions(-)
 
 diff --git a/asmcomp/arm/emit.mlp b/asmcomp/arm/emit.mlp
 index 2003313..a4b2241 100644
@@ -124,5 +124,5 @@ index 164f731..1313e9c 100644
      /* Load address of [caml_array_bound_error] in r12 */
          ldr     r12, .Lcaml_array_bound_error
 -- 
-1.7.10
+1.7.7.6
 

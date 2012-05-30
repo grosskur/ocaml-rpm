@@ -2,7 +2,7 @@
 
 Name:           ocaml
 Version:        3.12.1
-Release:        6%{?dist}
+Release:        8%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
@@ -504,6 +504,10 @@ fi
 
 
 %changelog
+* Wed May 29 2012 Richard W.M. Jones <rjones@redhat.com> 3.12.1-8
+- Modify the ppc64 patch to reduce the delta between power64 and
+  upstream power backends.  Note there is no functional change.
+
 * Tue May 29 2012 Richard W.M. Jones <rjones@redhat.com> 3.12.1-6
 - Move patches to external git repo:
   http://git.fedorahosted.org/git/?p=fedora-ocaml.git

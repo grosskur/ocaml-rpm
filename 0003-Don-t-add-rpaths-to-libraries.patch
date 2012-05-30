@@ -5,7 +5,7 @@ Subject: [PATCH 3/7] Don't add rpaths to libraries.
 
 ---
  tools/Makefile.shared |    3 ---
- 1 file changed, 3 deletions(-)
+ 1 files changed, 0 insertions(+), 3 deletions(-)
 
 diff --git a/tools/Makefile.shared b/tools/Makefile.shared
 index 247575a..05de46c 100644
@@ -22,5 +22,5 @@ index 247575a..05de46c 100644
  	  ocamlmklib.mlp >> ocamlmklib.ml
  
 -- 
-1.7.10
+1.7.7.6
 

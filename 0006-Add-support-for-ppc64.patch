@@ -1,4 +1,4 @@
-From a9648ff01cea44e6892663e97c3c388686b4fcd7 Mon Sep 17 00:00:00 2001
+From 07d6360922923ddfa2fe7ff745bed5da27f98e05 Mon Sep 17 00:00:00 2001
 From: "Richard W.M. Jones" <rjones@redhat.com>
 Date: Tue, 29 May 2012 20:47:07 +0100
 Subject: [PATCH 6/7] Add support for ppc64.
@@ -9,20 +9,20 @@ appropriate hardware for testing.
 Note (2): Upstream powerpc directory has some support for ppc64, but
 only for Macs, and I couldn't get it to work at all with IBM hardware.
 
-This patch was collaborated on by several people, most notably David
-Woodhouse.
+This patch was collaborated on by several people, most notably
+David Woodhouse.
 ---
- asmcomp/power64/arch.ml       |   84 ++++
+ asmcomp/power64/arch.ml       |   83 ++++
  asmcomp/power64/emit.mlp      |  989 +++++++++++++++++++++++++++++++++++++++++
- asmcomp/power64/proc.ml       |  245 ++++++++++
+ asmcomp/power64/proc.ml       |  241 ++++++++++
  asmcomp/power64/reload.ml     |   18 +
- asmcomp/power64/scheduling.ml |   66 +++
+ asmcomp/power64/scheduling.ml |   65 +++
  asmcomp/power64/selection.ml  |  103 +++++
  asmrun/Makefile               |    6 +
  asmrun/power64-elf.S          |  486 ++++++++++++++++++++
  asmrun/stack.h                |    9 +
  configure                     |    5 +-
- 10 files changed, 2010 insertions(+), 1 deletion(-)
+ 10 files changed, 2004 insertions(+), 1 deletions(-)
  create mode 100644 asmcomp/power64/arch.ml
  create mode 100644 asmcomp/power64/emit.mlp
  create mode 100644 asmcomp/power64/proc.ml
@@ -33,10 +33,10 @@ Woodhouse.
 
 diff --git a/asmcomp/power64/arch.ml b/asmcomp/power64/arch.ml
 new file mode 100644
-index 0000000..93b5b18
+index 0000000..55dd593
 --- /dev/null
 +++ b/asmcomp/power64/arch.ml
-@@ -0,0 +1,84 @@
+@@ -0,0 +1,83 @@
 +(***********************************************************************)
 +(*                                                                     *)
 +(*                           Objective Caml                            *)
@@ -49,7 +49,7 @@ index 0000000..93b5b18
 +(*                                                                     *)
 +(***********************************************************************)
 +
-+(* $Id: ocaml-3.11.0-ppc64.patch,v 1.1 2008/11/20 15:30:55 rjones Exp $ *)
++(* $Id: arch.ml 9547 2010-01-22 12:48:24Z doligez $ *)
 +
 +(* Specific operations for the PowerPC processor *)
 +
@@ -79,7 +79,7 @@ index 0000000..93b5b18
 +let big_endian = true
 +
 +let size_addr = 8
-+let size_int = 8
++let size_int = size_addr
 +let size_float = 8
 +
 +(* Operations on addressing modes *)
@@ -120,10 +120,9 @@ index 0000000..93b5b18
 +        printreg arg.(0) printreg arg.(1) printreg arg.(2)
 +  | Ialloc_far n ->
 +      fprintf ppf "alloc_far %d" n
-+
 diff --git a/asmcomp/power64/emit.mlp b/asmcomp/power64/emit.mlp
 new file mode 100644
-index 0000000..95eb193
+index 0000000..ba54e99
 --- /dev/null
 +++ b/asmcomp/power64/emit.mlp
 @@ -0,0 +1,989 @@
@@ -139,7 +138,7 @@ index 0000000..95eb193
 +(*                                                                     *)
 +(***********************************************************************)
 +
-+(* $Id: ocaml-3.11.0-ppc64.patch,v 1.1 2008/11/20 15:30:55 rjones Exp $ *)
++(* $Id: emit.mlp 9547 2010-01-22 12:48:24Z doligez $ *)
 +
 +(* Emission of PowerPC assembly code *)
 +
@@ -1118,10 +1117,10 @@ index 0000000..95eb193
 +  frame_descriptors := []
 diff --git a/asmcomp/power64/proc.ml b/asmcomp/power64/proc.ml
 new file mode 100644
-index 0000000..95bf6c4
+index 0000000..67f26ab
 --- /dev/null
 +++ b/asmcomp/power64/proc.ml
-@@ -0,0 +1,245 @@
+@@ -0,0 +1,241 @@
 +(***********************************************************************)
 +(*                                                                     *)
 +(*                           Objective Caml                            *)
@@ -1134,7 +1133,7 @@ index 0000000..95bf6c4
 +(*                                                                     *)
 +(***********************************************************************)
 +
-+(* $Id: ocaml-3.11.0-ppc64.patch,v 1.1 2008/11/20 15:30:55 rjones Exp $ *)
++(* $Id: proc.ml 9547 2010-01-22 12:48:24Z doligez $ *)
 +
 +(* Description of the Power PC *)
 +
@@ -1242,7 +1241,7 @@ index 0000000..95bf6c4
 +        end else begin
 +          loc.(i) <- stack_slot (make_stack !ofs) ty;
 +        end;
-+        ofs := !ofs + 8
++        ofs := !ofs + size_int
 +    | Float ->
 +        if !float <= last_float then begin
 +          loc.(i) <- phys_reg !float;
@@ -1250,7 +1249,7 @@ index 0000000..95bf6c4
 +        end else begin
 +          loc.(i) <- stack_slot (make_stack !ofs) Float;
 +        end;
-+        ofs := !ofs + 8
++        ofs := !ofs + size_float
 +  done;
 +  (loc, Misc.align !ofs 16)
 +  (* Keep stack 16-aligned. *)
@@ -1286,7 +1285,7 @@ index 0000000..95bf6c4
 +  let loc = Array.create (Array.length arg) Reg.dummy in
 +  let int = ref first_int in
 +  let float = ref first_float in
-+  let ofs = ref 112 in
++  let ofs = ref (14 * size_addr) in
 +  for i = 0 to Array.length arg - 1 do
 +    match arg.(i).typ with
 +      Int | Addr as ty ->
@@ -1358,18 +1357,14 @@ index 0000000..95bf6c4
 +(* Calling the assembler *)
 +
 +let assemble_file infile outfile =
-+  let infile = Filename.quote infile
-+  and outfile = Filename.quote outfile in
-+  match Config.system with
-+  | "elf" ->
-+      Ccomp.command ("as -u -m ppc64 -o " ^ outfile ^ " " ^ infile)
-+  | _ -> assert false
++  Ccomp.command (Config.asm ^ " -o " ^
++                 Filename.quote outfile ^ " " ^ Filename.quote infile)
 +
 +open Clflags;;
 +open Config;;
 diff --git a/asmcomp/power64/reload.ml b/asmcomp/power64/reload.ml
 new file mode 100644
-index 0000000..42d5d4d
+index 0000000..abcac6c
 --- /dev/null
 +++ b/asmcomp/power64/reload.ml
 @@ -0,0 +1,18 @@
@@ -1385,7 +1380,7 @@ index 0000000..42d5d4d
 +(*                                                                     *)
 +(***********************************************************************)
 +
-+(* $Id: ocaml-3.11.0-ppc64.patch,v 1.1 2008/11/20 15:30:55 rjones Exp $ *)
++(* $Id: reload.ml 2553 1999-11-17 18:59:06Z xleroy $ *)
 +
 +(* Reloading for the PowerPC *)
 +
@@ -1393,10 +1388,10 @@ index 0000000..42d5d4d
 +  (new Reloadgen.reload_generic)#fundecl f
 diff --git a/asmcomp/power64/scheduling.ml b/asmcomp/power64/scheduling.ml
 new file mode 100644
-index 0000000..d73e333
+index 0000000..b7bba9b
 --- /dev/null
 +++ b/asmcomp/power64/scheduling.ml
-@@ -0,0 +1,66 @@
+@@ -0,0 +1,65 @@
 +(***********************************************************************)
 +(*                                                                     *)
 +(*                           Objective Caml                            *)
@@ -1409,7 +1404,7 @@ index 0000000..d73e333
 +(*                                                                     *)
 +(***********************************************************************)
 +
-+(* $Id: ocaml-3.11.0-ppc64.patch,v 1.1 2008/11/20 15:30:55 rjones Exp $ *)
++(* $Id: scheduling.ml 9547 2010-01-22 12:48:24Z doligez $ *)
 +
 +(* Instruction scheduling for the Power PC *)
 +
@@ -1462,10 +1457,9 @@ index 0000000..d73e333
 +end
 +
 +let fundecl f = (new scheduler)#schedule_fundecl f
-+
 diff --git a/asmcomp/power64/selection.ml b/asmcomp/power64/selection.ml
 new file mode 100644
-index 0000000..afc7649
+index 0000000..7b8e2a4
 --- /dev/null
 +++ b/asmcomp/power64/selection.ml
 @@ -0,0 +1,103 @@
@@ -1481,7 +1475,7 @@ index 0000000..afc7649
 +(*                                                                     *)
 +(***********************************************************************)
 +
-+(* $Id: ocaml-3.11.0-ppc64.patch,v 1.1 2008/11/20 15:30:55 rjones Exp $ *)
++(* $Id: selection.ml 10296 2010-04-22 12:51:06Z xleroy $ *)
 +
 +(* Instruction selection for the Power PC processor *)
 +
@@ -1534,7 +1528,7 @@ index 0000000..afc7649
 +      then (Iindexed2, Ctuple[e1; e2])
 +      else (Iindexed d, Cop(Cadda, [e1; e2]))
 +
-+method select_operation op args =
++method! select_operation op args =
 +  match (op, args) with
 +  (* Prevent the recognition of (x / cst) and (x % cst) when cst is not
 +     a power of 2, which do not correspond to an instruction. *)
@@ -2132,5 +2126,5 @@ index d0a6b0f..6ed0a9c 100755
                      aspp='gcc -c';;
    power,*,rhapsody) as="as -arch $model"
 -- 
-1.7.10
+1.7.7.6
 
