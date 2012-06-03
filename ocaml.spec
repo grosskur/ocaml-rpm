@@ -1,6 +1,6 @@
 Name:           ocaml
 Version:        3.12.1
-Release:        8%{?dist}
+Release:        9%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
@@ -495,6 +495,10 @@ fi
 
 
 %changelog
+* Sun Jun  3 2012 Richard W.M. Jones <rjones@redhat.com> 3.12.1-9
+- Include svn rev 12548 to fix invalid generation of Thumb-2 branch
+  instruction TBH (upstream PR#5623, RHBZ#821153).
+
 * Wed May 29 2012 Richard W.M. Jones <rjones@redhat.com> 3.12.1-8
 - Modify the ppc64 patch to reduce the delta between power64 and
   upstream power backends.
