@@ -1,7 +1,7 @@
 From 22fadc3ed91cb380f7303e8a83ff5806d4576cb5 Mon Sep 17 00:00:00 2001
 From: "Richard W.M. Jones" <rjones@redhat.com>
 Date: Tue, 29 May 2012 20:50:42 +0100
-Subject: [PATCH] New ARM backend, written by Benedikt Meurer (PR#5433).
+Subject: [PATCH 7/8] New ARM backend, written by Benedikt Meurer (PR#5433).
 
 Backported from upstream sources to 3.12.1 by RWMJ.
 
@@ -3103,5 +3103,5 @@ index 6ed0a9c..4e07c92 100755
  esac
  
 -- 
-1.7.10
+1.7.10.1
 

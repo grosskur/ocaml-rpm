@@ -1,0 +1,28 @@
+From e14375eca4f1ddd9d3b28c9b45ce4aca05070a95 Mon Sep 17 00:00:00 2001
+From: "Richard W.M. Jones" <rjones@redhat.com>
+Date: Tue, 5 Jun 2012 22:49:17 +0100
+Subject: [PATCH 8/8] Link dllthreads.so with -lpthread so that pthread_atfork
+ is included statically.
+
+See:
+https://lists.fedoraproject.org/pipermail/ppc/2012-June/001655.html
+---
+ otherlibs/systhreads/Makefile |    2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/otherlibs/systhreads/Makefile b/otherlibs/systhreads/Makefile
+index 5ee2775..c75ab14 100644
+--- a/otherlibs/systhreads/Makefile
++++ b/otherlibs/systhreads/Makefile
+@@ -30,7 +30,7 @@ all: libthreads.a threads.cma
+ allopt: libthreadsnat.a threads.cmxa
+ 
+ libthreads.a: $(BYTECODE_C_OBJS)
+-	$(MKLIB) -o threads $(BYTECODE_C_OBJS)
++	$(MKLIB) -o threads $(BYTECODE_C_OBJS) -lpthread
+ 
+ st_stubs_b.o: st_stubs.c st_posix.h
+ 	$(BYTECC) -O -I../../byterun $(BYTECCCOMPOPTS) $(SHAREDCCCOMPOPTS) \
+-- 
+1.7.10.1
+

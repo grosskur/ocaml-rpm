@@ -1,13 +1,13 @@
 From bb6f512f26f2f52a747b2de42da9c0d74a7e0e7e Mon Sep 17 00:00:00 2001
 From: "Richard W.M. Jones" <rjones@redhat.com>
 Date: Tue, 29 May 2012 20:42:12 +0100
-Subject: [PATCH 2/7] GNU config.guess and config.sub replacements.
+Subject: [PATCH 2/8] GNU config.guess and config.sub replacements.
 
 The ones supplied by upstream OCaml are 8 years old.  These newer
 versions recognize arm properly.
 ---
  config/gnu/config.guess | 1037 +++++++++++++++++++++++++----------------------
- config/gnu/config.sub   |  424 +++++++++++++++-----
+ config/gnu/config.sub   |  424 ++++++++++++++-----
  2 files changed, 876 insertions(+), 585 deletions(-)
 
 diff --git a/config/gnu/config.guess b/config/gnu/config.guess
@@ -2579,5 +2579,5 @@ index d2e3557..e76eaf4 100755
  # Local variables:
  # eval: (add-hook 'write-file-hooks 'time-stamp)
 -- 
-1.7.7.6
+1.7.10.1
 

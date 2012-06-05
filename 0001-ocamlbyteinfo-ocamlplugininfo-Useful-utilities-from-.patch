@@ -1,7 +1,7 @@
 From 0f3d9e1188a765390ac21b6204c66765c1cad8f0 Mon Sep 17 00:00:00 2001
 From: "Richard W.M. Jones" <rjones@redhat.com>
 Date: Tue, 29 May 2012 20:40:36 +0100
-Subject: [PATCH 1/7] ocamlbyteinfo, ocamlplugininfo: Useful utilities from
+Subject: [PATCH 1/8] ocamlbyteinfo, ocamlplugininfo: Useful utilities from
  Debian, sent upstream.
 
 See:
@@ -9,7 +9,7 @@ http://git.debian.org/?p=pkg-ocaml-maint/packages/ocaml.git;a=tree;f=debian/ocam
 ---
  ocamlbyteinfo.ml   |  101 ++++++++++++++++++++++++++++++++++++++++++++++++
  ocamlplugininfo.ml |  109 ++++++++++++++++++++++++++++++++++++++++++++++++++++
- 2 files changed, 210 insertions(+), 0 deletions(-)
+ 2 files changed, 210 insertions(+)
  create mode 100644 ocamlbyteinfo.ml
  create mode 100644 ocamlplugininfo.ml
 
@@ -236,5 +236,5 @@ index 0000000..e28800f
 +        header.units
 +    end
 -- 
-1.7.7.6
+1.7.10.1
 

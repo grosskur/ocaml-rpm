@@ -1,6 +1,6 @@
 Name:           ocaml
 Version:        3.12.1
-Release:        9%{?dist}
+Release:        10%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
@@ -34,6 +34,7 @@ Patch0004:      0004-configure-Allow-user-defined-C-compiler-flags.patch
 Patch0005:      0005-ocamlopt-arm-add-.type-directive-for-code-symbols.patch
 Patch0006:      0006-Add-support-for-ppc64.patch
 Patch0007:      0007-New-ARM-backend-written-by-Benedikt-Meurer-PR-5433.patch
+Patch0008:      0008-Link-dllthreads.so-with-lpthread-so-that-pthread_atf.patch
 
 # Depend on previous version of OCaml so that ocamlobjinfo
 # can run.
@@ -495,6 +496,11 @@ fi
 
 
 %changelog
+* Tue Jun  5 2012 Richard W.M. Jones <rjones@redhat.com> 3.12.1-10
+- Include patch to link dllthreads.so with -lpthread explicitly, to
+  fix problem with 'pthread_atfork' symbol missing (statically linked)
+  on ppc64.
+
 * Sun Jun  3 2012 Richard W.M. Jones <rjones@redhat.com> 3.12.1-9
 - Include svn rev 12548 to fix invalid generation of Thumb-2 branch
   instruction TBH (upstream PR#5623, RHBZ#821153).

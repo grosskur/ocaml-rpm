@@ -1,7 +1,7 @@
 From 07d6360922923ddfa2fe7ff745bed5da27f98e05 Mon Sep 17 00:00:00 2001
 From: "Richard W.M. Jones" <rjones@redhat.com>
 Date: Tue, 29 May 2012 20:47:07 +0100
-Subject: [PATCH 6/7] Add support for ppc64.
+Subject: [PATCH 6/8] Add support for ppc64.
 
 Note (1): This patch was rejected upstream because they don't have
 appropriate hardware for testing.
@@ -22,7 +22,7 @@ David Woodhouse.
  asmrun/power64-elf.S          |  486 ++++++++++++++++++++
  asmrun/stack.h                |    9 +
  configure                     |    5 +-
- 10 files changed, 2004 insertions(+), 1 deletions(-)
+ 10 files changed, 2004 insertions(+), 1 deletion(-)
  create mode 100644 asmcomp/power64/arch.ml
  create mode 100644 asmcomp/power64/emit.mlp
  create mode 100644 asmcomp/power64/proc.ml
@@ -2126,5 +2126,5 @@ index d0a6b0f..6ed0a9c 100755
                      aspp='gcc -c';;
    power,*,rhapsody) as="as -arch $model"
 -- 
-1.7.7.6
+1.7.10.1
 
