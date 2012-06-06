@@ -1,4 +1,4 @@
-From 07d6360922923ddfa2fe7ff745bed5da27f98e05 Mon Sep 17 00:00:00 2001
+From 8337a6ef4844c27b83ad89fed63a9ee94381457d Mon Sep 17 00:00:00 2001
 From: "Richard W.M. Jones" <rjones@redhat.com>
 Date: Tue, 29 May 2012 20:47:07 +0100
 Subject: [PATCH 6/8] Add support for ppc64.
@@ -11,6 +11,9 @@ only for Macs, and I couldn't get it to work at all with IBM hardware.
 
 This patch was collaborated on by several people, most notably
 David Woodhouse.
+
+Includes fix for position of stack arguments to external C functions
+when there are more than 8 parameters (RHBZ#829187).
 ---
  asmcomp/power64/arch.ml       |   83 ++++
  asmcomp/power64/emit.mlp      |  989 +++++++++++++++++++++++++++++++++++++++++
@@ -1117,7 +1120,7 @@ index 0000000..ba54e99
 +  frame_descriptors := []
 diff --git a/asmcomp/power64/proc.ml b/asmcomp/power64/proc.ml
 new file mode 100644
-index 0000000..67f26ab
+index 0000000..119ad93
 --- /dev/null
 +++ b/asmcomp/power64/proc.ml
 @@ -0,0 +1,241 @@
@@ -1311,7 +1314,7 @@ index 0000000..67f26ab
 +let loc_external_arguments =
 +  match Config.system with
 +  | "rhapsody" -> poweropen_external_conventions 0 7 100 112
-+  | "elf" | "bsd" -> calling_conventions 0 7 100 107 outgoing 8
++  | "elf" | "bsd" -> calling_conventions 0 7 100 107 outgoing 48
 +  | _ -> assert false
 +
 +let extcall_use_push = false

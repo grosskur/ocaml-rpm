@@ -1,6 +1,6 @@
 Name:           ocaml
 Version:        3.12.1
-Release:        10%{?dist}
+Release:        11%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
@@ -496,6 +496,10 @@ fi
 
 
 %changelog
+* Wed Jun  6 2012 Richard W.M. Jones <rjones@redhat.com> 3.12.1-11
+- ppc64: Fix position of stack arguments to external C functions
+  when there are more than 8 parameters.
+
 * Tue Jun  5 2012 Richard W.M. Jones <rjones@redhat.com> 3.12.1-10
 - Include patch to link dllthreads.so with -lpthread explicitly, to
   fix problem with 'pthread_atfork' symbol missing (statically linked)
