@@ -1,4 +1,4 @@
-From d713da1390d4a74f78ca7e37834fa0a47932f948 Mon Sep 17 00:00:00 2001
+From 658145e4aa9a3eb7263012b39c7483241af5b1b3 Mon Sep 17 00:00:00 2001
 From: "Richard W.M. Jones" <rjones@redhat.com>
 Date: Tue, 29 May 2012 20:50:42 +0100
 Subject: [PATCH 7/8] New ARM backend, written by Benedikt Meurer (PR#5433).

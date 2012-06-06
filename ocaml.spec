@@ -1,6 +1,6 @@
 Name:           ocaml
 Version:        3.12.1
-Release:        11%{?dist}
+Release:        12%{?dist}
 
 Summary:        Objective Caml compiler and programming environment
 
@@ -239,6 +239,9 @@ git am %{patches} </dev/null
 
 
 %build
+# make -jN (N > 1) breaks the build.  Therefore we cannot use
+# %{?_smp_mflags} nor MAKEFLAGS.
+unset MAKEFLAGS
 CFLAGS="$RPM_OPT_FLAGS" \
 ./configure \
     -bindir %{_bindir} \
@@ -250,7 +253,6 @@ make world
 %if %{native_compiler}
 make opt opt.opt
 %endif
-# %{?_smp_mflags} breaks the build
 make -C emacs ocamltags
 
 # Currently these tools are supplied by Debian, but are expected
@@ -496,6 +498,11 @@ fi
 
 
 %changelog
+* Wed Jun  6 2012 Richard W.M. Jones <rjones@redhat.com> 3.12.1-12
+- ppc64: Include fix for minor heap corruption because of unaligned
+  minor heap register (RHBZ#826649).
+- Unset MAKEFLAGS before running build.
+
 * Wed Jun  6 2012 Richard W.M. Jones <rjones@redhat.com> 3.12.1-11
 - ppc64: Fix position of stack arguments to external C functions
   when there are more than 8 parameters.

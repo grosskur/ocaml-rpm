@@ -1,4 +1,4 @@
-From c103b9b4e7c0d50f29d8eec2c9e946d1d52970f5 Mon Sep 17 00:00:00 2001
+From 66eef2038cf9af06e5883be320e3bf7aec35d572 Mon Sep 17 00:00:00 2001
 From: "Richard W.M. Jones" <rjones@redhat.com>
 Date: Tue, 5 Jun 2012 22:49:17 +0100
 Subject: [PATCH 8/8] Link dllthreads.so with -lpthread so that pthread_atfork

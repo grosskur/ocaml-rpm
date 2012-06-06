@@ -1,4 +1,4 @@
-From 8337a6ef4844c27b83ad89fed63a9ee94381457d Mon Sep 17 00:00:00 2001
+From b25707437651811a22acaab5a9461eb4ab742f6e Mon Sep 17 00:00:00 2001
 From: "Richard W.M. Jones" <rjones@redhat.com>
 Date: Tue, 29 May 2012 20:47:07 +0100
 Subject: [PATCH 6/8] Add support for ppc64.
@@ -14,6 +14,9 @@ David Woodhouse.
 
 Includes fix for position of stack arguments to external C functions
 when there are more than 8 parameters (RHBZ#829187).
+
+Includes fix for minor heap corruption because of unaligned minor heap
+register (RHBZ#826649).
 ---
  asmcomp/power64/arch.ml       |   83 ++++
  asmcomp/power64/emit.mlp      |  989 +++++++++++++++++++++++++++++++++++++++++
@@ -125,7 +128,7 @@ index 0000000..55dd593
 +      fprintf ppf "alloc_far %d" n
 diff --git a/asmcomp/power64/emit.mlp b/asmcomp/power64/emit.mlp
 new file mode 100644
-index 0000000..ba54e99
+index 0000000..42f585d
 --- /dev/null
 +++ b/asmcomp/power64/emit.mlp
 @@ -0,0 +1,989 @@
@@ -738,7 +741,7 @@ index 0000000..ba54e99
 +        `      bge     {emit_label lbl}\n`;
 +        record_frame i.live;
 +        `      bl      {emit_label !call_gc_label}\n`; (* Must be 4 insns to restart *)
-+        `{emit_label lbl}:     addi    {emit_reg i.res.(0)}, {emit_gpr 31}, 4\n`
++        `{emit_label lbl}:     addi    {emit_reg i.res.(0)}, {emit_gpr 31}, {emit_int size_addr}\n`
 +    | Lop(Iintop Isub) ->               (* subfc has swapped arguments *)
 +        `      subfc   {emit_reg i.res.(0)}, {emit_reg i.arg.(1)}, {emit_reg i.arg.(0)}\n`
 +    | Lop(Iintop Imod) ->
