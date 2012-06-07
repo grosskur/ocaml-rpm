@@ -1,6 +1,6 @@
 Name:           ocaml
 Version:        4.00.0
-Release:        0.2.beta2%{?dist}
+Release:        0.3.beta2%{?dist}
 
 Summary:        OCaml compiler and programming environment
 
@@ -34,10 +34,6 @@ Patch0004:      0004-Don-t-add-rpaths-to-libraries.patch
 Patch0005:      0005-configure-Allow-user-defined-C-compiler-flags.patch
 Patch0006:      0006-Link-dllthreads.so-with-lpthread-so-that-pthread_atf.patch
 Patch0007:      0007-Add-support-for-ppc64.patch
-
-# Depend on previous version of OCaml so that ocamlobjinfo
-# can run.
-BuildRequires:  ocaml
 
 BuildRequires:  ncurses-devel
 BuildRequires:  gdbm-devel
@@ -86,8 +82,8 @@ ExclusiveArch:  alpha %{arm} ia64 %{ix86} x86_64 ppc ppc64 sparc sparcv9
 %global natdynlink 0
 %endif
 
-%global __ocaml_requires_opts -c -f %{buildroot}%{_bindir}/ocamlobjinfo
-%global __ocaml_provides_opts -f %{buildroot}%{_bindir}/ocamlobjinfo
+%global __ocaml_requires_opts -c -f '%{buildroot}%{_bindir}/ocamlrun %{buildroot}%{_bindir}/ocamlobjinfo'
+%global __ocaml_provides_opts -f '%{buildroot}%{_bindir}/ocamlrun %{buildroot}%{_bindir}/ocamlobjinfo'
 
 
 %description
@@ -527,7 +523,7 @@ fi
 
 
 %changelog
-* Thu Jun  7 2012 Richard W.M. Jones <rjones@redhat.com> 4.00.0-0.2.beta2
+* Thu Jun  7 2012 Richard W.M. Jones <rjones@redhat.com> 4.00.0-0.3.beta2
 - Upgrade to OCaml 4.00.0 beta 2.
 - The language is now officially called OCaml (not Objective Caml, O'Caml etc)
 - Rebase patches on top:
@@ -543,6 +539,8 @@ fi
 - alpha, ia64 native backends have been removed upstream, so they are
   no longer supported as native compiler targets.
 - Remove defattr.
+- Make OCaml dependency generator self-contained so it doesn't need
+  previous version of OCaml around.
 
 * Wed Jun  6 2012 Richard W.M. Jones <rjones@redhat.com> 3.12.1-12
 - ppc64: Include fix for minor heap corruption because of unaligned
