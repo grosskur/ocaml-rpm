@@ -1,6 +1,6 @@
 Name:           ocaml
 Version:        4.00.0
-Release:        0.1.beta2%{?dist}
+Release:        0.2.beta2%{?dist}
 
 Summary:        OCaml compiler and programming environment
 
@@ -27,11 +27,13 @@ Source3:        http://caml.inria.fr/pub/distrib/ocaml-4.00/ocaml-4.00beta-refma
 # existing patches unchanged) adding a comment to note that it should
 # be incorporated into the git repo at a later time.
 #
-Patch0001:      0001-ocamlbyteinfo-ocamlplugininfo-Useful-utilities-from-.patch
-Patch0002:      0002-Don-t-add-rpaths-to-libraries.patch
-Patch0003:      0003-configure-Allow-user-defined-C-compiler-flags.patch
-Patch0004:      0004-Link-dllthreads.so-with-lpthread-so-that-pthread_atf.patch
-Patch0005:      0005-Add-support-for-ppc64.patch
+Patch0001:      0001-Add-.gitignore-file-to-ignore-generated-files.patch
+Patch0002:      0002-Ensure-empty-compilerlibs-directory-is-created-by-gi.patch
+Patch0003:      0003-ocamlbyteinfo-ocamlplugininfo-Useful-utilities-from-.patch
+Patch0004:      0004-Don-t-add-rpaths-to-libraries.patch
+Patch0005:      0005-configure-Allow-user-defined-C-compiler-flags.patch
+Patch0006:      0006-Link-dllthreads.so-with-lpthread-so-that-pthread_atf.patch
+Patch0007:      0007-Add-support-for-ppc64.patch
 
 # Depend on previous version of OCaml so that ocamlobjinfo
 # can run.
@@ -255,6 +257,16 @@ git am %{patches} </dev/null
 # make -jN (N > 1) breaks the build.  Therefore we cannot use
 # %{?_smp_mflags} nor MAKEFLAGS.
 unset MAKEFLAGS
+
+# For ppc64 we need a larger stack than default to compile some files
+# because the stages in the OCaml compiler are not mutually tail
+# recursive.
+%ifarch ppc64
+ulimit -a
+ulimit -Hs 65536
+ulimit -Ss 65536
+%endif
+
 CFLAGS="$RPM_OPT_FLAGS" \
 ./configure \
     -bindir %{_bindir} \
@@ -515,14 +527,15 @@ fi
 
 
 %changelog
-* Thu Jun  7 2012 Richard W.M. Jones <rjones@redhat.com> 4.00.0-0.1.beta2
+* Thu Jun  7 2012 Richard W.M. Jones <rjones@redhat.com> 4.00.0-0.2.beta2
 - Upgrade to OCaml 4.00.0 beta 2.
 - The language is now officially called OCaml (not Objective Caml, O'Caml etc)
 - Rebase patches on top:
   . New ARM backend patch no longer required, since upstream.
   . Replacement config.guess, config.sub no longer required, since upstream
     versions are newer.
-  . ppc64 backend known not to work; will fix shortly.
+- PPC64 backend rebased and fixed.
+  . Increase the default size of the stack when compiling.
 - New tool: ocamloptp (ocamlopt profiler).
 - New VERSION file in ocaml-runtime package.
 - New ocaml-compiler-libs subpackage.
