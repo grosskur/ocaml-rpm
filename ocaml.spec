@@ -1,18 +1,18 @@
 Name:           ocaml
-Version:        3.12.1
-Release:        12%{?dist}
+Version:        4.00.0
+Release:        0.1.beta2%{?dist}
 
-Summary:        Objective Caml compiler and programming environment
+Summary:        OCaml compiler and programming environment
 
 Group:          Development/Languages
 License:        QPL and (LGPLv2+ with exceptions)
 
 URL:            http://www.ocaml.org
 
-Source0:        http://caml.inria.fr/distrib/ocaml-3.12/ocaml-%{version}.tar.gz
-Source1:        http://caml.inria.fr/distrib/ocaml-3.12/ocaml-3.12-refman.html.tar.gz
-Source2:        http://caml.inria.fr/distrib/ocaml-3.12/ocaml-3.12-refman.pdf
-Source3:        http://caml.inria.fr/distrib/ocaml-3.12/ocaml-3.12-refman.info.tar.gz
+Source0:        http://caml.inria.fr/pub/distrib/ocaml-4.00/ocaml-%{version}+beta2.tar.bz2
+Source1:        http://caml.inria.fr/pub/distrib/ocaml-4.00/ocaml-4.00beta-refman-html.tar.gz
+Source2:        http://caml.inria.fr/pub/distrib/ocaml-4.00/ocaml-4.00beta-refman.pdf
+Source3:        http://caml.inria.fr/pub/distrib/ocaml-4.00/ocaml-4.00beta-refman.info.tar.gz
 
 # IMPORTANT NOTE:
 #
@@ -28,13 +28,10 @@ Source3:        http://caml.inria.fr/distrib/ocaml-3.12/ocaml-3.12-refman.info.t
 # be incorporated into the git repo at a later time.
 #
 Patch0001:      0001-ocamlbyteinfo-ocamlplugininfo-Useful-utilities-from-.patch
-Patch0002:      0002-GNU-config.guess-and-config.sub-replacements.patch
-Patch0003:      0003-Don-t-add-rpaths-to-libraries.patch
-Patch0004:      0004-configure-Allow-user-defined-C-compiler-flags.patch
-Patch0005:      0005-ocamlopt-arm-add-.type-directive-for-code-symbols.patch
-Patch0006:      0006-Add-support-for-ppc64.patch
-Patch0007:      0007-New-ARM-backend-written-by-Benedikt-Meurer-PR-5433.patch
-Patch0008:      0008-Link-dllthreads.so-with-lpthread-so-that-pthread_atf.patch
+Patch0002:      0002-Don-t-add-rpaths-to-libraries.patch
+Patch0003:      0003-configure-Allow-user-defined-C-compiler-flags.patch
+Patch0004:      0004-Link-dllthreads.so-with-lpthread-so-that-pthread_atf.patch
+Patch0005:      0005-Add-support-for-ppc64.patch
 
 # Depend on previous version of OCaml so that ocamlobjinfo
 # can run.
@@ -73,9 +70,9 @@ Provides:       ocaml(compiler) = %{version}
 
 # We can compile OCaml on just about anything, but the native code
 # backend is only available on a subset of architectures.
-ExclusiveArch:  alpha %{arm} %{ix86} ia64 x86_64 ppc sparc sparcv9 ppc64
+ExclusiveArch:  alpha %{arm} ia64 %{ix86} x86_64 ppc ppc64 sparc sparcv9
 
-%ifarch alpha %{arm} %{ix86} ia64 ppc ppc64 sparc sparcv9 x86_64
+%ifarch %{arm} %{ix86} ppc ppc64 sparc sparcv9 x86_64
 %global native_compiler 1
 %else
 %global native_compiler 0
@@ -92,8 +89,8 @@ ExclusiveArch:  alpha %{arm} %{ix86} ia64 x86_64 ppc sparc sparcv9 ppc64
 
 
 %description
-Objective Caml is a high-level, strongly-typed, functional and
-object-oriented programming language from the ML family of languages.
+OCaml is a high-level, strongly-typed, functional and object-oriented
+programming language from the ML family of languages.
 
 This package comprises two batch compilers (a fast bytecode compiler
 and an optimizing native-code compiler), an interactive toplevel system,
@@ -103,45 +100,45 @@ and a comprehensive library.
 
 %package runtime
 Group:          System Environment/Libraries
-Summary:        Objective Caml runtime environment
+Summary:        OCaml runtime environment
 Requires:       util-linux
 Provides:       ocaml(runtime) = %{version}
 
 %description runtime
-Objective Caml is a high-level, strongly-typed, functional and
-object-oriented programming language from the ML family of languages.
+OCaml is a high-level, strongly-typed, functional and object-oriented
+programming language from the ML family of languages.
 
-This package contains the runtime environment needed to run Objective
-Caml bytecode.
+This package contains the runtime environment needed to run OCaml
+bytecode.
 
 
 %package source
 Group:          Development/Languages
-Summary:        Source code for Objective Caml libraries
+Summary:        Source code for OCaml libraries
 Requires:       ocaml = %{version}-%{release}
 
 %description source
-Source code for Objective Caml libraries.
+Source code for OCaml libraries.
 
 
 %package x11
 Group:          System Environment/Libraries
-Summary:        X11 support for Objective Caml
+Summary:        X11 support for OCaml
 Requires:       ocaml-runtime = %{version}-%{release}
 Requires:       libX11-devel
 
 %description x11
-X11 support for Objective Caml.
+X11 support for OCaml.
 
 
 %package labltk
 Group:          System Environment/Libraries
-Summary:        Tk bindings for Objective Caml
+Summary:        Tk bindings for OCaml
 Requires:       ocaml-runtime = %{version}-%{release}
 
 %description labltk
-Labltk is a library for interfacing Objective Caml with the scripting
-language Tcl/Tk.
+Labltk is a library for interfacing OCaml with the scripting language
+Tcl/Tk.
 
 This package contains the runtime files.
 
@@ -156,8 +153,8 @@ Requires:       tcl-devel
 Requires:       tk-devel
 
 %description labltk-devel
-Labltk is a library for interfacing Objective Caml with the scripting
-language Tcl/Tk.
+Labltk is a library for interfacing OCaml with the scripting language
+Tcl/Tk.
 
 This package contains the development files.  It includes the ocaml
 browser for code editing and library browsing.
@@ -165,69 +162,85 @@ browser for code editing and library browsing.
 
 %package camlp4
 Group:          Development/Languages
-Summary:        Pre-Processor-Pretty-Printer for Objective Caml
+Summary:        Pre-Processor-Pretty-Printer for OCaml
 Requires:       ocaml-runtime = %{version}-%{release}
 
 %description camlp4
-Camlp4 is a Pre-Processor-Pretty-Printer for Objective Caml, parsing a
-source file and printing some result on standard output.
+Camlp4 is a Pre-Processor-Pretty-Printer for OCaml, parsing a source
+file and printing some result on standard output.
 
 This package contains the runtime files.
 
 
 %package camlp4-devel
 Group:          Development/Languages
-Summary:        Pre-Processor-Pretty-Printer for Objective Caml
+Summary:        Pre-Processor-Pretty-Printer for OCaml
 Requires:       ocaml = %{version}-%{release}
 Requires:       %{name}-camlp4 = %{version}-%{release}
 
 %description camlp4-devel
-Camlp4 is a Pre-Processor-Pretty-Printer for Objective Caml, parsing a
-source file and printing some result on standard output.
+Camlp4 is a Pre-Processor-Pretty-Printer for OCaml, parsing a source
+file and printing some result on standard output.
 
 This package contains the development files.
 
 
 %package ocamldoc
 Group:          Development/Languages
-Summary:        Documentation generator for Objective Caml.
+Summary:        Documentation generator for OCaml.
 Requires:       ocaml = %{version}-%{release}
 Provides:	ocamldoc
 
 %description ocamldoc
-Documentation generator for Objective Caml.
+Documentation generator for OCaml.
 
 
 %package emacs
 Group:          Development/Languages
-Summary:        Emacs mode for Objective Caml
+Summary:        Emacs mode for OCaml
 Requires:       ocaml = %{version}-%{release}
 Requires:       emacs
 
 %description emacs
-Emacs mode for Objective Caml.
+Emacs mode for OCaml.
 
 
 %package docs
 Group:          Development/Languages
-Summary:        Documentation for Objective Caml
+Summary:        Documentation for OCaml
 Requires:       ocaml = %{version}-%{release}
 Requires(post): /sbin/install-info
 Requires(preun): /sbin/install-info
 
 
 %description docs
-Objective Caml is a high-level, strongly-typed, functional and
-object-oriented programming language from the ML family of languages.
+OCaml is a high-level, strongly-typed, functional and object-oriented
+programming language from the ML family of languages.
 
 This package contains documentation in PDF and HTML format as well as
 man pages and info files.
 
 
+%package compiler-libs
+Group:          Development/Languages
+Summary:        Compiler libraries for OCaml
+Requires:       ocaml = %{version}-%{release}
+
+
+%description compiler-libs
+OCaml is a high-level, strongly-typed, functional and object-oriented
+programming language from the ML family of languages.
+
+This package contains some modules used internally by the OCaml
+compilers, useful for the development of some OCaml applications.
+Note that this exposes internal details of the OCaml compiler which
+may not be portable between versions.
+
+
 %prep
-%setup -q -T -b 0 -n %{name}-%{version}
-%setup -q -T -D -a 1 -n %{name}-%{version}
-%setup -q -T -D -a 3 -n %{name}-%{version}
+%setup -q -T -b 0 -n %{name}-%{version}+beta2
+%setup -q -T -D -a 1 -n %{name}-%{version}+beta2
+%setup -q -T -D -a 3 -n %{name}-%{version}+beta2
 cp %{SOURCE2} refman.pdf
 
 git init
@@ -296,7 +309,7 @@ install -m 0755 ocamlbyteinfo $RPM_BUILD_ROOT%{_bindir}
 
 %post docs
 /sbin/install-info \
-    --entry="* ocaml: (ocaml).   The Objective Caml compiler and programming environment" \
+    --entry="* ocaml: (ocaml).   The OCaml compiler and programming environment" \
     --section="Programming Languages" \
     %{_infodir}/%{name}.info \
     %{_infodir}/dir 2>/dev/null || :
@@ -309,7 +322,6 @@ fi
 
 
 %files
-%defattr(-,root,root,-)
 %{_bindir}/ocaml
 %{_bindir}/ocamlbyteinfo
 %{_bindir}/ocamlbuild
@@ -337,6 +349,7 @@ fi
 %if %{native_compiler}
 %{_bindir}/ocamlopt
 %{_bindir}/ocamlopt.opt
+%{_bindir}/ocamloptp
 %endif
 #%{_bindir}/ocamlplugininfo
 %{_bindir}/ocamlprof
@@ -374,9 +387,9 @@ fi
 
 
 %files runtime
-%defattr(-,root,root,-)
 %{_bindir}/ocamlrun
 %dir %{_libdir}/ocaml
+%{_libdir}/ocaml/VERSION
 %{_libdir}/ocaml/*.cmo
 %{_libdir}/ocaml/*.cmi
 %{_libdir}/ocaml/*.cma
@@ -395,18 +408,15 @@ fi
 
 
 %files source
-%defattr(-,root,root,-)
 %{_libdir}/ocaml/*.ml
 
 
 %files x11
-%defattr(-,root,root,-)
 %{_libdir}/ocaml/graphicsX11.cmi
 %{_libdir}/ocaml/graphicsX11.mli
 
 
 %files labltk
-%defattr(-,root,root,-)
 %{_bindir}/labltk
 %dir %{_libdir}/ocaml/labltk
 %{_libdir}/ocaml/labltk/*.cmi
@@ -417,7 +427,6 @@ fi
 
 
 %files labltk-devel
-%defattr(-,root,root,-)
 %{_bindir}/ocamlbrowser
 %{_libdir}/ocaml/labltk/labltktop
 %{_libdir}/ocaml/labltk/pp
@@ -434,7 +443,6 @@ fi
 
 
 %files camlp4
-%defattr(-,root,root,-)
 %dir %{_libdir}/ocaml/camlp4
 %{_libdir}/ocaml/camlp4/*.cmi
 %{_libdir}/ocaml/camlp4/*.cma
@@ -454,7 +462,6 @@ fi
 
 
 %files camlp4-devel
-%defattr(-,root,root,-)
 %{_bindir}/camlp4*
 %{_bindir}/mkcamlp4
 %if %{native_compiler}
@@ -475,14 +482,12 @@ fi
 
 
 %files ocamldoc
-%defattr(-,root,root,-)
 %{_bindir}/ocamldoc*
 %{_libdir}/ocaml/ocamldoc
 %doc ocamldoc/Changes.txt
 
 
 %files docs
-%defattr(-,root,root,-)
 %doc refman.pdf htmlman
 %{_infodir}/*
 %if %{native_compiler}
@@ -491,13 +496,41 @@ fi
 
 
 %files emacs
-%defattr(-,root,root,-)
 %{_datadir}/emacs/site-lisp/*
 %{_bindir}/ocamltags
 %doc emacs/README
 
 
+%files compiler-libs
+%dir %{_libdir}/ocaml/compiler-libs
+%{_libdir}/ocaml/compiler-libs/*.cmi
+%{_libdir}/ocaml/compiler-libs/*.cmo
+%{_libdir}/ocaml/compiler-libs/*.cma
+%if %{native_compiler}
+%{_libdir}/ocaml/compiler-libs/*.a
+%{_libdir}/ocaml/compiler-libs/*.cmxa
+%{_libdir}/ocaml/compiler-libs/*.cmx
+%{_libdir}/ocaml/compiler-libs/*.o
+%endif
+
+
 %changelog
+* Thu Jun  7 2012 Richard W.M. Jones <rjones@redhat.com> 4.00.0-0.1.beta2
+- Upgrade to OCaml 4.00.0 beta 2.
+- The language is now officially called OCaml (not Objective Caml, O'Caml etc)
+- Rebase patches on top:
+  . New ARM backend patch no longer required, since upstream.
+  . Replacement config.guess, config.sub no longer required, since upstream
+    versions are newer.
+  . ppc64 backend known not to work; will fix shortly.
+- New tool: ocamloptp (ocamlopt profiler).
+- New VERSION file in ocaml-runtime package.
+- New ocaml-compiler-libs subpackage.
+- Rearrange ExclusiveArch alphanumerically.
+- alpha, ia64 native backends have been removed upstream, so they are
+  no longer supported as native compiler targets.
+- Remove defattr.
+
 * Wed Jun  6 2012 Richard W.M. Jones <rjones@redhat.com> 3.12.1-12
 - ppc64: Include fix for minor heap corruption because of unaligned
   minor heap register (RHBZ#826649).

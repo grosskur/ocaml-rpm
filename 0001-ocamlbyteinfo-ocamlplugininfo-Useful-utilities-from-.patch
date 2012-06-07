@@ -1,7 +1,7 @@
-From 0f3d9e1188a765390ac21b6204c66765c1cad8f0 Mon Sep 17 00:00:00 2001
+From 545a807ed2ecbbcfa59699d99eefb6ecfd5a9bc6 Mon Sep 17 00:00:00 2001
 From: "Richard W.M. Jones" <rjones@redhat.com>
 Date: Tue, 29 May 2012 20:40:36 +0100
-Subject: [PATCH 1/8] ocamlbyteinfo, ocamlplugininfo: Useful utilities from
+Subject: [PATCH 1/5] ocamlbyteinfo, ocamlplugininfo: Useful utilities from
  Debian, sent upstream.
 
 See:
@@ -236,5 +236,5 @@ index 0000000..e28800f
 +        header.units
 +    end
 -- 
-1.7.10.1
+1.7.10
 

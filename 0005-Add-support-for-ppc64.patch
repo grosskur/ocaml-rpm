@@ -1,7 +1,7 @@
-From b25707437651811a22acaab5a9461eb4ab742f6e Mon Sep 17 00:00:00 2001
+From a17790287c82c7068451ae37eac73a21bd148e9d Mon Sep 17 00:00:00 2001
 From: "Richard W.M. Jones" <rjones@redhat.com>
 Date: Tue, 29 May 2012 20:47:07 +0100
-Subject: [PATCH 6/8] Add support for ppc64.
+Subject: [PATCH 5/5] Add support for ppc64.
 
 Note (1): This patch was rejected upstream because they don't have
 appropriate hardware for testing.
@@ -27,8 +27,8 @@ register (RHBZ#826649).
  asmrun/Makefile               |    6 +
  asmrun/power64-elf.S          |  486 ++++++++++++++++++++
  asmrun/stack.h                |    9 +
- configure                     |    5 +-
- 10 files changed, 2004 insertions(+), 1 deletion(-)
+ configure                     |    3 +
+ 10 files changed, 2003 insertions(+)
  create mode 100644 asmcomp/power64/arch.ml
  create mode 100644 asmcomp/power64/emit.mlp
  create mode 100644 asmcomp/power64/proc.ml
@@ -1573,10 +1573,10 @@ index 0000000..7b8e2a4
 +
 +let fundecl f = (new selector)#emit_fundecl f
 diff --git a/asmrun/Makefile b/asmrun/Makefile
-index efffa33..3525b82 100644
+index d4f0c56..d58d451 100644
 --- a/asmrun/Makefile
 +++ b/asmrun/Makefile
-@@ -74,6 +74,12 @@ power.o: power-$(SYSTEM).o
+@@ -89,6 +89,12 @@ power.o: power-$(SYSTEM).o
  power.p.o: power-$(SYSTEM).o
  	cp power-$(SYSTEM).o power.p.o
  
@@ -2082,10 +2082,10 @@ index 0000000..b2c24d6
 +        .align  3
 +
 diff --git a/asmrun/stack.h b/asmrun/stack.h
-index c778873..f1d2e6a 100644
+index a801405..59a7bf2 100644
 --- a/asmrun/stack.h
 +++ b/asmrun/stack.h
-@@ -65,6 +65,15 @@
+@@ -47,6 +47,15 @@
  #define Callback_link(sp) ((struct caml_context *)((sp) + Trap_frame_size))
  #endif
  
@@ -2098,32 +2098,23 @@ index c778873..f1d2e6a 100644
 +#define Callback_link(sp) ((struct caml_context *)((sp) + Trap_frame_size))
 +#endif
 +
- #ifdef TARGET_m68k
+ #ifdef TARGET_arm
  #define Saved_return_address(sp) *((intnat *)((sp) - 4))
  #define Callback_link(sp) ((struct caml_context *)((sp) + 8))
 diff --git a/configure b/configure
-index d0a6b0f..6ed0a9c 100755
+index eafd6d9..2f48daf 100755
 --- a/configure
 +++ b/configure
 @@ -685,6 +685,7 @@ case "$host" in
-   hppa2.0*-*-hpux*)             arch=hppa; system=hpux;;
-   hppa*-*-linux*)               arch=hppa; system=linux;;
-   hppa*-*-gnu*)                 arch=hppa; system=gnu;;
+                                   arch=i386; system=macosx
+                                 fi;;
+   i[3456]86-*-gnu*)             arch=i386; system=gnu;;
 +  powerpc64-*-linux*)           arch=power64; model=ppc64; system=elf;;
    powerpc*-*-linux*)            arch=power; model=ppc; system=elf;;
    powerpc-*-netbsd*)            arch=power; model=ppc; system=elf;;
    powerpc-*-rhapsody*)          arch=power; model=ppc; system=rhapsody;;
-@@ -709,7 +710,7 @@ esac
- 
- if $arch64; then
-   case "$arch,$model" in
--    sparc,default|mips,default|hppa,default|power,ppc)
-+    sparc,default|mips,default|hppa,default)
-       arch=none; model=default; system=unknown;;
-   esac
- fi
-@@ -772,6 +773,8 @@ case "$arch,$model,$system" in
-                     aspp='as -n32 -O2';;
+@@ -756,6 +757,8 @@ case "$arch,$model,$system" in
+                     aspp='gcc -c';;
    power,*,elf)      as='as -u -m ppc'
                      aspp='gcc -c';;
 +  power64,*,elf)    as='as -u -m ppc64'
@@ -2132,5 +2123,5 @@ index d0a6b0f..6ed0a9c 100755
                      aspp='gcc -c';;
    power,*,rhapsody) as="as -arch $model"
 -- 
-1.7.10.1
+1.7.10
 
