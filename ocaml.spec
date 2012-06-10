@@ -1,6 +1,6 @@
 Name:           ocaml
 Version:        4.00.0
-Release:        0.3.beta2%{?dist}
+Release:        0.4.beta2%{?dist}
 
 Summary:        OCaml compiler and programming environment
 
@@ -523,6 +523,9 @@ fi
 
 
 %changelog
+* Sun Jun 10 2012 Richard W.M. Jones <rjones@redhat.com> - 4.00.0-0.4.beta2
+- Rebuild for OCaml 4.00.0.
+
 * Thu Jun  7 2012 Richard W.M. Jones <rjones@redhat.com> 4.00.0-0.3.beta2
 - Upgrade to OCaml 4.00.0 beta 2.
 - The language is now officially called OCaml (not Objective Caml, O'Caml etc)
