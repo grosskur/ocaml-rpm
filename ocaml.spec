@@ -1,6 +1,6 @@
 Name:           ocaml
 Version:        4.00.0
-Release:        0.5.beta2%{?dist}
+Release:        0.6.beta2%{?dist}
 
 Summary:        OCaml compiler and programming environment
 
@@ -523,6 +523,9 @@ fi
 
 
 %changelog
+* Fri Jul 20 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 4.00.0-0.6.beta2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
+
 * Sun Jun 10 2012 Richard W.M. Jones <rjones@redhat.com> - 4.00.0-0.5.beta2
 - No change, just fix up changelog.
 
