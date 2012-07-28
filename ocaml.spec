@@ -1,6 +1,6 @@
 Name:           ocaml
 Version:        4.00.0
-Release:        0.6.beta2%{?dist}
+Release:        1%{?dist}
 
 Summary:        OCaml compiler and programming environment
 
@@ -9,10 +9,11 @@ License:        QPL and (LGPLv2+ with exceptions)
 
 URL:            http://www.ocaml.org
 
-Source0:        http://caml.inria.fr/pub/distrib/ocaml-4.00/ocaml-%{version}+beta2.tar.bz2
+Source0:        http://caml.inria.fr/pub/distrib/ocaml-4.00/ocaml-%{version}.tar.bz2
+# Link to non-beta file was broken on 2012-07-28:
 Source1:        http://caml.inria.fr/pub/distrib/ocaml-4.00/ocaml-4.00beta-refman-html.tar.gz
-Source2:        http://caml.inria.fr/pub/distrib/ocaml-4.00/ocaml-4.00beta-refman.pdf
-Source3:        http://caml.inria.fr/pub/distrib/ocaml-4.00/ocaml-4.00beta-refman.info.tar.gz
+Source2:        http://caml.inria.fr/pub/distrib/ocaml-4.00/ocaml-4.00-refman.pdf
+Source3:        http://caml.inria.fr/pub/distrib/ocaml-4.00/ocaml-4.00-refman.info.tar.gz
 
 # IMPORTANT NOTE:
 #
@@ -32,8 +33,7 @@ Patch0002:      0002-Ensure-empty-compilerlibs-directory-is-created-by-gi.patch
 Patch0003:      0003-ocamlbyteinfo-ocamlplugininfo-Useful-utilities-from-.patch
 Patch0004:      0004-Don-t-add-rpaths-to-libraries.patch
 Patch0005:      0005-configure-Allow-user-defined-C-compiler-flags.patch
-Patch0006:      0006-Link-dllthreads.so-with-lpthread-so-that-pthread_atf.patch
-Patch0007:      0007-Add-support-for-ppc64.patch
+Patch0006:      0006-Add-support-for-ppc64.patch
 
 BuildRequires:  ncurses-devel
 BuildRequires:  gdbm-devel
@@ -236,9 +236,9 @@ may not be portable between versions.
 
 
 %prep
-%setup -q -T -b 0 -n %{name}-%{version}+beta2
-%setup -q -T -D -a 1 -n %{name}-%{version}+beta2
-%setup -q -T -D -a 3 -n %{name}-%{version}+beta2
+%setup -q -T -b 0 -n %{name}-%{version}
+%setup -q -T -D -a 1 -n %{name}-%{version}
+%setup -q -T -D -a 3 -n %{name}-%{version}
 cp %{SOURCE2} refman.pdf
 
 git init
@@ -523,6 +523,10 @@ fi
 
 
 %changelog
+* Sat Jul 28 2012 Richard W.M. Jones <rjones@redhat.com> - 4.00.0-1
+- Upgrade to OCaml 4.00.0 official release.
+- Remove one patch (add -lpthread) which went upstream.
+
 * Fri Jul 20 2012 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 4.00.0-0.6.beta2
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_18_Mass_Rebuild
 

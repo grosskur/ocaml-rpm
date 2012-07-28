@@ -1,7 +1,7 @@
-From c5d136f4163a0b815f936269151faf2ae44791b2 Mon Sep 17 00:00:00 2001
+From 8c0add238693e59d78e665e0d5275f6e77c35f8c Mon Sep 17 00:00:00 2001
 From: "Richard W.M. Jones" <rjones@redhat.com>
 Date: Tue, 29 May 2012 20:47:07 +0100
-Subject: [PATCH 7/7] Add support for ppc64.
+Subject: [PATCH 6/6] Add support for ppc64.
 
 Note (1): This patch was rejected upstream because they don't have
 appropriate hardware for testing.
@@ -2108,10 +2108,10 @@ index a801405..59a7bf2 100644
  #define Saved_return_address(sp) *((intnat *)((sp) - 4))
  #define Callback_link(sp) ((struct caml_context *)((sp) + 8))
 diff --git a/configure b/configure
-index eafd6d9..2f48daf 100755
+index cda73fd..314d1e9 100755
 --- a/configure
 +++ b/configure
-@@ -685,6 +685,7 @@ case "$host" in
+@@ -686,6 +686,7 @@ case "$host" in
                                    arch=i386; system=macosx
                                  fi;;
    i[3456]86-*-gnu*)             arch=i386; system=gnu;;
@@ -2119,7 +2119,7 @@ index eafd6d9..2f48daf 100755
    powerpc*-*-linux*)            arch=power; model=ppc; system=elf;;
    powerpc-*-netbsd*)            arch=power; model=ppc; system=elf;;
    powerpc-*-rhapsody*)          arch=power; model=ppc; system=rhapsody;;
-@@ -756,6 +757,8 @@ case "$arch,$model,$system" in
+@@ -757,6 +758,8 @@ case "$arch,$model,$system" in
                      aspp='gcc -c';;
    power,*,elf)      as='as -u -m ppc'
                      aspp='gcc -c';;
@@ -2129,5 +2129,5 @@ index eafd6d9..2f48daf 100755
                      aspp='gcc -c';;
    power,*,rhapsody) as="as -arch $model"
 -- 
-1.7.10.1
+1.7.10.4
 
