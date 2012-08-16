@@ -1,6 +1,6 @@
 Name:           ocaml
 Version:        4.00.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 
 Summary:        OCaml compiler and programming environment
 
@@ -76,7 +76,7 @@ ExclusiveArch:  alpha %{arm} ia64 %{ix86} x86_64 ppc ppc64 sparc sparcv9
 %global native_compiler 0
 %endif
 
-%ifarch %{arm} %{ix86} ppc64 sparc sparcv9 x86_64
+%ifarch %{arm} %{ix86} ppc ppc64 sparc sparcv9 x86_64
 %global natdynlink 1
 %else
 %global natdynlink 0
@@ -523,6 +523,9 @@ fi
 
 
 %changelog
+* Thu Aug 16 2012 Richard W.M. Jones <rjones@redhat.com> - 4.00.0-2
+- ppc supports natdynlink.
+
 * Sat Jul 28 2012 Richard W.M. Jones <rjones@redhat.com> - 4.00.0-1
 - Upgrade to OCaml 4.00.0 official release.
 - Remove one patch (add -lpthread) which went upstream.
