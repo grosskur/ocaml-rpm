@@ -1,10 +1,10 @@
-From 054fdef0909de3dd1bd1142b4e57ff29f4826cfe Mon Sep 17 00:00:00 2001
+From 49388917a7cc798b89b95c86c5a65ed2cbea7bd4 Mon Sep 17 00:00:00 2001
 From: "Richard W.M. Jones" <rjones@redhat.com>
 Date: Tue, 29 May 2012 20:44:18 +0100
 Subject: [PATCH 5/6] configure: Allow user defined C compiler flags.
 
 ---
- configure |    4 ++++
+ configure | 4 ++++
  1 file changed, 4 insertions(+)
 
 diff --git a/configure b/configure
@@ -23,5 +23,5 @@ index e08bbce..cda73fd 100755
  
  cclibs="$cclibs $mathlib"
 -- 
-1.7.10.4
+1.7.11.4
 

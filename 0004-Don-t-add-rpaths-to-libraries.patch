@@ -1,10 +1,10 @@
-From 89b696fcb9fb4b34e79f4cf97b42057fe0c4c2ab Mon Sep 17 00:00:00 2001
+From 1e6bdb2cbc4a515ea589604e895501b40925585d Mon Sep 17 00:00:00 2001
 From: "Richard W.M. Jones" <rjones@redhat.com>
 Date: Tue, 29 May 2012 20:43:34 +0100
 Subject: [PATCH 4/6] Don't add rpaths to libraries.
 
 ---
- tools/Makefile.shared |    3 ---
+ tools/Makefile.shared | 3 ---
  1 file changed, 3 deletions(-)
 
 diff --git a/tools/Makefile.shared b/tools/Makefile.shared
@@ -22,5 +22,5 @@ index f6818d3..aadd7e2 100644
  	  ocamlmklib.mlp >> ocamlmklib.ml
  
 -- 
-1.7.10.4
+1.7.11.4
 

@@ -1,4 +1,4 @@
-From 8c0add238693e59d78e665e0d5275f6e77c35f8c Mon Sep 17 00:00:00 2001
+From 5b518e4ccac2ab99508f98b0d6a03dc1613a91f9 Mon Sep 17 00:00:00 2001
 From: "Richard W.M. Jones" <rjones@redhat.com>
 Date: Tue, 29 May 2012 20:47:07 +0100
 Subject: [PATCH 6/6] Add support for ppc64.
@@ -20,16 +20,16 @@ register (RHBZ#826649).
 
 Includes updates for OCaml 4.00.0.
 ---
- asmcomp/power64/arch.ml       |   87 ++++
- asmcomp/power64/emit.mlp      |  989 +++++++++++++++++++++++++++++++++++++++++
- asmcomp/power64/proc.ml       |  241 ++++++++++
- asmcomp/power64/reload.ml     |   18 +
- asmcomp/power64/scheduling.ml |   65 +++
- asmcomp/power64/selection.ml  |  103 +++++
- asmrun/Makefile               |    6 +
- asmrun/power64-elf.S          |  486 ++++++++++++++++++++
- asmrun/stack.h                |    9 +
- configure                     |    3 +
+ asmcomp/power64/arch.ml       |  87 ++++
+ asmcomp/power64/emit.mlp      | 989 ++++++++++++++++++++++++++++++++++++++++++
+ asmcomp/power64/proc.ml       | 241 ++++++++++
+ asmcomp/power64/reload.ml     |  18 +
+ asmcomp/power64/scheduling.ml |  65 +++
+ asmcomp/power64/selection.ml  | 103 +++++
+ asmrun/Makefile               |   6 +
+ asmrun/power64-elf.S          | 486 +++++++++++++++++++++
+ asmrun/stack.h                |   9 +
+ configure                     |   3 +
  10 files changed, 2007 insertions(+)
  create mode 100644 asmcomp/power64/arch.ml
  create mode 100644 asmcomp/power64/emit.mlp
@@ -2129,5 +2129,5 @@ index cda73fd..314d1e9 100755
                      aspp='gcc -c';;
    power,*,rhapsody) as="as -arch $model"
 -- 
-1.7.10.4
+1.7.11.4
 

@@ -1,17 +1,15 @@
 Name:           ocaml
-Version:        4.00.0
-Release:        2%{?dist}
+Version:        4.00.1
+Release:        1%{?dist}
 
 Summary:        OCaml compiler and programming environment
 
-Group:          Development/Languages
 License:        QPL and (LGPLv2+ with exceptions)
 
 URL:            http://www.ocaml.org
 
 Source0:        http://caml.inria.fr/pub/distrib/ocaml-4.00/ocaml-%{version}.tar.bz2
-# Link to non-beta file was broken on 2012-07-28:
-Source1:        http://caml.inria.fr/pub/distrib/ocaml-4.00/ocaml-4.00beta-refman-html.tar.gz
+Source1:        http://caml.inria.fr/pub/distrib/ocaml-4.00/ocaml-4.00-refman-html.tar.gz
 Source2:        http://caml.inria.fr/pub/distrib/ocaml-4.00/ocaml-4.00-refman.pdf
 Source3:        http://caml.inria.fr/pub/distrib/ocaml-4.00/ocaml-4.00-refman.info.tar.gz
 
@@ -97,7 +95,6 @@ and a comprehensive library.
 
 
 %package runtime
-Group:          System Environment/Libraries
 Summary:        OCaml runtime environment
 Requires:       util-linux
 Provides:       ocaml(runtime) = %{version}
@@ -111,7 +108,6 @@ bytecode.
 
 
 %package source
-Group:          Development/Languages
 Summary:        Source code for OCaml libraries
 Requires:       ocaml = %{version}-%{release}
 
@@ -120,7 +116,6 @@ Source code for OCaml libraries.
 
 
 %package x11
-Group:          System Environment/Libraries
 Summary:        X11 support for OCaml
 Requires:       ocaml-runtime = %{version}-%{release}
 Requires:       libX11-devel
@@ -130,7 +125,6 @@ X11 support for OCaml.
 
 
 %package labltk
-Group:          System Environment/Libraries
 Summary:        Tk bindings for OCaml
 Requires:       ocaml-runtime = %{version}-%{release}
 
@@ -142,7 +136,6 @@ This package contains the runtime files.
 
 
 %package labltk-devel
-Group:          Development/Libraries
 Summary:        Development files for labltk
 Requires:       ocaml = %{version}-%{release}
 Requires:       %{name}-labltk = %{version}-%{release}
@@ -159,7 +152,6 @@ browser for code editing and library browsing.
 
 
 %package camlp4
-Group:          Development/Languages
 Summary:        Pre-Processor-Pretty-Printer for OCaml
 Requires:       ocaml-runtime = %{version}-%{release}
 
@@ -171,7 +163,6 @@ This package contains the runtime files.
 
 
 %package camlp4-devel
-Group:          Development/Languages
 Summary:        Pre-Processor-Pretty-Printer for OCaml
 Requires:       ocaml = %{version}-%{release}
 Requires:       %{name}-camlp4 = %{version}-%{release}
@@ -184,7 +175,6 @@ This package contains the development files.
 
 
 %package ocamldoc
-Group:          Development/Languages
 Summary:        Documentation generator for OCaml.
 Requires:       ocaml = %{version}-%{release}
 Provides:	ocamldoc
@@ -194,7 +184,6 @@ Documentation generator for OCaml.
 
 
 %package emacs
-Group:          Development/Languages
 Summary:        Emacs mode for OCaml
 Requires:       ocaml = %{version}-%{release}
 Requires:       emacs
@@ -204,7 +193,6 @@ Emacs mode for OCaml.
 
 
 %package docs
-Group:          Development/Languages
 Summary:        Documentation for OCaml
 Requires:       ocaml = %{version}-%{release}
 Requires(post): /sbin/install-info
@@ -220,7 +208,6 @@ man pages and info files.
 
 
 %package compiler-libs
-Group:          Development/Languages
 Summary:        Compiler libraries for OCaml
 Requires:       ocaml = %{version}-%{release}
 
@@ -523,6 +510,10 @@ fi
 
 
 %changelog
+* Tue Oct 16 2012 Richard W.M. Jones <rjones@redhat.com> - 4.00.1-1
+- Update to upstream version 4.00.1.
+- Clean up the spec file further.
+
 * Thu Aug 16 2012 Richard W.M. Jones <rjones@redhat.com> - 4.00.0-2
 - ppc supports natdynlink.
 
