@@ -1,6 +1,6 @@
 Name:           ocaml
 Version:        4.00.1
-Release:        1%{?dist}
+Release:        2%{?dist}
 
 Summary:        OCaml compiler and programming environment
 
@@ -510,6 +510,9 @@ fi
 
 
 %changelog
+* Thu Feb 14 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 4.00.1-2
+- Rebuilt for https://fedoraproject.org/wiki/Fedora_19_Mass_Rebuild
+
 * Tue Oct 16 2012 Richard W.M. Jones <rjones@redhat.com> - 4.00.1-1
 - Update to upstream version 4.00.1.
 - Clean up the spec file further.
