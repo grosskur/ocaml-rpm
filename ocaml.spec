@@ -567,7 +567,7 @@ fi
 - Include svn rev 12548 to fix invalid generation of Thumb-2 branch
   instruction TBH (upstream PR#5623, RHBZ#821153).
 
-* Wed May 29 2012 Richard W.M. Jones <rjones@redhat.com> 3.12.1-8
+* Wed May 30 2012 Richard W.M. Jones <rjones@redhat.com> 3.12.1-8
 - Modify the ppc64 patch to reduce the delta between power64 and
   upstream power backends.
 - Clean up the spec file and bring it up to modern standards.
@@ -719,7 +719,7 @@ fi
 * Tue Nov 18 2008 Richard W.M. Jones <rjones@redhat.com> - 3.11.0+beta1-1
 - Rebuild for major new upstream release of 3.11.0 for Fedora 11.
 
-* Thu Aug 29 2008 Richard W.M. Jones <rjones@redhat.com> - 3.10.2-5
+* Fri Aug 29 2008 Richard W.M. Jones <rjones@redhat.com> - 3.10.2-5
 - Rebuild with patch fuzz.
 
 * Mon Jun  9 2008 Richard W.M. Jones <rjones@redhat.com> - 3.10.2-4
@@ -811,7 +811,7 @@ fi
 * Sun May 22 2005 Jeremy Katz <katzj@redhat.com> - 3.08.3-3
 - rebuild on all arches
 
-* Fri Apr  7 2005 Michael Schwendt <mschwendt[AT]users.sf.net>
+* Fri Apr  8 2005 Michael Schwendt <mschwendt[AT]users.sf.net>
 - rebuilt
 
 * Sat Mar 26 2005 Gerard Milmeister <gemi@bluewin.ch> - 3.08.3-1
