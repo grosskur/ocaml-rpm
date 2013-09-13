@@ -1,7 +1,7 @@
-From 5b518e4ccac2ab99508f98b0d6a03dc1613a91f9 Mon Sep 17 00:00:00 2001
+From 6a4eb2f692e11312dcec4e73956788ac1e5c2fa6 Mon Sep 17 00:00:00 2001
 From: "Richard W.M. Jones" <rjones@redhat.com>
 Date: Tue, 29 May 2012 20:47:07 +0100
-Subject: [PATCH 6/6] Add support for ppc64.
+Subject: [PATCH 6/7] Add support for ppc64.
 
 Note (1): This patch was rejected upstream because they don't have
 appropriate hardware for testing.
@@ -18,7 +18,7 @@ when there are more than 8 parameters (RHBZ#829187).
 Includes fix for minor heap corruption because of unaligned minor heap
 register (RHBZ#826649).
 
-Includes updates for OCaml 4.00.0.
+Includes updates for OCaml 4.01.0.
 ---
  asmcomp/power64/arch.ml       |  87 ++++
  asmcomp/power64/emit.mlp      | 989 ++++++++++++++++++++++++++++++++++++++++++
@@ -1579,10 +1579,10 @@ index 0000000..d2325e1
 +
 +let fundecl f = (new selector)#emit_fundecl f
 diff --git a/asmrun/Makefile b/asmrun/Makefile
-index d4f0c56..d58d451 100644
+index 5ebf7aa..6a8ed98 100644
 --- a/asmrun/Makefile
 +++ b/asmrun/Makefile
-@@ -89,6 +89,12 @@ power.o: power-$(SYSTEM).o
+@@ -90,6 +90,12 @@ power.o: power-$(SYSTEM).o
  power.p.o: power-$(SYSTEM).o
  	cp power-$(SYSTEM).o power.p.o
  
@@ -2088,10 +2088,10 @@ index 0000000..b2c24d6
 +        .align  3
 +
 diff --git a/asmrun/stack.h b/asmrun/stack.h
-index a801405..59a7bf2 100644
+index 57c87fa..756db95 100644
 --- a/asmrun/stack.h
 +++ b/asmrun/stack.h
-@@ -47,6 +47,15 @@
+@@ -46,6 +46,15 @@
  #define Callback_link(sp) ((struct caml_context *)((sp) + Trap_frame_size))
  #endif
  
@@ -2108,26 +2108,26 @@ index a801405..59a7bf2 100644
  #define Saved_return_address(sp) *((intnat *)((sp) - 4))
  #define Callback_link(sp) ((struct caml_context *)((sp) + 8))
 diff --git a/configure b/configure
-index cda73fd..314d1e9 100755
+index 39b38dc..9b02664 100755
 --- a/configure
 +++ b/configure
-@@ -686,6 +686,7 @@ case "$host" in
+@@ -694,6 +694,7 @@ case "$host" in
                                    arch=i386; system=macosx
                                  fi;;
    i[3456]86-*-gnu*)             arch=i386; system=gnu;;
 +  powerpc64-*-linux*)           arch=power64; model=ppc64; system=elf;;
    powerpc*-*-linux*)            arch=power; model=ppc; system=elf;;
    powerpc-*-netbsd*)            arch=power; model=ppc; system=elf;;
-   powerpc-*-rhapsody*)          arch=power; model=ppc; system=rhapsody;;
-@@ -757,6 +758,8 @@ case "$arch,$model,$system" in
+   powerpc-*-openbsd*)           arch=power; model=ppc; system=bsd_elf;;
+@@ -776,6 +777,8 @@ case "$arch,$model,$system" in
                      aspp='gcc -c';;
-   power,*,elf)      as='as -u -m ppc'
+   power,*,bsd*)     as='as'
                      aspp='gcc -c';;
 +  power64,*,elf)    as='as -u -m ppc64'
-+                   aspp='gcc -c';;
-   power,*,bsd)      as='as'
-                     aspp='gcc -c';;
++                    aspp='gcc -c';;
    power,*,rhapsody) as="as -arch $model"
+                     aspp="$bytecc -c";;
+   sparc,*,solaris)  as='as'
 -- 
-1.7.11.4
+1.8.3.1
 

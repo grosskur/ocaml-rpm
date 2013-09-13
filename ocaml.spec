@@ -1,6 +1,6 @@
 Name:           ocaml
-Version:        4.00.1
-Release:        3%{?dist}
+Version:        4.01.0
+Release:        1%{?dist}
 
 Summary:        OCaml compiler and programming environment
 
@@ -8,10 +8,10 @@ License:        QPL and (LGPLv2+ with exceptions)
 
 URL:            http://www.ocaml.org
 
-Source0:        http://caml.inria.fr/pub/distrib/ocaml-4.00/ocaml-%{version}.tar.bz2
-Source1:        http://caml.inria.fr/pub/distrib/ocaml-4.00/ocaml-4.00-refman-html.tar.gz
-Source2:        http://caml.inria.fr/pub/distrib/ocaml-4.00/ocaml-4.00-refman.pdf
-Source3:        http://caml.inria.fr/pub/distrib/ocaml-4.00/ocaml-4.00-refman.info.tar.gz
+Source0:        http://caml.inria.fr/pub/distrib/ocaml-4.01/ocaml-%{version}.tar.gz
+Source1:        http://caml.inria.fr/pub/distrib/ocaml-4.01/ocaml-4.01-refman-html.tar.gz
+Source2:        http://caml.inria.fr/pub/distrib/ocaml-4.01/ocaml-4.01-refman.pdf
+Source3:        http://caml.inria.fr/pub/distrib/ocaml-4.01/ocaml-4.01-refman.info.tar.gz
 
 # IMPORTANT NOTE:
 #
@@ -32,6 +32,7 @@ Patch0003:      0003-ocamlbyteinfo-ocamlplugininfo-Useful-utilities-from-.patch
 Patch0004:      0004-Don-t-add-rpaths-to-libraries.patch
 Patch0005:      0005-configure-Allow-user-defined-C-compiler-flags.patch
 Patch0006:      0006-Add-support-for-ppc64.patch
+Patch0007:      0007-yacc-Use-mkstemp-instead-of-mktemp.patch
 
 BuildRequires:  ncurses-devel
 BuildRequires:  gdbm-devel
@@ -58,8 +59,6 @@ BuildRequires:  chrpath
 BuildRequires:  git
 
 Requires:       gcc
-Requires:       ncurses-devel
-Requires:       gdbm-devel
 Requires:       rpm-build >= 4.8.0
 
 Provides:       ocaml(compiler) = %{version}
@@ -175,7 +174,7 @@ This package contains the development files.
 
 
 %package ocamldoc
-Summary:        Documentation generator for OCaml.
+Summary:        Documentation generator for OCaml
 Requires:       ocaml = %{version}-%{release}
 Provides:	ocamldoc
 
@@ -267,6 +266,8 @@ make -C emacs ocamltags
 # to go upstream at some point.
 includes="-nostdlib -I stdlib -I utils -I parsing -I typing -I bytecomp -I asmcomp -I driver -I otherlibs/unix -I otherlibs/str -I otherlibs/dynlink"
 boot/ocamlrun ./ocamlc $includes dynlinkaux.cmo ocamlbyteinfo.ml -o ocamlbyteinfo
+# ocamlplugininfo doesn't compile because it needs 'dynheader' (type
+# decl) and I have no idea where that comes from
 #cp otherlibs/dynlink/natdynlink.ml .
 #boot/ocamlrun ./ocamlopt $includes unix.cmxa str.cmxa natdynlink.ml ocamlplugininfo.ml -o ocamlplugininfo
 
@@ -301,6 +302,8 @@ chrpath --delete $RPM_BUILD_ROOT%{_libdir}/ocaml/stublibs/*.so
 install -m 0755 ocamlbyteinfo $RPM_BUILD_ROOT%{_bindir}
 #install -m 0755 ocamlplugininfo $RPM_BUILD_ROOT%{_bindir}
 
+find $RPM_BUILD_ROOT -name .ignore -delete
+
 
 %post docs
 /sbin/install-info \
@@ -317,6 +320,7 @@ fi
 
 
 %files
+%doc LICENSE
 %{_bindir}/ocaml
 %{_bindir}/ocamlbyteinfo
 %{_bindir}/ocamlbuild
@@ -382,6 +386,7 @@ fi
 
 
 %files runtime
+%doc README LICENSE Changes
 %{_bindir}/ocamlrun
 %dir %{_libdir}/ocaml
 %{_libdir}/ocaml/VERSION
@@ -399,19 +404,21 @@ fi
 %exclude %{_libdir}/ocaml/graphicsX11.cmi
 %exclude %{_libdir}/ocaml/stublibs/dlllabltk.so
 #%exclude %{_libdir}/ocaml/stublibs/dlltkanim.so
-%doc README LICENSE Changes
 
 
 %files source
+%doc LICENSE
 %{_libdir}/ocaml/*.ml
 
 
 %files x11
+%doc LICENSE
 %{_libdir}/ocaml/graphicsX11.cmi
 %{_libdir}/ocaml/graphicsX11.mli
 
 
 %files labltk
+%doc LICENSE
 %{_bindir}/labltk
 %dir %{_libdir}/ocaml/labltk
 %{_libdir}/ocaml/labltk/*.cmi
@@ -422,6 +429,9 @@ fi
 
 
 %files labltk-devel
+%doc LICENSE
+%doc otherlibs/labltk/examples_labltk
+%doc otherlibs/labltk/examples_camltk
 %{_bindir}/ocamlbrowser
 %{_libdir}/ocaml/labltk/labltktop
 %{_libdir}/ocaml/labltk/pp
@@ -433,11 +443,10 @@ fi
 %{_libdir}/ocaml/labltk/*.o
 %endif
 %{_libdir}/ocaml/labltk/*.mli
-%doc otherlibs/labltk/examples_labltk
-%doc otherlibs/labltk/examples_camltk
 
 
 %files camlp4
+%doc LICENSE
 %dir %{_libdir}/ocaml/camlp4
 %{_libdir}/ocaml/camlp4/*.cmi
 %{_libdir}/ocaml/camlp4/*.cma
@@ -477,9 +486,10 @@ fi
 
 
 %files ocamldoc
+%doc LICENSE
+%doc ocamldoc/Changes.txt
 %{_bindir}/ocamldoc*
 %{_libdir}/ocaml/ocamldoc
-%doc ocamldoc/Changes.txt
 
 
 %files docs
@@ -491,12 +501,13 @@ fi
 
 
 %files emacs
+%doc emacs/README
 %{_datadir}/emacs/site-lisp/*
 %{_bindir}/ocamltags
-%doc emacs/README
 
 
 %files compiler-libs
+%doc LICENSE
 %dir %{_libdir}/ocaml/compiler-libs
 %{_libdir}/ocaml/compiler-libs/*.cmi
 %{_libdir}/ocaml/compiler-libs/*.cmo
@@ -510,6 +521,17 @@ fi
 
 
 %changelog
+* Fri Sep 13 2013 Richard W.M. Jones <rjones@redhat.com> - 4.01.0-1
+- Update to new major version 4.01.0.
+- Rebase patches.
+- Remove bogus Requires 'ncurses-devel'.  The base ocaml package already
+  pulls in the library implicitly.
+- Remove bogus Requires 'gdbm-devel'.  Nothing in the source mentions gdbm.
+- Use mkstemp instead of mktemp in ocamlyacc.
+- Add LICENSE as doc to some subpackages to keep rpmlint happy.
+- Remove .ignore file from some packages.
+- Remove period from end of Summary.
+
 * Sat Aug 03 2013 Fedora Release Engineering <rel-eng@lists.fedoraproject.org> - 4.00.1-3
 - Rebuilt for https://fedoraproject.org/wiki/Fedora_20_Mass_Rebuild
 
