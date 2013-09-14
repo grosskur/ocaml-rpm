@@ -1,4 +1,4 @@
-From d7be8e44a95e0c7fad0987869999ecbed8c20769 Mon Sep 17 00:00:00 2001
+From 761242718c3a7513d3b93ca96d24d1f61a4126f0 Mon Sep 17 00:00:00 2001
 From: "Richard W.M. Jones" <rjones@redhat.com>
 Date: Fri, 13 Sep 2013 21:29:58 +0100
 Subject: [PATCH 7/7] yacc: Use mkstemp instead of mktemp.

@@ -1,6 +1,6 @@
 Name:           ocaml
 Version:        4.01.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 
 Summary:        OCaml compiler and programming environment
 
@@ -521,6 +521,9 @@ fi
 
 
 %changelog
+* Sat Sep 14 2013 Richard W.M. Jones <rjones@redhat.com> - 4.01.0-2
+- Fix the build on ppc64.
+
 * Fri Sep 13 2013 Richard W.M. Jones <rjones@redhat.com> - 4.01.0-1
 - Update to new major version 4.01.0.
 - Rebase patches.
