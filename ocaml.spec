@@ -1,6 +1,6 @@
 Name:           ocaml
 Version:        4.01.0
-Release:        2%{?dist}
+Release:        3%{?dist}
 
 Summary:        OCaml compiler and programming environment
 
@@ -255,7 +255,8 @@ CFLAGS="$RPM_OPT_FLAGS" \
     -libdir %{_libdir}/ocaml \
     -x11lib %{_libdir} \
     -x11include %{_includedir} \
-    -mandir %{_mandir}/man1
+    -mandir %{_mandir}/man1 \
+    -no-curses
 make world
 %if %{native_compiler}
 make opt opt.opt
@@ -521,6 +522,9 @@ fi
 
 
 %changelog
+* Sat Sep 14 2013 Richard W.M. Jones <rjones@redhat.com> - 4.01.0-3
+- Disable -lcurses.  This is not actually used, just linked with unnecessarily.
+
 * Sat Sep 14 2013 Richard W.M. Jones <rjones@redhat.com> - 4.01.0-2
 - Fix the build on ppc64.
 
