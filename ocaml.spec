@@ -1,6 +1,6 @@
 Name:           ocaml
 Version:        4.01.0
-Release:        3%{?dist}
+Release:        4%{?dist}
 
 Summary:        OCaml compiler and programming environment
 
@@ -33,6 +33,9 @@ Patch0004:      0004-Don-t-add-rpaths-to-libraries.patch
 Patch0005:      0005-configure-Allow-user-defined-C-compiler-flags.patch
 Patch0006:      0006-Add-support-for-ppc64.patch
 Patch0007:      0007-yacc-Use-mkstemp-instead-of-mktemp.patch
+
+# NON-upstream patch to allow '--flag=arg' as an alternative to '--flag arg'.
+Patch0008:      0001-stdlib-arg-Allow-flags-such-as-flag-arg-as-well-as-f.patch
 
 BuildRequires:  ncurses-devel
 BuildRequires:  gdbm-devel
@@ -522,6 +525,10 @@ fi
 
 
 %changelog
+* Sat Nov  9 2013 Richard W.M. Jones <rjones@redhat.com> - 4.01.0-4
+- Add NON-upstream (but being sent upstream) patch to allow --flag=arg
+  as an alternative to --flag arg (RHBZ#1028650).
+
 * Sat Sep 14 2013 Richard W.M. Jones <rjones@redhat.com> - 4.01.0-3
 - Disable -lcurses.  This is not actually used, just linked with unnecessarily.
 
@@ -529,7 +536,7 @@ fi
 - Fix the build on ppc64.
 
 * Fri Sep 13 2013 Richard W.M. Jones <rjones@redhat.com> - 4.01.0-1
-- Update to new major version 4.01.0.
+- Update to new major version OCaml 4.01.0.
 - Rebase patches.
 - Remove bogus Requires 'ncurses-devel'.  The base ocaml package already
   pulls in the library implicitly.
