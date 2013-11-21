@@ -64,6 +64,9 @@ BuildRequires:  git
 Requires:       gcc
 Requires:       rpm-build >= 4.8.0
 
+# Bundles an MD5 implementation in byterun/md5.{c,h}
+Provides:       bundled(md5-plumb)
+
 Provides:       ocaml(compiler) = %{version}
 
 # We can compile OCaml on just about anything, but the native code
@@ -525,7 +528,8 @@ fi
 
 
 %changelog
-* Sat Nov  9 2013 Richard W.M. Jones <rjones@redhat.com> - 4.01.0-4
+* Thu Nov 21 2013 Richard W.M. Jones <rjones@redhat.com> - 4.01.0-4
+- Add bundled(md5-plumb) (thanks: Tomas Mraz).
 - Add NON-upstream (but being sent upstream) patch to allow --flag=arg
   as an alternative to --flag arg (RHBZ#1028650).
 
