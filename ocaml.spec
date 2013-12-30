@@ -1,6 +1,6 @@
 Name:           ocaml
 Version:        4.01.0
-Release:        4%{?dist}
+Release:        5%{?dist}
 
 Summary:        OCaml compiler and programming environment
 
@@ -35,7 +35,14 @@ Patch0006:      0006-Add-support-for-ppc64.patch
 Patch0007:      0007-yacc-Use-mkstemp-instead-of-mktemp.patch
 
 # NON-upstream patch to allow '--flag=arg' as an alternative to '--flag arg'.
-Patch0008:      0001-stdlib-arg-Allow-flags-such-as-flag-arg-as-well-as-f.patch
+Patch0008:      0008-stdlib-arg-Allow-flags-such-as-flag-arg-as-well-as-f.patch
+
+# Aarch64 patches.
+%ifarch aarch64
+Patch0009:      0009-Port-to-the-ARM-64-bits-AArch64-architecture-experim.patch
+Patch0010:      0010-Updated-with-latest-versions-from-FSF.patch
+Patch0011:      0011-Disable-ocamldoc-and-camlp4opt-aarch64-only.patch
+%endif
 
 BuildRequires:  ncurses-devel
 BuildRequires:  gdbm-devel
@@ -71,7 +78,7 @@ Provides:       ocaml(compiler) = %{version}
 
 # We can compile OCaml on just about anything, but the native code
 # backend is only available on a subset of architectures.
-ExclusiveArch:  alpha %{arm} ia64 %{ix86} x86_64 ppc ppc64 sparc sparcv9
+ExclusiveArch:  aarch64 alpha %{arm} ia64 %{ix86} x86_64 ppc ppc64 sparc sparcv9
 
 %ifarch %{arm} %{ix86} ppc ppc64 sparc sparcv9 x86_64
 %global native_compiler 1
@@ -357,6 +364,9 @@ fi
 %{_bindir}/ocamlopt.opt
 %{_bindir}/ocamloptp
 %endif
+%ifarch aarch64
+%{_bindir}/ocamloptp
+%endif
 #%{_bindir}/ocamlplugininfo
 %{_bindir}/ocamlprof
 %{_bindir}/ocamlyacc
@@ -505,6 +515,9 @@ fi
 %if %{native_compiler}
 %{_mandir}/man3/*
 %endif
+%ifarch aarch64
+%{_mandir}/man3/*
+%endif
 
 
 %files emacs
@@ -528,6 +541,9 @@ fi
 
 
 %changelog
+* Mon Dec 30 2013 Richard W.M. Jones <rjones@redhat.com> - 4.01.0-5
+- Add aarch64 (arm64) code generator.
+
 * Thu Nov 21 2013 Richard W.M. Jones <rjones@redhat.com> - 4.01.0-4
 - Add bundled(md5-plumb) (thanks: Tomas Mraz).
 - Add NON-upstream (but being sent upstream) patch to allow --flag=arg

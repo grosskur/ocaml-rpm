@@ -1,8 +1,8 @@
 From 33962967111fbed55e93260b12cd65e372a0958a Mon Sep 17 00:00:00 2001
 From: "Richard W.M. Jones" <rjones@redhat.com>
 Date: Sat, 9 Nov 2013 09:11:30 +0000
-Subject: [PATCH] stdlib: arg: Allow flags such as --flag=arg as well as --flag
- arg.
+Subject: [PATCH 08/11] stdlib: arg: Allow flags such as --flag=arg as well as
+ --flag arg.
 
 Fix for the following issue:
 http://caml.inria.fr/mantis/view.php?id=5197
@@ -161,5 +161,5 @@ index 869d030..b8c6f11 100644
  
     Examples ([cmd] is assumed to be the command name):
 -- 
-1.8.3.1
+1.8.4.2
 
