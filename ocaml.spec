@@ -1,6 +1,6 @@
 Name:           ocaml
 Version:        4.01.0
-Release:        5%{?dist}
+Release:        6%{?dist}
 
 Summary:        OCaml compiler and programming environment
 
@@ -80,13 +80,13 @@ Provides:       ocaml(compiler) = %{version}
 # backend is only available on a subset of architectures.
 ExclusiveArch:  aarch64 alpha %{arm} ia64 %{ix86} x86_64 ppc ppc64 sparc sparcv9
 
-%ifarch %{arm} %{ix86} ppc ppc64 sparc sparcv9 x86_64
+%ifarch aarch64 %{arm} %{ix86} ppc ppc64 sparc sparcv9 x86_64
 %global native_compiler 1
 %else
 %global native_compiler 0
 %endif
 
-%ifarch %{arm} %{ix86} ppc ppc64 sparc sparcv9 x86_64
+%ifarch aarch64 %{arm} %{ix86} ppc ppc64 sparc sparcv9 x86_64
 %global natdynlink 1
 %else
 %global natdynlink 0
@@ -364,9 +364,6 @@ fi
 %{_bindir}/ocamlopt.opt
 %{_bindir}/ocamloptp
 %endif
-%ifarch aarch64
-%{_bindir}/ocamloptp
-%endif
 #%{_bindir}/ocamlplugininfo
 %{_bindir}/ocamlprof
 %{_bindir}/ocamlyacc
@@ -486,6 +483,8 @@ fi
 %{_bindir}/camlp4*
 %{_bindir}/mkcamlp4
 %if %{native_compiler}
+# camlp4 doesn't build natively on aarch64 (see patch0011).
+%ifnarch aarch64
 %{_libdir}/ocaml/camlp4/*.a
 %{_libdir}/ocaml/camlp4/*.cmxa
 %{_libdir}/ocaml/camlp4/*.cmx
@@ -498,6 +497,7 @@ fi
 %{_libdir}/ocaml/camlp4/Camlp4Printers/*.o
 %{_libdir}/ocaml/camlp4/Camlp4Top/*.cmx
 %{_libdir}/ocaml/camlp4/Camlp4Top/*.o
+%endif
 %endif
 %{_mandir}/man1/*
 
@@ -513,9 +513,6 @@ fi
 %doc refman.pdf htmlman
 %{_infodir}/*
 %if %{native_compiler}
-%{_mandir}/man3/*
-%endif
-%ifarch aarch64
 %{_mandir}/man3/*
 %endif
 
@@ -541,7 +538,7 @@ fi
 
 
 %changelog
-* Mon Dec 30 2013 Richard W.M. Jones <rjones@redhat.com> - 4.01.0-5
+* Tue Dec 31 2013 Richard W.M. Jones <rjones@redhat.com> - 4.01.0-6
 - Add aarch64 (arm64) code generator.
 
 * Thu Nov 21 2013 Richard W.M. Jones <rjones@redhat.com> - 4.01.0-4
