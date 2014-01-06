@@ -1,6 +1,6 @@
 Name:           ocaml
 Version:        4.01.0
-Release:        6%{?dist}
+Release:        7%{?dist}
 
 Summary:        OCaml compiler and programming environment
 
@@ -262,7 +262,14 @@ ulimit -Hs 65536
 ulimit -Ss 65536
 %endif
 
+# For the use of -mpreferred-stack-boundary to workaround gcc stack
+# alignment issues, see: http://caml.inria.fr/mantis/view.php?id=5700
+# ONLY use this on i386.
+%ifarch %{ix86}
+CFLAGS="$RPM_OPT_FLAGS -mpreferred-stack-boundary=2" \
+%else
 CFLAGS="$RPM_OPT_FLAGS" \
+%endif
 ./configure \
     -bindir %{_bindir} \
     -libdir %{_libdir}/ocaml \
@@ -538,6 +545,10 @@ fi
 
 
 %changelog
+* Mon Jan  6 2014 Richard W.M. Jones <rjones@redhat.com> - 4.01.0-7
+- Work around gcc stack alignment issues, see
+  http://caml.inria.fr/mantis/view.php?id=5700
+
 * Tue Dec 31 2013 Richard W.M. Jones <rjones@redhat.com> - 4.01.0-6
 - Add aarch64 (arm64) code generator.
 
