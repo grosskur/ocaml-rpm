@@ -1,6 +1,6 @@
 Name:           ocaml
 Version:        4.01.0
-Release:        7%{?dist}
+Release:        8%{?dist}
 
 Summary:        OCaml compiler and programming environment
 
@@ -38,11 +38,9 @@ Patch0007:      0007-yacc-Use-mkstemp-instead-of-mktemp.patch
 Patch0008:      0008-stdlib-arg-Allow-flags-such-as-flag-arg-as-well-as-f.patch
 
 # Aarch64 patches.
-%ifarch aarch64
 Patch0009:      0009-Port-to-the-ARM-64-bits-AArch64-architecture-experim.patch
 Patch0010:      0010-Updated-with-latest-versions-from-FSF.patch
 Patch0011:      0011-Disable-ocamldoc-and-camlp4opt-aarch64-only.patch
-%endif
 
 BuildRequires:  ncurses-devel
 BuildRequires:  gdbm-devel
@@ -245,7 +243,24 @@ git config user.email "noone@example.com"
 git config user.name "no one"
 git add .
 git commit -a -q -m "%{version} baseline"
-git am %{patches} </dev/null
+# Should use:
+#git am %{patches} </dev/null
+# However temporarily we don't want to apply certain patches on
+# non-aarch64 so we have to do this.  We can fix this when there is a
+# released version of OCaml that has ARM64 support upstream.
+git am %{_sourcedir}/0001-Add-.gitignore-file-to-ignore-generated-files.patch </dev/null
+git am %{_sourcedir}/0002-Ensure-empty-compilerlibs-directory-is-created-by-gi.patch </dev/null
+git am %{_sourcedir}/0003-ocamlbyteinfo-ocamlplugininfo-Useful-utilities-from-.patch </dev/null
+git am %{_sourcedir}/0004-Don-t-add-rpaths-to-libraries.patch </dev/null
+git am %{_sourcedir}/0005-configure-Allow-user-defined-C-compiler-flags.patch </dev/null
+git am %{_sourcedir}/0006-Add-support-for-ppc64.patch </dev/null
+git am %{_sourcedir}/0007-yacc-Use-mkstemp-instead-of-mktemp.patch </dev/null
+git am %{_sourcedir}/0008-stdlib-arg-Allow-flags-such-as-flag-arg-as-well-as-f.patch </dev/null
+%ifarch aarch64
+git am %{_sourcedir}/0009-Port-to-the-ARM-64-bits-AArch64-architecture-experim.patch </dev/null
+git am %{_sourcedir}/0010-Updated-with-latest-versions-from-FSF.patch </dev/null
+git am %{_sourcedir}/0011-Disable-ocamldoc-and-camlp4opt-aarch64-only.patch </dev/null
+%endif
 
 
 %build
@@ -545,6 +560,10 @@ fi
 
 
 %changelog
+* Wed Jan  8 2014 Richard W.M. Jones <rjones@redhat.com> - 4.01.0-8
+- Don't use ifarch around Patch lines, as it means the patch files
+  don't get included in the spec file.
+
 * Mon Jan  6 2014 Richard W.M. Jones <rjones@redhat.com> - 4.01.0-7
 - Work around gcc stack alignment issues, see
   http://caml.inria.fr/mantis/view.php?id=5700
