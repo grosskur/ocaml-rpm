@@ -1,6 +1,6 @@
 Name:           ocaml
 Version:        4.01.0
-Release:        9%{?dist}
+Release:        10%{?dist}
 
 Summary:        OCaml compiler and programming environment
 
@@ -505,8 +505,6 @@ fi
 %{_bindir}/camlp4*
 %{_bindir}/mkcamlp4
 %if %{native_compiler}
-# camlp4 doesn't build natively on aarch64 (see patch0011).
-%ifnarch aarch64
 %{_libdir}/ocaml/camlp4/*.a
 %{_libdir}/ocaml/camlp4/*.cmxa
 %{_libdir}/ocaml/camlp4/*.cmx
@@ -519,7 +517,6 @@ fi
 %{_libdir}/ocaml/camlp4/Camlp4Printers/*.o
 %{_libdir}/ocaml/camlp4/Camlp4Top/*.cmx
 %{_libdir}/ocaml/camlp4/Camlp4Top/*.o
-%endif
 %endif
 %{_mandir}/man1/*
 
@@ -560,7 +557,7 @@ fi
 
 
 %changelog
-* Mon Mar 24 2014 Richard W.M. Jones <rjones@redhat.com> - 4.01.0-9
+* Mon Mar 24 2014 Richard W.M. Jones <rjones@redhat.com> - 4.01.0-10
 - Include a fix for aarch64 relocation problems
   http://caml.inria.fr/mantis/view.php?id=6283
 
