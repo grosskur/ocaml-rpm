@@ -1,6 +1,6 @@
 Name:           ocaml
 Version:        4.01.0
-Release:        8%{?dist}
+Release:        9%{?dist}
 
 Summary:        OCaml compiler and programming environment
 
@@ -40,7 +40,7 @@ Patch0008:      0008-stdlib-arg-Allow-flags-such-as-flag-arg-as-well-as-f.patch
 # Aarch64 patches.
 Patch0009:      0009-Port-to-the-ARM-64-bits-AArch64-architecture-experim.patch
 Patch0010:      0010-Updated-with-latest-versions-from-FSF.patch
-Patch0011:      0011-Disable-ocamldoc-and-camlp4opt-aarch64-only.patch
+Patch0011:      0011-arm64-Align-code-and-data-to-8-bytes.patch
 
 BuildRequires:  ncurses-devel
 BuildRequires:  gdbm-devel
@@ -259,7 +259,7 @@ git am %{_sourcedir}/0008-stdlib-arg-Allow-flags-such-as-flag-arg-as-well-as-f.p
 %ifarch aarch64
 git am %{_sourcedir}/0009-Port-to-the-ARM-64-bits-AArch64-architecture-experim.patch </dev/null
 git am %{_sourcedir}/0010-Updated-with-latest-versions-from-FSF.patch </dev/null
-git am %{_sourcedir}/0011-Disable-ocamldoc-and-camlp4opt-aarch64-only.patch </dev/null
+git am %{_sourcedir}/0011-arm64-Align-code-and-data-to-8-bytes.patch </dev/null
 %endif
 
 
@@ -560,6 +560,10 @@ fi
 
 
 %changelog
+* Mon Mar 24 2014 Richard W.M. Jones <rjones@redhat.com> - 4.01.0-9
+- Include a fix for aarch64 relocation problems
+  http://caml.inria.fr/mantis/view.php?id=6283
+
 * Wed Jan  8 2014 Richard W.M. Jones <rjones@redhat.com> - 4.01.0-8
 - Don't use ifarch around Patch lines, as it means the patch files
   don't get included in the spec file.
