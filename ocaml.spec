@@ -1,6 +1,6 @@
 Name:           ocaml
 Version:        4.01.0
-Release:        10%{?dist}
+Release:        11%{?dist}
 
 Summary:        OCaml compiler and programming environment
 
@@ -34,13 +34,14 @@ Patch0005:      0005-configure-Allow-user-defined-C-compiler-flags.patch
 Patch0006:      0006-Add-support-for-ppc64.patch
 Patch0007:      0007-yacc-Use-mkstemp-instead-of-mktemp.patch
 
-# NON-upstream patch to allow '--flag=arg' as an alternative to '--flag arg'.
-Patch0008:      0008-stdlib-arg-Allow-flags-such-as-flag-arg-as-well-as-f.patch
-
 # Aarch64 patches.
-Patch0009:      0009-Port-to-the-ARM-64-bits-AArch64-architecture-experim.patch
-Patch0010:      0010-Updated-with-latest-versions-from-FSF.patch
-Patch0011:      0011-arm64-Align-code-and-data-to-8-bytes.patch
+Patch0008:      0008-Port-to-the-ARM-64-bits-AArch64-architecture-experim.patch
+Patch0009:      0009-Updated-with-latest-versions-from-FSF.patch
+Patch0010:      0010-Disable-ocamldoc-and-camlp4opt-aarch64-only.patch
+
+# NON-upstream patch to allow '--flag=arg' as an alternative to '--flag arg'.
+Patch0011:      0011-arg-Add-no_arg-and-get_arg-helper-functions.patch
+Patch0012:      0012-arg-Allow-flags-such-as-flag-arg-as-well-as-flag-arg.patch
 
 BuildRequires:  ncurses-devel
 BuildRequires:  gdbm-devel
@@ -255,12 +256,13 @@ git am %{_sourcedir}/0004-Don-t-add-rpaths-to-libraries.patch </dev/null
 git am %{_sourcedir}/0005-configure-Allow-user-defined-C-compiler-flags.patch </dev/null
 git am %{_sourcedir}/0006-Add-support-for-ppc64.patch </dev/null
 git am %{_sourcedir}/0007-yacc-Use-mkstemp-instead-of-mktemp.patch </dev/null
-git am %{_sourcedir}/0008-stdlib-arg-Allow-flags-such-as-flag-arg-as-well-as-f.patch </dev/null
 %ifarch aarch64
-git am %{_sourcedir}/0009-Port-to-the-ARM-64-bits-AArch64-architecture-experim.patch </dev/null
-git am %{_sourcedir}/0010-Updated-with-latest-versions-from-FSF.patch </dev/null
-git am %{_sourcedir}/0011-arm64-Align-code-and-data-to-8-bytes.patch </dev/null
+git am %{_sourcedir}/0008-Port-to-the-ARM-64-bits-AArch64-architecture-experim.patch
+git am %{_sourcedir}/0009-Updated-with-latest-versions-from-FSF.patch
+git am %{_sourcedir}/0010-Disable-ocamldoc-and-camlp4opt-aarch64-only.patch
 %endif
+git am %{_sourcedir}/0011-arg-Add-no_arg-and-get_arg-helper-functions.patch
+git am %{_sourcedir}/0012-arg-Allow-flags-such-as-flag-arg-as-well-as-flag-arg.patch
 
 
 %build
@@ -557,6 +559,9 @@ fi
 
 
 %changelog
+* Tue Apr  1 2014 Richard W.M. Jones <rjones@redhat.com> - 4.01.0-11
+- Fix --flag=arg patch (thanks: Anton Lavrik, Ignas Vyšniauskas).
+
 * Mon Mar 24 2014 Richard W.M. Jones <rjones@redhat.com> - 4.01.0-10
 - Include a fix for aarch64 relocation problems
   http://caml.inria.fr/mantis/view.php?id=6283
