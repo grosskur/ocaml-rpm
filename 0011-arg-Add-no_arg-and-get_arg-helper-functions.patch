@@ -1,7 +1,7 @@
 From 6a342793f40250c78931afa32961646f20bc5ba4 Mon Sep 17 00:00:00 2001
 From: "Richard W.M. Jones" <rjones@redhat.com>
 Date: Tue, 1 Apr 2014 11:17:07 +0100
-Subject: [PATCH 11/12] arg: Add no_arg and get_arg helper functions.
+Subject: [PATCH 11/13] arg: Add no_arg and get_arg helper functions.
 
 The no_arg function in this patch is a no-op.  It will do something
 useful in the followups.

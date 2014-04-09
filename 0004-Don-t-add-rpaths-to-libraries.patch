@@ -1,7 +1,7 @@
 From c3a733c10827896a6e3c217b383e874df303d50b Mon Sep 17 00:00:00 2001
 From: "Richard W.M. Jones" <rjones@redhat.com>
 Date: Tue, 29 May 2012 20:43:34 +0100
-Subject: [PATCH 04/12] Don't add rpaths to libraries.
+Subject: [PATCH 04/13] Don't add rpaths to libraries.
 
 ---
  tools/Makefile.shared | 3 ---

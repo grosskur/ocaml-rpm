@@ -1,7 +1,7 @@
 From 459e9550f174e11176a2ece013fc4dd2b08a06bb Mon Sep 17 00:00:00 2001
 From: "Richard W.M. Jones" <rjones@redhat.com>
 Date: Tue, 29 May 2012 20:44:18 +0100
-Subject: [PATCH 05/12] configure: Allow user defined C compiler flags.
+Subject: [PATCH 05/13] configure: Allow user defined C compiler flags.
 
 ---
  configure | 4 ++++

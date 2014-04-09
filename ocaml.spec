@@ -261,7 +261,9 @@ git am %{_sourcedir}/0006-Add-support-for-ppc64.patch </dev/null
 git am %{_sourcedir}/0007-yacc-Use-mkstemp-instead-of-mktemp.patch </dev/null
 %ifarch aarch64
 git am %{_sourcedir}/0008-Port-to-the-ARM-64-bits-AArch64-architecture-experim.patch
+%endif
 git am %{_sourcedir}/0009-Updated-with-latest-versions-from-FSF.patch
+%ifarch aarch64
 git am %{_sourcedir}/0010-Disable-ocamldoc-and-camlp4opt-aarch64-only.patch
 %endif
 git am %{_sourcedir}/0011-arg-Add-no_arg-and-get_arg-helper-functions.patch

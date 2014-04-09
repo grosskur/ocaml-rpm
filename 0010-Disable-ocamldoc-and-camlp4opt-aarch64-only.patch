@@ -1,7 +1,7 @@
 From 0ebe44d283e56056fec1691bdc052c92d70c892d Mon Sep 17 00:00:00 2001
 From: "Richard W.M. Jones" <rjones@redhat.com>
 Date: Mon, 30 Dec 2013 20:32:03 +0000
-Subject: [PATCH 10/12] Disable ocamldoc and camlp4opt (aarch64 only)
+Subject: [PATCH 10/13] Disable ocamldoc and camlp4opt (aarch64 only)
 
 ---
  Makefile | 8 ++++----
