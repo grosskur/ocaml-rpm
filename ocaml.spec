@@ -1,6 +1,6 @@
 Name:           ocaml
 Version:        4.01.0
-Release:        11%{?dist}
+Release:        12%{?dist}
 
 Summary:        OCaml compiler and programming environment
 
@@ -43,6 +43,9 @@ Patch0010:      0010-Disable-ocamldoc-and-camlp4opt-aarch64-only.patch
 Patch0011:      0011-arg-Add-no_arg-and-get_arg-helper-functions.patch
 Patch0012:      0012-arg-Allow-flags-such-as-flag-arg-as-well-as-flag-arg.patch
 
+# ppc64le support (Michel Normand).
+Patch0013:      0013-Add-support-for-ppc64le.patch
+
 BuildRequires:  ncurses-devel
 BuildRequires:  gdbm-devel
 BuildRequires:  tcl-devel
@@ -77,15 +80,15 @@ Provides:       ocaml(compiler) = %{version}
 
 # We can compile OCaml on just about anything, but the native code
 # backend is only available on a subset of architectures.
-ExclusiveArch:  aarch64 alpha %{arm} ia64 %{ix86} x86_64 ppc ppc64 sparc sparcv9
+ExclusiveArch:  aarch64 alpha %{arm} ia64 %{ix86} x86_64 ppc ppc64 ppc64le sparc sparcv9
 
-%ifarch aarch64 %{arm} %{ix86} ppc ppc64 sparc sparcv9 x86_64
+%ifarch aarch64 %{arm} %{ix86} ppc ppc64 ppc64le sparc sparcv9 x86_64
 %global native_compiler 1
 %else
 %global native_compiler 0
 %endif
 
-%ifarch aarch64 %{arm} %{ix86} ppc ppc64 sparc sparcv9 x86_64
+%ifarch aarch64 %{arm} %{ix86} ppc ppc64 ppc64le sparc sparcv9 x86_64
 %global natdynlink 1
 %else
 %global natdynlink 0
@@ -263,6 +266,7 @@ git am %{_sourcedir}/0010-Disable-ocamldoc-and-camlp4opt-aarch64-only.patch
 %endif
 git am %{_sourcedir}/0011-arg-Add-no_arg-and-get_arg-helper-functions.patch
 git am %{_sourcedir}/0012-arg-Allow-flags-such-as-flag-arg-as-well-as-flag-arg.patch
+git am %{_sourcedir}/0013-Add-support-for-ppc64le.patch
 
 
 %build
@@ -273,7 +277,7 @@ unset MAKEFLAGS
 # For ppc64 we need a larger stack than default to compile some files
 # because the stages in the OCaml compiler are not mutually tail
 # recursive.
-%ifarch ppc64
+%ifarch ppc64 ppc64le
 ulimit -a
 ulimit -Hs 65536
 ulimit -Ss 65536
@@ -559,6 +563,9 @@ fi
 
 
 %changelog
+* Wed Apr  9 2014 Richard W.M. Jones <rjones@redhat.com> - 4.01.0-12
+- Add ppc64le support (thanks: Michel Normand) (RHBZ#1077767).
+
 * Tue Apr  1 2014 Richard W.M. Jones <rjones@redhat.com> - 4.01.0-11
 - Fix --flag=arg patch (thanks: Anton Lavrik, Ignas Vyšniauskas).
 
