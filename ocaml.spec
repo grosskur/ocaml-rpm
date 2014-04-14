@@ -1,6 +1,6 @@
 Name:           ocaml
 Version:        4.01.0
-Release:        12%{?dist}
+Release:        13%{?dist}
 
 Summary:        OCaml compiler and programming environment
 
@@ -37,7 +37,7 @@ Patch0007:      0007-yacc-Use-mkstemp-instead-of-mktemp.patch
 # Aarch64 patches.
 Patch0008:      0008-Port-to-the-ARM-64-bits-AArch64-architecture-experim.patch
 Patch0009:      0009-Updated-with-latest-versions-from-FSF.patch
-Patch0010:      0010-Disable-ocamldoc-and-camlp4opt-aarch64-only.patch
+Patch0010:      0010-arm64-Align-code-and-data-to-8-bytes.patch
 
 # NON-upstream patch to allow '--flag=arg' as an alternative to '--flag arg'.
 Patch0011:      0011-arg-Add-no_arg-and-get_arg-helper-functions.patch
@@ -247,28 +247,7 @@ git config user.email "noone@example.com"
 git config user.name "no one"
 git add .
 git commit -a -q -m "%{version} baseline"
-# Should use:
-#git am %{patches} </dev/null
-# However temporarily we don't want to apply certain patches on
-# non-aarch64 so we have to do this.  We can fix this when there is a
-# released version of OCaml that has ARM64 support upstream.
-git am %{_sourcedir}/0001-Add-.gitignore-file-to-ignore-generated-files.patch </dev/null
-git am %{_sourcedir}/0002-Ensure-empty-compilerlibs-directory-is-created-by-gi.patch </dev/null
-git am %{_sourcedir}/0003-ocamlbyteinfo-ocamlplugininfo-Useful-utilities-from-.patch </dev/null
-git am %{_sourcedir}/0004-Don-t-add-rpaths-to-libraries.patch </dev/null
-git am %{_sourcedir}/0005-configure-Allow-user-defined-C-compiler-flags.patch </dev/null
-git am %{_sourcedir}/0006-Add-support-for-ppc64.patch </dev/null
-git am %{_sourcedir}/0007-yacc-Use-mkstemp-instead-of-mktemp.patch </dev/null
-%ifarch aarch64
-git am %{_sourcedir}/0008-Port-to-the-ARM-64-bits-AArch64-architecture-experim.patch
-%endif
-git am %{_sourcedir}/0009-Updated-with-latest-versions-from-FSF.patch
-%ifarch aarch64
-git am %{_sourcedir}/0010-Disable-ocamldoc-and-camlp4opt-aarch64-only.patch
-%endif
-git am %{_sourcedir}/0011-arg-Add-no_arg-and-get_arg-helper-functions.patch
-git am %{_sourcedir}/0012-arg-Allow-flags-such-as-flag-arg-as-well-as-flag-arg.patch
-git am %{_sourcedir}/0013-Add-support-for-ppc64le.patch
+git am %{patches} </dev/null
 
 
 %build
@@ -565,6 +544,10 @@ fi
 
 
 %changelog
+* Mon Apr 14 2014 Richard W.M. Jones <rjones@redhat.com> - 4.01.0-13
+- Fix aarch64 relocation problems again.
+  Earlier patch was dropped accidentally.
+
 * Wed Apr  9 2014 Richard W.M. Jones <rjones@redhat.com> - 4.01.0-12
 - Add ppc64le support (thanks: Michel Normand) (RHBZ#1077767).
 

@@ -1,4 +1,4 @@
-From 6a342793f40250c78931afa32961646f20bc5ba4 Mon Sep 17 00:00:00 2001
+From 251d3447bb10550320f43512d8886561c1298f74 Mon Sep 17 00:00:00 2001
 From: "Richard W.M. Jones" <rjones@redhat.com>
 Date: Tue, 1 Apr 2014 11:17:07 +0100
 Subject: [PATCH 11/13] arg: Add no_arg and get_arg helper functions.

@@ -1,4 +1,4 @@
-From 6099b2f59acea92e0d39fd1fb4c280812223d341 Mon Sep 17 00:00:00 2001
+From d9ec3ac29493999687b0f7daa23f4888bc57c7be Mon Sep 17 00:00:00 2001
 From: Michel Normand <normand@linux.vnet.ibm.com>
 Date: Tue, 18 Mar 2014 09:15:47 -0400
 Subject: [PATCH 13/13] Add support for ppc64le.
