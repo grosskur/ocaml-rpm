@@ -1,6 +1,26 @@
+# OCaml has a bytecode backend that works on anything with a C
+# compiler, and a native code backend available on a subset of
+# architectures.  A further subset of architectures support native
+# dynamic linking.
+
+%global ocaml_native_compiler aarch64 %{arm} %{ix86} ppc ppc64 ppc64le sparc sparcv9 x86_64
+%global ocaml_natdynlink      aarch64 %{arm} %{ix86} ppc ppc64 ppc64le sparc sparcv9 x86_64
+
+%ifarch %{ocaml_native_compiler}
+%global native_compiler 1
+%else
+%global native_compiler 0
+%endif
+
+%ifarch %{ocaml_natdynlink}
+%global natdynlink 1
+%else
+%global natdynlink 0
+%endif
+
 Name:           ocaml
 Version:        4.01.0
-Release:        13%{?dist}
+Release:        14%{?dist}
 
 Summary:        OCaml compiler and programming environment
 
@@ -77,22 +97,6 @@ Requires:       rpm-build >= 4.8.0
 Provides:       bundled(md5-plumb)
 
 Provides:       ocaml(compiler) = %{version}
-
-# We can compile OCaml on just about anything, but the native code
-# backend is only available on a subset of architectures.
-ExclusiveArch:  aarch64 alpha %{arm} ia64 %{ix86} x86_64 ppc ppc64 ppc64le sparc sparcv9
-
-%ifarch aarch64 %{arm} %{ix86} ppc ppc64 ppc64le sparc sparcv9 x86_64
-%global native_compiler 1
-%else
-%global native_compiler 0
-%endif
-
-%ifarch aarch64 %{arm} %{ix86} ppc ppc64 ppc64le sparc sparcv9 x86_64
-%global natdynlink 1
-%else
-%global natdynlink 0
-%endif
 
 %global __ocaml_requires_opts -c -f '%{buildroot}%{_bindir}/ocamlrun %{buildroot}%{_bindir}/ocamlobjinfo'
 %global __ocaml_provides_opts -f '%{buildroot}%{_bindir}/ocamlrun %{buildroot}%{_bindir}/ocamlobjinfo'
@@ -236,6 +240,15 @@ Note that this exposes internal details of the OCaml compiler which
 may not be portable between versions.
 
 
+%package srpm-macros
+Summary:        %{name} SRPM macros
+
+
+%description srpm-macros
+This package contains macros needed by RPM in order to build
+SRPMS.  It does not pull in any other OCaml dependencies.
+
+
 %prep
 %setup -q -T -b 0 -n %{name}-%{version}
 %setup -q -T -D -a 1 -n %{name}-%{version}
@@ -326,6 +339,21 @@ install -m 0755 ocamlbyteinfo $RPM_BUILD_ROOT%{_bindir}
 #install -m 0755 ocamlplugininfo $RPM_BUILD_ROOT%{_bindir}
 
 find $RPM_BUILD_ROOT -name .ignore -delete
+
+# Create RPM macros file (RHBZ#1087794).
+mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/rpm
+cat <<'EOF' > $RPM_BUILD_ROOT%{_sysconfdir}/rpm/macros.ocaml-srpm
+# Note that OCaml is compiled on all architectures.  However
+# on some (rare) architectures, only bytecode compilation is
+# available.  Use these macros to find out if native code
+# compilation is available on a particular architecture.
+
+# Architectures that support the OCaml native code compiler.
+%%ocaml_native_compiler %{ocaml_native_compiler}
+
+# Architectures that support native dynamic linking of OCaml code.
+%%ocaml_natdynlink      %{ocaml_natdynlink}
+EOF
 
 
 %post docs
@@ -543,7 +571,16 @@ fi
 %endif
 
 
+%files srpm-macros
+%{_sysconfdir}/rpm/macros.ocaml-srpm
+
+
 %changelog
+* Tue Apr 15 2014 Richard W.M. Jones <rjones@redhat.com> - 4.01.0-14
+- Remove ExclusiveArch.
+- Add ocaml-srpm-macros subpackage containing arch macros.
+- See: RHBZ#1087794
+
 * Mon Apr 14 2014 Richard W.M. Jones <rjones@redhat.com> - 4.01.0-13
 - Fix aarch64 relocation problems again.
   Earlier patch was dropped accidentally.
