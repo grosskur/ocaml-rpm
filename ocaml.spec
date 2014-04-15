@@ -20,7 +20,7 @@
 
 Name:           ocaml
 Version:        4.01.0
-Release:        14%{?dist}
+Release:        15%{?dist}
 
 Summary:        OCaml compiler and programming environment
 
@@ -399,8 +399,8 @@ fi
 %if %{native_compiler}
 %{_bindir}/ocamlopt
 %{_bindir}/ocamlopt.opt
-%{_bindir}/ocamloptp
 %endif
+%{_bindir}/ocamloptp
 #%{_bindir}/ocamlplugininfo
 %{_bindir}/ocamlprof
 %{_bindir}/ocamlyacc
@@ -546,9 +546,7 @@ fi
 %files docs
 %doc refman.pdf htmlman
 %{_infodir}/*
-%if %{native_compiler}
 %{_mandir}/man3/*
-%endif
 
 
 %files emacs
@@ -576,6 +574,9 @@ fi
 
 
 %changelog
+* Tue Apr 15 2014 Richard W.M. Jones <rjones@redhat.com> - 4.01.0-15
+- Fix s390x builds (no native compiler).
+
 * Tue Apr 15 2014 Richard W.M. Jones <rjones@redhat.com> - 4.01.0-14
 - Remove ExclusiveArch.
 - Add ocaml-srpm-macros subpackage containing arch macros.
