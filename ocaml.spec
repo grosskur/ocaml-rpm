@@ -1,3 +1,19 @@
+%global p_vendor         hhvm
+%define _name            ocaml
+
+%if 0%{?p_vendor:1}
+  %global _orig_prefix   %{_prefix}
+  %global name_prefix    %{p_vendor}-
+
+  # Use the alternate locations for things.
+  %define _lib            lib 
+  %global _real_initrddir %{_initrddir}
+  %global _sysconfdir     %{_sysconfdir}/hhvm
+  %define _prefix         /opt/hhvm
+  %define _libdir         %{_prefix}/lib
+  %define _mandir         %{_datadir}/man
+%endif
+
 # OCaml has a bytecode backend that works on anything with a C
 # compiler, and a native code backend available on a subset of
 # architectures.  A further subset of architectures support native
@@ -18,7 +34,7 @@
 %global natdynlink 0
 %endif
 
-Name:           ocaml
+Name:           %{?name_prefix}%{_name}
 Version:        4.01.0
 Release:        15%{?dist}
 
@@ -96,7 +112,12 @@ Requires:       rpm-build >= 4.8.0
 # Bundles an MD5 implementation in byterun/md5.{c,h}
 Provides:       bundled(md5-plumb)
 
-Provides:       ocaml(compiler) = %{version}
+Provides:       %{?name_prefix}ocaml(compiler) = %{version}
+%{?filter_setup:
+%filter_from_provides /.*\.cmxs$/d; /libcaml.*\.so.*$/d; /ocaml(.*)$/d
+%filter_from_requires /.*\.cmxs$/d; /libcaml.*\.so.*$/d; /ocaml(.*)$/d
+%filter_setup
+}
 
 %global __ocaml_requires_opts -c -f '%{buildroot}%{_bindir}/ocamlrun %{buildroot}%{_bindir}/ocamlobjinfo'
 %global __ocaml_provides_opts -f '%{buildroot}%{_bindir}/ocamlrun %{buildroot}%{_bindir}/ocamlobjinfo'
@@ -115,7 +136,7 @@ and a comprehensive library.
 %package runtime
 Summary:        OCaml runtime environment
 Requires:       util-linux
-Provides:       ocaml(runtime) = %{version}
+Provides:       %{?name_prefix}ocaml(runtime) = %{version}
 
 %description runtime
 OCaml is a high-level, strongly-typed, functional and object-oriented
@@ -127,7 +148,7 @@ bytecode.
 
 %package source
 Summary:        Source code for OCaml libraries
-Requires:       ocaml = %{version}-%{release}
+Requires:       %{?name_prefix}ocaml = %{version}-%{release}
 
 %description source
 Source code for OCaml libraries.
@@ -135,7 +156,7 @@ Source code for OCaml libraries.
 
 %package x11
 Summary:        X11 support for OCaml
-Requires:       ocaml-runtime = %{version}-%{release}
+Requires:       %{?name_prefix}ocaml-runtime = %{version}-%{release}
 Requires:       libX11-devel
 
 %description x11
@@ -144,7 +165,7 @@ X11 support for OCaml.
 
 %package labltk
 Summary:        Tk bindings for OCaml
-Requires:       ocaml-runtime = %{version}-%{release}
+Requires:       %{?name_prefix}ocaml-runtime = %{version}-%{release}
 
 %description labltk
 Labltk is a library for interfacing OCaml with the scripting language
@@ -155,8 +176,8 @@ This package contains the runtime files.
 
 %package labltk-devel
 Summary:        Development files for labltk
-Requires:       ocaml = %{version}-%{release}
-Requires:       %{name}-labltk = %{version}-%{release}
+Requires:       %{?name_prefix}ocaml = %{version}-%{release}
+Requires:       %{?name_prefix}%{name}-labltk = %{version}-%{release}
 Requires:       libX11-devel
 Requires:       tcl-devel
 Requires:       tk-devel
@@ -171,7 +192,7 @@ browser for code editing and library browsing.
 
 %package camlp4
 Summary:        Pre-Processor-Pretty-Printer for OCaml
-Requires:       ocaml-runtime = %{version}-%{release}
+Requires:       %{?name_prefix}ocaml-runtime = %{version}-%{release}
 
 %description camlp4
 Camlp4 is a Pre-Processor-Pretty-Printer for OCaml, parsing a source
@@ -182,8 +203,8 @@ This package contains the runtime files.
 
 %package camlp4-devel
 Summary:        Pre-Processor-Pretty-Printer for OCaml
-Requires:       ocaml = %{version}-%{release}
-Requires:       %{name}-camlp4 = %{version}-%{release}
+Requires:       %{?name_prefix}ocaml = %{version}-%{release}
+Requires:       %{?name_prefix}%{name}-camlp4 = %{version}-%{release}
 
 %description camlp4-devel
 Camlp4 is a Pre-Processor-Pretty-Printer for OCaml, parsing a source
@@ -194,8 +215,8 @@ This package contains the development files.
 
 %package ocamldoc
 Summary:        Documentation generator for OCaml
-Requires:       ocaml = %{version}-%{release}
-Provides:	ocamldoc
+Requires:       %{?name_prefix}ocaml = %{version}-%{release}
+#Provides:	ocamldoc
 
 %description ocamldoc
 Documentation generator for OCaml.
@@ -203,7 +224,7 @@ Documentation generator for OCaml.
 
 %package emacs
 Summary:        Emacs mode for OCaml
-Requires:       ocaml = %{version}-%{release}
+Requires:       %{?name_prefix}ocaml = %{version}-%{release}
 Requires:       emacs
 
 %description emacs
@@ -212,7 +233,7 @@ Emacs mode for OCaml.
 
 %package docs
 Summary:        Documentation for OCaml
-Requires:       ocaml = %{version}-%{release}
+Requires:       %{?name_prefix}ocaml = %{version}-%{release}
 Requires(post): /sbin/install-info
 Requires(preun): /sbin/install-info
 
@@ -227,7 +248,7 @@ man pages and info files.
 
 %package compiler-libs
 Summary:        Compiler libraries for OCaml
-Requires:       ocaml = %{version}-%{release}
+Requires:       %{?name_prefix}ocaml = %{version}-%{release}
 
 
 %description compiler-libs
@@ -250,9 +271,9 @@ SRPMS.  It does not pull in any other OCaml dependencies.
 
 
 %prep
-%setup -q -T -b 0 -n %{name}-%{version}
-%setup -q -T -D -a 1 -n %{name}-%{version}
-%setup -q -T -D -a 3 -n %{name}-%{version}
+%setup -q -T -b 0 -n %{_name}-%{version}
+%setup -q -T -D -a 1 -n %{_name}-%{version}
+%setup -q -T -D -a 3 -n %{_name}-%{version}
 cp %{SOURCE2} refman.pdf
 
 git init
@@ -360,13 +381,13 @@ EOF
 /sbin/install-info \
     --entry="* ocaml: (ocaml).   The OCaml compiler and programming environment" \
     --section="Programming Languages" \
-    %{_infodir}/%{name}.info \
+    %{_infodir}/%{_name}.info \
     %{_infodir}/dir 2>/dev/null || :
 
 
 %preun docs
 if [ $1 -eq 0 ]; then
-  /sbin/install-info --delete %{_infodir}/%{name}.info %{_infodir}/dir 2>/dev/null || :
+  /sbin/install-info --delete %{_infodir}/%{_name}.info %{_infodir}/dir 2>/dev/null || :
 fi
 
 
